@@ -1,0 +1,1 @@
+## A Qt6 application for my thesis in the IT department 
