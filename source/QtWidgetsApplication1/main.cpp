@@ -54,6 +54,7 @@
 #include <QKeyEvent>
 
 
+
 #include <QFileDialog>
 
 //#include <shlobj.h>
@@ -103,6 +104,8 @@ std::vector<Application> app_list = {};
 
 // NEW CODE
 QPalette ui_palette;
+
+
 
 
 // https://stackoverflow.com/questions/12459145/extracting-icon-using-winapi-in-qt-app
@@ -156,21 +159,21 @@ QString RemoveFileExtension(const QString& fileName)
 
 
 
-class ApplicationExplorer : public QWidget 
+class ApplicationExplorer : public QWidget
 {
 
-    
+
     QStringList applications_list;
     QStringList current_list;
-    
+
 
     // QListWidget to display file names and icons
     QListWidget* list_widget = new QListWidget(this);
-    QListWidget* directoryList = new QListWidget(this);
-    
+    QListWidget* directory_list = new QListWidget(this);
+
 
 public:
-    ApplicationExplorer(QApplication &app, QWidget* parent = nullptr) : QWidget(parent), app(app)
+    ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app)
     {
         SetupUI();
 
@@ -181,31 +184,34 @@ private:
     QLineEdit* text_input;
     QString user_input;
     // NEW CODE
-    QApplication &app; // Reference to QApplication object
-    QComboBox *combo_box;
+    QApplication& app; // Reference to QApplication object
+    QComboBox* combo_box;
+    QComboBox* cb_profile_switch;
 
     QTimer timer;
 
     QTabWidget* tabs;
     QPushButton* button_add_tab;
     QPushButton* button_remove_tab;
-    
+
 
     void SetupUI()
     {
+
+
         tabs = new QTabWidget(this);
         QVBoxLayout* layout_root = new QVBoxLayout(this);
 
         QWidget* tab_all_apps = new QWidget();
         QWidget* tab_settings = new QWidget();
-        
+
 
 
         // NEW CODE
         //QWidget *centralWidget = new QWidget(this);
         //setCentralWidget(centralWidget);
 
-        
+
 
         tabs = new QTabWidget(this);
         layout_root->addWidget(tabs);
@@ -218,36 +224,38 @@ private:
         connect(button_remove_tab, &QPushButton::clicked, this, &ApplicationExplorer::RemoveTab);
         layout_root->addWidget(button_remove_tab);
 
-        
-        
+
+
 
 
 
         // Add tabs to tab widget
         tabs->addTab(tab_all_apps, "Applications");
         tabs->addTab(tab_settings, "Settings");
-        
+
 
         // Box layout to display list_widget items
         //QVBoxLayout* layout_all_apps = new QVBoxLayout(tab_all_apps);
         QGridLayout* layout_all_apps = new QGridLayout(tab_all_apps);
 
-        
-        
+
+
         layout_root->addWidget(tabs);  // Add the tab widget to the layout
         setLayout(layout_root);
-        
-        
+
+
         // Create the second tab
         QLabel* label_directories = new QLabel("Directories:");
         QLabel* label_app_theme = new QLabel("Theme");
-        
+
         QPushButton* button_add_dir = new QPushButton("Add Directory");
         QPushButton* button_remove_dir = new QPushButton("Remove Directory");
         QVBoxLayout* layout_settings = new QVBoxLayout(tab_settings);
 
+        QPushButton* button_save_settings = new QPushButton("Save changes");
 
-        
+
+
         combo_box = new QComboBox(this);
         combo_box->addItem("dark");
         combo_box->addItem("light");
@@ -257,25 +265,34 @@ private:
         combo_box->addItem("yellow");
         combo_box->addItem("orange");
         combo_box->addItem("purple");
-        
 
+        cb_profile_switch = new QComboBox(this);
+        cb_profile_switch->addItem("Profile1");
+        cb_profile_switch->addItem("Profile2");
+
+        // Load last used profile
+        LoadProfile();
         connect(combo_box, &QComboBox::currentTextChanged, this, &ApplicationExplorer::UpdateUIPalette);
+        connect(cb_profile_switch, &QComboBox::currentTextChanged, this, &ApplicationExplorer::LoadProfile);
 
-        
+
+
         QHBoxLayout* layout_dir_buttons = new QHBoxLayout();
         layout_dir_buttons->addWidget(button_add_dir);
         layout_dir_buttons->addWidget(button_remove_dir);
+        layout_dir_buttons->addWidget(button_save_settings);
 
         layout_settings->addWidget(label_app_theme);
         layout_settings->addWidget(combo_box);
+        layout_settings->addWidget(cb_profile_switch);
         layout_settings->addWidget(label_directories);
-        
-        
-        layout_settings->addWidget(directoryList);
+
+
+        layout_settings->addWidget(directory_list);
         layout_settings->addLayout(layout_dir_buttons);
-        
-        
-        
+
+
+
 
 
         // Input field for application searching
@@ -283,19 +300,20 @@ private:
         text_input->setPlaceholderText("Search application");
         text_input->resize(500, 500);
         layout_all_apps->addWidget(text_input);
-        
 
 
-        
+
+
 
 
         current_list = applications_list;
 
 
-        
+
         // List widget custom arguments
         list_widget->setViewMode(QListWidget::IconMode);
         list_widget->setMovement(QListView::Static);
+        //list_widget->setDragDropMode(QAbstractItemView::DragDrop);
         list_widget->setWordWrap(true);
         list_widget->setWrapping(true);
         list_widget->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
@@ -309,7 +327,7 @@ private:
         //layout_all_apps->addWidget(list_widget, 10, 10, Qt::AlignCenter);
         UpdateListDelayed();
 
-        
+
 
 
         // CONNECTIONS
@@ -325,27 +343,87 @@ private:
         // Functionality to add directories
         QObject::connect(button_add_dir, &QPushButton::clicked, [this]() {
             QString directory = QFileDialog::getExistingDirectory(nullptr, "Select Directory", QDir::homePath());
-            for (int i = 0; i < directoryList->count(); ++i)
+            for (int i = 0; i < directory_list->count(); ++i)
             {
-                
-                if (directory == directoryList->item(i)->text()) 
+
+                if (directory == directory_list->item(i)->text())
                 {
                     return;
                 }
             }
             if (!directory.isEmpty())
-                directoryList->addItem(directory);
+                directory_list->addItem(directory);
             UpdateListDelayed();
             });
 
         // Functionality to remove directories
         QObject::connect(button_remove_dir, &QPushButton::clicked, [this]() {
-            qDeleteAll(directoryList->selectedItems());
+            qDeleteAll(directory_list->selectedItems());
             UpdateListDelayed();
             });
 
-        
+        connect(button_save_settings, &QPushButton::clicked, this, &ApplicationExplorer::SaveProfile);
+
     }
+
+
+
+    void SaveProfile()
+    {
+        QSettings settings("YourCompany", "YourApp");
+
+        settings.beginGroup(cb_profile_switch->itemText(cb_profile_switch->currentIndex()));
+
+        settings.setValue("CTheme", combo_box->currentIndex());
+
+        settings.endGroup();
+    }
+
+
+    void LoadProfile()
+    {
+
+        QSettings settings("YourCompany", "YourApp");
+        
+        settings.beginGroup(cb_profile_switch->itemText(cb_profile_switch->currentIndex()));
+
+        
+        int index = settings.value("CTheme", 0).toInt();
+        combo_box->setCurrentIndex(index);
+        UpdateUIPalette(combo_box->itemText(index));
+
+        settings.endGroup();
+    }
+
+
+
+    void SaveAppdata()
+    {
+        QSettings settings("YourCompany", "YourApp");
+        
+        settings.beginGroup("application");
+        
+        settings.setValue("last_profile", cb_profile_switch->currentIndex());
+        
+        settings.endGroup();
+    }
+
+    void LoadAppdata()
+    {
+        QSettings settings("YourCompany", "YourApp");
+        
+        settings.beginGroup("application");
+
+        // Load the saved index of the combo box
+        int index = settings.value("last_profile", 0).toInt();
+        cb_profile_switch->setCurrentIndex(index);
+        LoadProfile();
+
+        // End reading settings
+        settings.endGroup();
+    }
+
+
 
     void CleanUp()
     {
@@ -354,6 +432,7 @@ private:
 
     void ShowContextMenu(const QPoint& pos)
     {
+        std::cout << "X: " << pos.x() << std::endl << "Y: " << pos.y() << std::endl;
         QListWidgetItem* item = list_widget->itemAt(pos);
         if (!item)
             return;
@@ -503,6 +582,8 @@ private slots:
             ui_palette.setColor(QPalette::Link, QColor(42, 130, 218));
             ui_palette.setColor(QPalette::Highlight, QColor(42, 130, 218));
             ui_palette.setColor(QPalette::HighlightedText, Qt::black);
+
+            
         }
         else if(text == "light")
         {
@@ -519,6 +600,7 @@ private slots:
             ui_palette.setColor(QPalette::Link, QColor(42, 130, 218));
             ui_palette.setColor(QPalette::Highlight, QColor(42, 130, 218));
             ui_palette.setColor(QPalette::HighlightedText, Qt::white);
+            
         }
         else if(text == "blue")
         {
@@ -627,10 +709,10 @@ private slots:
         applications_list.clear();
 
         // Update directories list
-        for (int i = 0; i < directoryList->count(); ++i)
+        for (int i = 0; i < directory_list->count(); ++i)
         {
 
-            QListWidgetItem* item = directoryList->item(i);
+            QListWidgetItem* item = directory_list->item(i);
 
             if (item)
             {
@@ -654,46 +736,24 @@ private slots:
         // Add items to the list widget
         for (const QString& path : current_list)
         {
-            QFileInfo fileInfo(path);
-            QString fileName = fileInfo.fileName();
+            QFileInfo file_info(path);
+            QString file_name = file_info.fileName();
             QIcon icon = GetFileIcon(path);
             //QIcon icon = QFileIconProvider().icon(QFileInfo(path));
 
-            QListWidgetItem* item = new QListWidgetItem(icon, RemoveFileExtension(fileName));
+            QListWidgetItem* item = new QListWidgetItem(icon, RemoveFileExtension(file_name));
             item->setData(Qt::UserRole, path); // Store file path as item data
             list_widget->addItem(item);
 
             // NEW CODE
             // Create & Add application object to application list
             Application app_item;
-            app_item.filename = fileName;
+            app_item.filename = file_name;
             app_item.path = path;
             app_list.push_back(app_item);
             
             
         }
-
-
-        // NEW CODE
-        // Update GridLayout
-        /*
-        int row = 0, column = 0;
-        for(int i = 0; i < list_widget->count(); ++i)
-        {
-            
-            QListWidgetItem* item = list_widget->itemAt(i);
-            layout_all_apps->addItem(item, row, column);
-            column++;
-            
-
-            if (column == 10)
-            {
-                column = 0;
-                row++;
-            }
-        }
-        */
-
 
     }
 
@@ -795,14 +855,14 @@ bool init_gamepad = false;
 
 
 
-class MyTask : public QObject
+class TaskGamepad : public QObject
 {
 
 public:
-    MyTask(QObject* parent = nullptr) : QObject(parent) 
+    TaskGamepad(QObject* parent = nullptr) : QObject(parent)
     {
         timer = new QTimer(this);
-        connect(timer, &QTimer::timeout, this, &MyTask::TaskGamepadNavigation);
+        connect(timer, &QTimer::timeout, this, &TaskGamepad::TaskGamepadNavigation);
         // Perform task constantly
         timer->start(0);
     }
@@ -925,6 +985,35 @@ private:
 
         QStringList KeyLayout = LowerKeyLayout;
 
+        /*
+        QListWidget* keyb_list = new QListWidget(this);
+
+        for (QString ch : KeyLayout)
+        {
+            QListWidgetItem* item = new QListWidgetItem(ch);
+            //item->setData(Qt::UserRole, path); // Store file path as item data
+            keyb_list->addItem(item);
+
+        }
+
+        // List widget custom arguments
+        keyb_list->setViewMode(QListWidget::IconMode);
+        keyb_list->setMovement(QListView::Static);
+        //list_widget->setDragDropMode(QAbstractItemView::DragDrop);
+        keyb_list->setWordWrap(true);
+        keyb_list->setWrapping(true);
+        keyb_list->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        keyb_list->setSpacing(40);
+        keyb_list->setIconSize(QSize(64, 64)); // Set the size of the icons
+        //keyb_list->sortItems();
+
+        main_layout->addWidget(keyb_list);
+
+        connect(keyb_list, &QListWidget::itemClicked, this, &VirtualKeyboard::KeyClicked);
+
+        */
+
+
 
         // counting rows and columns
         int row = 0, column = 0;
@@ -983,11 +1072,22 @@ private:
         });
         column++;
         layout->addWidget(button_right, row, column);
-
+        
 
 
         label_instructions = new QLabel("Instructions: Click on the keys to input text", this);
         main_layout->addWidget(label_instructions);
+    }
+
+private slots:
+
+    void KeyClicked(QListWidgetItem* item)
+    {
+        if (item)
+        {
+            virtual_input->insert(item->text());
+        }
+        
     }
 
 
@@ -1006,7 +1106,7 @@ private:
 
 int main(int argc, char* argv[]) 
 {
-
+    AllocateConsole();
     //qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
     
     QApplication app(argc, argv);
@@ -1016,7 +1116,7 @@ int main(int argc, char* argv[])
     VirtualKeyboard wind_v_keyb;
     wind_v_keyb.show();
 
-    MyTask task;
+    TaskGamepad gamepad;
     //explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
 
     
