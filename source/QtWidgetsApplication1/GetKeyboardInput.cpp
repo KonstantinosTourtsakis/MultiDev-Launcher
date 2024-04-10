@@ -42,7 +42,7 @@ const DWORD DWORDKeys[] =
 //QWERTY variables
 int current_button = 15;
 bool caps_lock = false;
-std::string temp_input = "";
+
 
 
 
@@ -119,7 +119,7 @@ void UpdateKeyboardMenu()
 
     cout << endl << endl << "Space: Triangle/Y   Caps Lock: L1/LB\nDelete: Square/X   Confirm input: Start" << endl;
     cout << "---------------------------------------------------------------------------------" << endl;
-    PrintText("Your input: ", 12); cout << temp_input << "|" << endl;
+    //PrintText("Your input: ", 12); cout << temp_input << "|" << endl;
 }
 
 
@@ -130,7 +130,7 @@ void UpdateKeyboardMenu()
 bool getting_input = false;
 void VirtualKeyboard::SendKeyboardInput()
 {
-    this->show();
+    
 
     
 
@@ -138,7 +138,7 @@ void VirtualKeyboard::SendKeyboardInput()
     
 
 
-    temp_input = "";
+    
     current_button = 15;
 
     //Keep the window in which the input will be "sent"
@@ -150,8 +150,38 @@ void VirtualKeyboard::SendKeyboardInput()
     SetWindowPos(qt_keyboard_window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     ShowWindow(qt_keyboard_window, SW_MAXIMIZE);
 
-   
-    
+    // Space
+    if (user->IsButtonJustDown(GAMEPAD_Y)) 
+    {
+        virtual_input->insert(" ");
+    }
+
+
+    //Backspace
+    if (SmoothNavigation(GAMEPAD_X, 90, 90)) 
+    {
+        virtual_input->backspace();
+    }
+
+    // Select backward
+    if (SmoothNavigation(GAMEPAD_LB, 90, 90))
+    {
+        virtual_input->cursorBackward(true, 1);
+    }
+
+    // Select forward
+    if (SmoothNavigation(GAMEPAD_RB, 90, 90))
+    {
+        virtual_input->cursorForward(true, 1);
+    }
+
+
+    //Caps lock
+    if (user->IsButtonJustDown(GAMEPAD_LB)) 
+    {
+        caps_lock = !caps_lock;
+        
+    }
 
 
 
@@ -169,9 +199,9 @@ void VirtualKeyboard::SendKeyboardInput()
         
 
         getting_input = false;
-
-        temp_input = virtual_input->text().toStdString();
-        std::cout << "Keyboard input finished with: " << temp_input << std::endl;
+        std::string temp_input = virtual_input->text().toStdString();
+        
+        //std::cout << "Keyboard input finished with: " << temp_input << std::endl;
 
         SetWindowPos(qt_keyboard_window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         SetWindowPos(foreground_window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -199,6 +229,7 @@ void VirtualKeyboard::SendKeyboardInput()
         SetForegroundWindow(foreground_window);
         this->hide();
         SendInput(vec.size(), vec.data(), sizeof(INPUT));
+        virtual_input->clear();
     }
 
 
@@ -206,7 +237,7 @@ void VirtualKeyboard::SendKeyboardInput()
     
 
 
-
+    /*
     UpdateKeyboardMenu();
     while (getting_input)
     {
@@ -327,4 +358,7 @@ void VirtualKeyboard::SendKeyboardInput()
     // Resetting font to default
     //Font.dwFontSize = {8, 16};
     //SetCurrentConsoleFontEx(Hout, 0, &Font);
+
+
+    */
 }

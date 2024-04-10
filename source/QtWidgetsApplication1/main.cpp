@@ -1043,7 +1043,7 @@ public:
             getting_input = true;
             
             //QKeyboard->show();
-            
+            QKeyboard->showMaximized();
             UpdateMainMenu();
         }
 
