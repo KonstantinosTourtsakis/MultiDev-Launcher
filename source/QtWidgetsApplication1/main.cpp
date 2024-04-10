@@ -815,7 +815,7 @@ private slots:
 
 
 
-
+/*
 
 class VirtualKeyboard : public QMainWindow
 {
@@ -874,34 +874,6 @@ private:
         };
 
         QStringList KeyLayout = LowerKeyLayout;
-
-        /*
-        QListWidget* keyb_list = new QListWidget(this);
-
-        for (QString ch : KeyLayout)
-        {
-            QListWidgetItem* item = new QListWidgetItem(ch);
-            //item->setData(Qt::UserRole, path); // Store file path as item data
-            keyb_list->addItem(item);
-
-        }
-
-        // List widget custom arguments
-        keyb_list->setViewMode(QListWidget::IconMode);
-        keyb_list->setMovement(QListView::Static);
-        //list_widget->setDragDropMode(QAbstractItemView::DragDrop);
-        keyb_list->setWordWrap(true);
-        keyb_list->setWrapping(true);
-        keyb_list->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-        keyb_list->setSpacing(40);
-        keyb_list->setIconSize(QSize(64, 64)); // Set the size of the icons
-        //keyb_list->sortItems();
-
-        main_layout->addWidget(keyb_list);
-
-        connect(keyb_list, &QListWidget::itemClicked, this, &VirtualKeyboard::KeyClicked);
-
-        */
 
 
 
@@ -969,21 +941,9 @@ private:
         main_layout->addWidget(label_instructions);
     }
 
-private slots:
-
-    void KeyClicked(QListWidgetItem* item)
-    {
-        if (item)
-        {
-            virtual_input->insert(item->text());
-        }
-
-    }
-
-
 };
 
-
+*/
 
 
 
@@ -1021,7 +981,7 @@ protected:
 
 
 bool controller_navigation = true;
-bool temp = true; // Used to do some stuff once during the first loop in ControllerNavigation()
+bool temp = false; // Used to do some stuff once during the first loop in ControllerNavigation()
 
 
 
@@ -1032,43 +992,7 @@ void UpdateMainMenu() { return; }
 
 
 
-void ControllerNavigation()
-{
 
-
-    if (temp) //Display the menu once in the first loop
-    {
-        UpdateMainMenu();
-        temp = false;
-    }
-
-
-
-
-
-    //Toggle controller navigation (the user wouldn't want the controller navigation to be working while gaming)
-    if (user->IsButtonDown(GAMEPAD_BACK) && user->IsButtonJustDown(GAMEPAD_RIGHT_THUMB))
-    {
-        controller_navigation = !controller_navigation;
-        UpdateMainMenu();
-        Beep(523, 500);
-    }
-
-    //Open the virtual keboard to type an input and send it
-    if (user->IsButtonDown(GAMEPAD_BACK) && user->IsButtonJustDown(GAMEPAD_RB))
-    {
-        SendKeyboardInput();
-        UpdateMainMenu();
-    }
-
-
-    if (controller_navigation)
-    {
-        Reset_Key_Press_Counter(); // Used in Smooth scrolling/navigating with the arrows/D-Pad --- must be called once every loop
-        CursorMode();
-    }
-
-}
 
 
 
@@ -1091,16 +1015,60 @@ public:
     }
 
 
-    void SetApplication(VirtualKeyboard* app)
+    void SetQKeyboard(VirtualKeyboard* app)
     {
-        main_app = app;
+        QKeyboard = app;
     }
     
+
+
+
+    
+    void ControllerNavigation()
+    {
+
+        //Toggle controller navigation (the user wouldn't want the controller navigation to be working while gaming)
+        if (user->IsButtonDown(GAMEPAD_BACK) && user->IsButtonJustDown(GAMEPAD_RIGHT_THUMB))
+        {
+            controller_navigation = !controller_navigation;
+            UpdateMainMenu();
+            Beep(523, 500);
+        }
+
+
+
+        //Open the virtual keboard to type an input and send it
+        if (user->IsButtonDown(GAMEPAD_BACK) && user->IsButtonJustDown(GAMEPAD_RB))
+        {
+            getting_input = true;
+            
+            //QKeyboard->show();
+            
+            UpdateMainMenu();
+        }
+
+
+        if (getting_input)
+        {
+            QKeyboard->SendKeyboardInput();
+        }
+
+
+
+
+        if (controller_navigation)
+        {
+            Reset_Key_Press_Counter(); // Used in Smooth scrolling/navigating with the arrows/D-Pad --- must be called once every loop
+            CursorMode();
+        }
+
+    }
+
 
 public slots:
     void TaskGamepadNavigation()
     {
-
+        
         // Perform gamepad initialization (once)
         if (!init_gamepad)
         {
@@ -1140,7 +1108,7 @@ public slots:
 
 private:
     QTimer* timer;
-    VirtualKeyboard* main_app;
+    VirtualKeyboard* QKeyboard;
 };
 
 
@@ -1181,7 +1149,10 @@ int main(int argc, char* argv[])
     wind_v_keyb.hide();
 
     TaskGamepad gamepad;
-    gamepad.SetApplication(&wind_v_keyb);
+    gamepad.SetQKeyboard(&wind_v_keyb);
+
+
+
     //explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
 
     

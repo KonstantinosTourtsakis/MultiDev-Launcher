@@ -64,6 +64,7 @@ void PrintText(const char* text, WORD color)
 
 void UpdateKeyboardMenu()
 {
+    return;
     system("cls");
 
     // Create Screen Buffer
@@ -126,30 +127,86 @@ void UpdateKeyboardMenu()
 
 
 
-
-void SendKeyboardInput()
+bool getting_input = false;
+void VirtualKeyboard::SendKeyboardInput()
 {
-    bool getting_input = true;
+    this->show();
+
+    
+
+
+    
+
+
     temp_input = "";
     current_button = 15;
 
-    HWND foreground_window = GetForegroundWindow(); //Keep the window in which the input will be "sent"
+    //Keep the window in which the input will be "sent"
+    HWND foreground_window = GetForegroundWindow();
 
-    SetWindowPos(GetConsoleWindow(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-    ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
+    // Get virtual keyboard window to start typing
+    HWND qt_keyboard_window = FindWindow(NULL, L"Virtual Keyboard");
+    
+    SetWindowPos(qt_keyboard_window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+    ShowWindow(qt_keyboard_window, SW_MAXIMIZE);
 
-    system("cls");
+   
     
 
 
 
     //Changing font size because the virtual keyboard looks too small on the default font
+    /*
     HANDLE Hout = ::GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_FONT_INFOEX Font = { sizeof(Font) };
     ::GetCurrentConsoleFontEx(Hout, FALSE, &Font);
     Font.dwFontSize = { 38, 38 };
     SetCurrentConsoleFontEx(Hout, 0, &Font);
+    */
+
+    if (user->IsButtonJustDown(GAMEPAD_START)) //Input finished
+    {
+        
+
+        getting_input = false;
+
+        temp_input = virtual_input->text().toStdString();
+        std::cout << "Keyboard input finished with: " << temp_input << std::endl;
+
+        SetWindowPos(qt_keyboard_window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetWindowPos(foreground_window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        SetForegroundWindow(foreground_window);
+        SetWindowPos(foreground_window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+
+
+        //https://stackoverflow.com/questions/49503240/passing-a-string-into-sendinput-c
+        std::wstring msg(temp_input.begin(), temp_input.end());
+
+        std::vector<INPUT> vec;
+        for (auto ch : msg)
+        {
+            INPUT input = { 0 };
+            input.type = INPUT_KEYBOARD;
+            input.ki.dwFlags = KEYEVENTF_UNICODE;
+            input.ki.wScan = ch;
+            vec.push_back(input);
+
+            input.ki.dwFlags |= KEYEVENTF_KEYUP;
+            vec.push_back(input);
+        }
+
+
+        SetForegroundWindow(foreground_window);
+        this->hide();
+        SendInput(vec.size(), vec.data(), sizeof(INPUT));
+    }
+
+
+    return;
     
+
+
+
     UpdateKeyboardMenu();
     while (getting_input)
     {
@@ -268,6 +325,6 @@ void SendKeyboardInput()
 
 
     // Resetting font to default
-    Font.dwFontSize = {8, 16};
-    SetCurrentConsoleFontEx(Hout, 0, &Font);
+    //Font.dwFontSize = {8, 16};
+    //SetCurrentConsoleFontEx(Hout, 0, &Font);
 }
