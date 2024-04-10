@@ -333,6 +333,9 @@ private:
         // CONNECTIONS
         //connect(this, &QListWidget::aboutToQuit, this, &ApplicationExplorer::cleanup);
         connect(list_widget, &QListWidget::itemDoubleClicked, this, &ApplicationExplorer::OnItemDoubleClicked);
+        //connect(list_widget, &QListWidget::itemClicked, this, &ApplicationExplorer::OnItemClicked);
+
+        
         // Delay before keyboard input triggers application search
         timer.setSingleShot(true);
         connect(&timer, &QTimer::timeout, this, &ApplicationExplorer::UpdateListDelayed);
@@ -430,9 +433,29 @@ private:
         // application cleanup on execution ending
     }
 
+
+
+    QStringList favorite_apps;
+    void OnItemClicked(QListWidgetItem* item)
+    {
+        // Create a "Add to favorites" button
+        QPushButton* addToFavoritesButton = new QPushButton("Add to Favorites");
+        connect(addToFavoritesButton, &QPushButton::clicked, [this, item]() {
+            // Handle the "Add to favorites" action
+            // For example, you can add the item text to a separate list
+            favorite_apps.append(item->text());
+            std::cout << "Added to favorites:" << item->text().toStdString() << std::endl;
+            });
+
+        // Add the button to the item's widget
+        list_widget->setItemWidget(item, addToFavoritesButton);
+    }
+
+
+
     void ShowContextMenu(const QPoint& pos)
     {
-        std::cout << "X: " << pos.x() << std::endl << "Y: " << pos.y() << std::endl;
+        //std::cout << "X: " << pos.x() << std::endl << "Y: " << pos.y() << std::endl;
         QListWidgetItem* item = list_widget->itemAt(pos);
         if (!item)
             return;
@@ -457,6 +480,13 @@ private:
             });
 
 
+        QAction* action_add_favorite = new QAction(tr("Add to favorites"), this);
+        connect(action_add_favorite, &QAction::triggered, this, [this, item]()
+            {
+                favorite_apps.append(item->text());
+                std::cout << "Added to favorites:" << item->text().toStdString() << std::endl;
+            });
+
         // NEW CODE
         QAction* action_add_category = new QAction(tr("Add to Category"), this);
         connect(action_add_category, &QAction::triggered, [this, item]() {
@@ -466,9 +496,10 @@ private:
 
         context_menu.addAction(action_edit);
         context_menu.addAction(action_delete);
+        context_menu.addAction(action_add_favorite);
         context_menu.addAction(action_add_category);
 
-        context_menu.exec(mapToGlobal(pos));
+        context_menu.exec(mapToGlobal(QCursor::pos()));
         //context_menu.exec(list_widget->mapToGlobal(QPoint(0,0)));
     }
 
@@ -509,19 +540,33 @@ private slots:
 
     void RemoveTab()
     {
-        if (tabs->count() > 0) {
+
+        if (tabs->currentIndex() > 1)
+        {
             tabs->removeTab(tabs->currentIndex());
         }
+
+
     }
+
+    
+
+
+
+
 
     void OnItemDoubleClicked(QListWidgetItem* item) 
     {
+        
+        
+
+
         if (item) 
         {
             QString file_path = item->data(Qt::UserRole).toString();
             //std::cout << file_path.toStdString() << std::endl;
             
-
+            
             
             if (file_path.endsWith(".lnk", Qt::CaseInsensitive))
             {
@@ -531,11 +576,11 @@ private slots:
                     std::cout << "Failed to open shortcut file:" << file_path.toStdString();
                     exit(1);
                 }
-                std::cout << "Shortcut file opened successfully!";
+                
             }
             else 
             {
-                // If it's not a shortcut, create a QProcess and start it
+                // If it's not a shortcut create a QProcess and start it
                 QProcess* process = new QProcess();
                 process->start(file_path);
 
@@ -770,6 +815,183 @@ private slots:
 
 
 
+
+
+class VirtualKeyboard : public QMainWindow
+{
+
+public:
+    VirtualKeyboard()
+    {
+        setWindowTitle("Virtual Keyboard");
+        CreateKeyboardUI();
+    }
+
+
+
+
+
+private:
+    QLineEdit* virtual_input;
+    QLabel* label_instructions;
+
+
+
+
+    void CreateKeyboardUI()
+    {
+        QWidget* centralWidget = new QWidget(this);
+        setCentralWidget(centralWidget);
+
+
+        QVBoxLayout* main_layout = new QVBoxLayout(centralWidget);
+
+        virtual_input = new QLineEdit(this);
+        virtual_input->setReadOnly(true);
+        virtual_input->setPlaceholderText("Your input");
+        main_layout->addWidget(virtual_input);
+
+
+        QGridLayout* layout = new QGridLayout();
+        main_layout->addLayout(layout);
+
+
+        const QStringList UpperKeyLayout
+        {
+            "!", "@", "#", "$", "%", "^", "&", "*", "(", ")",
+            "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
+            "A", "S", "D", "F", "G", "H", "J", "K", "L", "_",
+            "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?",
+        };
+
+
+        const QStringList LowerKeyLayout
+        {
+            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
+            "q", "w", "e", "r", "t", "y", "u", "i", "o", "p",
+            "a", "s", "d", "f", "g", "h", "j", "k", "l", "-",
+            "z", "x", "c", "v", "b", "n", "m", ",", ".", "/",
+        };
+
+        QStringList KeyLayout = LowerKeyLayout;
+
+        /*
+        QListWidget* keyb_list = new QListWidget(this);
+
+        for (QString ch : KeyLayout)
+        {
+            QListWidgetItem* item = new QListWidgetItem(ch);
+            //item->setData(Qt::UserRole, path); // Store file path as item data
+            keyb_list->addItem(item);
+
+        }
+
+        // List widget custom arguments
+        keyb_list->setViewMode(QListWidget::IconMode);
+        keyb_list->setMovement(QListView::Static);
+        //list_widget->setDragDropMode(QAbstractItemView::DragDrop);
+        keyb_list->setWordWrap(true);
+        keyb_list->setWrapping(true);
+        keyb_list->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        keyb_list->setSpacing(40);
+        keyb_list->setIconSize(QSize(64, 64)); // Set the size of the icons
+        //keyb_list->sortItems();
+
+        main_layout->addWidget(keyb_list);
+
+        connect(keyb_list, &QListWidget::itemClicked, this, &VirtualKeyboard::KeyClicked);
+
+        */
+
+
+
+        // counting rows and columns
+        int row = 0, column = 0;
+        for (const QString& text : KeyLayout)
+        {
+
+            QPushButton* button = new QPushButton(text);
+
+            connect(button, &QPushButton::clicked, this, [=]()
+                {
+                    virtual_input->insert(text);
+                });
+
+            layout->addWidget(button, row, column);
+            column++;
+
+
+            if (column == 10)
+            {
+                column = 0;
+                row++;
+            }
+        }
+
+
+        // Creating the last row of buttons
+        QPushButton* button_back = new QPushButton("Backspace");
+        QPushButton* button_clear = new QPushButton("Clear");
+        QPushButton* button_left = new QPushButton("<");
+        QPushButton* button_right = new QPushButton(">");
+
+        connect(button_back, &QPushButton::clicked, this, [=]()
+            {
+                virtual_input->backspace();
+            });
+        column = 3;
+        row++;
+        layout->addWidget(button_back, row, column);
+        connect(button_clear, &QPushButton::clicked, this, [=]()
+            {
+                virtual_input->clear();
+            });
+        column++;
+        layout->addWidget(button_clear, row, column);
+
+        connect(button_left, &QPushButton::clicked, this, [=]()
+            {
+                virtual_input->cursorBackward(true, 1);
+            });
+        column++;
+        layout->addWidget(button_left, row, column);
+
+        connect(button_right, &QPushButton::clicked, this, [=]()
+            {
+                virtual_input->cursorForward(true, 1);
+            });
+        column++;
+        layout->addWidget(button_right, row, column);
+
+
+
+        label_instructions = new QLabel("Instructions: Click on the keys to input text", this);
+        main_layout->addWidget(label_instructions);
+    }
+
+private slots:
+
+    void KeyClicked(QListWidgetItem* item)
+    {
+        if (item)
+        {
+            virtual_input->insert(item->text());
+        }
+
+    }
+
+
+};
+
+
+
+
+
+
+
+
+
+
 class KeyEventListener : public QObject
 {
 
@@ -859,6 +1081,7 @@ class TaskGamepad : public QObject
 {
 
 public:
+    
     TaskGamepad(QObject* parent = nullptr) : QObject(parent)
     {
         timer = new QTimer(this);
@@ -866,6 +1089,13 @@ public:
         // Perform task constantly
         timer->start(0);
     }
+
+
+    void SetApplication(VirtualKeyboard* app)
+    {
+        main_app = app;
+    }
+    
 
 public slots:
     void TaskGamepadNavigation()
@@ -885,7 +1115,7 @@ public slots:
             user->left_trigger = user->GetState().Gamepad.bLeftTrigger / 255.0f;
             user->right_trigger = user->GetState().Gamepad.bRightTrigger / 255.0f;
             ControllerNavigation();
-
+            
 
             /*if (user->IsButtonJustDown(GAMEPAD_B)) //B
             {
@@ -910,6 +1140,7 @@ public slots:
 
 private:
     QTimer* timer;
+    VirtualKeyboard* main_app;
 };
 
 
@@ -924,174 +1155,6 @@ private:
 
 
 
-
-
-
-class VirtualKeyboard : public QMainWindow
-{
-
-public:
-    VirtualKeyboard()
-    {
-        setWindowTitle("Virtual Keyboard");
-        CreateKeyboardUI();
-    }
-
-
-
-
-
-private:
-    QLineEdit *virtual_input;
-    QLabel *label_instructions;
-    
-
-
-
-    void CreateKeyboardUI()
-    {
-        QWidget *centralWidget = new QWidget(this);
-        setCentralWidget(centralWidget);
-
-
-        QVBoxLayout *main_layout = new QVBoxLayout(centralWidget);
-        
-        virtual_input = new QLineEdit(this);
-        virtual_input->setReadOnly(true);
-        virtual_input->setPlaceholderText("Your input");
-        main_layout->addWidget(virtual_input);
-
-        
-        QGridLayout *layout = new QGridLayout();
-        main_layout->addLayout(layout);
-
-
-        const QStringList UpperKeyLayout
-        {
-            "!", "@", "#", "$", "%", "^", "&", "*", "(", ")",
-            "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
-            "A", "S", "D", "F", "G", "H", "J", "K", "L", "_",
-            "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?",
-        };
-
-
-        const QStringList LowerKeyLayout 
-        {
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
-            "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", 
-            "a", "s", "d", "f", "g", "h", "j", "k", "l", "-", 
-            "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", 
-        };
-
-        QStringList KeyLayout = LowerKeyLayout;
-
-        /*
-        QListWidget* keyb_list = new QListWidget(this);
-
-        for (QString ch : KeyLayout)
-        {
-            QListWidgetItem* item = new QListWidgetItem(ch);
-            //item->setData(Qt::UserRole, path); // Store file path as item data
-            keyb_list->addItem(item);
-
-        }
-
-        // List widget custom arguments
-        keyb_list->setViewMode(QListWidget::IconMode);
-        keyb_list->setMovement(QListView::Static);
-        //list_widget->setDragDropMode(QAbstractItemView::DragDrop);
-        keyb_list->setWordWrap(true);
-        keyb_list->setWrapping(true);
-        keyb_list->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-        keyb_list->setSpacing(40);
-        keyb_list->setIconSize(QSize(64, 64)); // Set the size of the icons
-        //keyb_list->sortItems();
-
-        main_layout->addWidget(keyb_list);
-
-        connect(keyb_list, &QListWidget::itemClicked, this, &VirtualKeyboard::KeyClicked);
-
-        */
-
-
-
-        // counting rows and columns
-        int row = 0, column = 0;
-        for (const QString &text : KeyLayout)
-        {
-            
-            QPushButton *button = new QPushButton(text);
-
-            connect(button, &QPushButton::clicked, this, [=]()
-            {
-                virtual_input->insert(text);
-            });
-
-            layout->addWidget(button, row, column);
-            column++;
-            
-
-            if (column == 10)
-            {
-                column = 0;
-                row++;
-            }
-        }
-
-
-        // Creating the last row of buttons
-        QPushButton *button_back = new QPushButton("Backspace");
-        QPushButton *button_clear = new QPushButton("Clear");
-        QPushButton *button_left = new QPushButton("<");
-        QPushButton *button_right = new QPushButton(">");
-
-        connect(button_back, &QPushButton::clicked, this, [=]() 
-        {
-            virtual_input->backspace();
-        });
-        column = 3;
-        row++;
-        layout->addWidget(button_back, row, column);
-        connect(button_clear, &QPushButton::clicked, this, [=]() 
-        {
-            virtual_input->clear();
-        });
-        column++;
-        layout->addWidget(button_clear, row, column);
-
-        connect(button_left, &QPushButton::clicked, this, [=]() 
-        {
-            virtual_input->cursorBackward(true, 1);
-        });
-        column++;
-        layout->addWidget(button_left, row, column);
-
-        connect(button_right, &QPushButton::clicked, this, [=]() 
-        {
-            virtual_input->cursorForward(true, 1);
-        });
-        column++;
-        layout->addWidget(button_right, row, column);
-        
-
-
-        label_instructions = new QLabel("Instructions: Click on the keys to input text", this);
-        main_layout->addWidget(label_instructions);
-    }
-
-private slots:
-
-    void KeyClicked(QListWidgetItem* item)
-    {
-        if (item)
-        {
-            virtual_input->insert(item->text());
-        }
-        
-    }
-
-
-};
 
 
 
@@ -1115,8 +1178,10 @@ int main(int argc, char* argv[])
     
     VirtualKeyboard wind_v_keyb;
     wind_v_keyb.show();
+    wind_v_keyb.hide();
 
     TaskGamepad gamepad;
+    gamepad.SetApplication(&wind_v_keyb);
     //explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
 
     
