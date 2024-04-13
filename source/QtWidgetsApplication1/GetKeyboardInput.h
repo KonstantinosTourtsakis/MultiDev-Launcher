@@ -24,6 +24,9 @@ public:
     VirtualKeyboard()
     {
         setWindowTitle("Virtual Keyboard");
+        virtual_input = new QLineEdit(this);
+        virtual_input->setReadOnly(true);
+        virtual_input->setPlaceholderText("Your input");
         CreateKeyboardUI();
     }
 
@@ -35,7 +38,7 @@ private:
     QLineEdit* virtual_input;
     QLabel* label_instructions;
 
-
+    bool caps_lock = false;
 
 
     void CreateKeyboardUI()
@@ -46,9 +49,7 @@ private:
 
         QVBoxLayout* main_layout = new QVBoxLayout(centralWidget);
 
-        virtual_input = new QLineEdit(this);
-        virtual_input->setReadOnly(true);
-        virtual_input->setPlaceholderText("Your input");
+        
         main_layout->addWidget(virtual_input);
 
 
@@ -73,7 +74,7 @@ private:
             "z", "x", "c", "v", "b", "n", "m", ",", ".", "/",
         };
 
-        QStringList KeyLayout = LowerKeyLayout;
+        QStringList KeyLayout = caps_lock ? UpperKeyLayout : LowerKeyLayout;
 
 
 
@@ -90,6 +91,11 @@ private:
                 });
 
             layout->addWidget(button, row, column);
+            
+            if (row == 2 && column == 5)
+            {
+                button->setChecked(true);
+            }
             column++;
 
 
@@ -98,6 +104,8 @@ private:
                 column = 0;
                 row++;
             }
+
+            
         }
 
 

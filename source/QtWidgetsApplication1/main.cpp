@@ -455,8 +455,20 @@ private:
 
     void ShowContextMenu(const QPoint& pos)
     {
-        //std::cout << "X: " << pos.x() << std::endl << "Y: " << pos.y() << std::endl;
-        QListWidgetItem* item = list_widget->itemAt(pos);
+        
+        QPoint local_pos = list_widget->mapFromGlobal(pos);
+
+        // Get the index of the item at the local position
+        QModelIndex index = list_widget->indexAt(local_pos);
+
+        // Check if the right-click occurred on an item
+        if (!index.isValid()) 
+        {
+            return;
+        }
+
+
+        QListWidgetItem* item = list_widget->currentItem();
         if (!item)
             return;
 
@@ -499,8 +511,8 @@ private:
         context_menu.addAction(action_add_favorite);
         context_menu.addAction(action_add_category);
 
-        context_menu.exec(mapToGlobal(QCursor::pos()));
-        //context_menu.exec(list_widget->mapToGlobal(QPoint(0,0)));
+        
+        context_menu.exec(mapToGlobal(pos));
     }
 
 
@@ -1115,20 +1127,99 @@ private:
 
 
 
+class MainWindow : public QMainWindow
+{
+
+public:
+    MainWindow(QWidget* parent = nullptr);
+    ~MainWindow();
+
+private:
+    QListWidget* listWidget;
+
+    void setupContextMenu();
+
+private slots:
+    void showContextMenu(const QPoint& pos);
+    void printFilename();
+};
 
 
 
 
 
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent)
+{
+    listWidget = new QListWidget(this);
+    setCentralWidget(listWidget);
+
+    // Load files from a directory
+    QDir directory("C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Shortcuts");
+    QStringList fileList = directory.entryList(QDir::Files);
+    listWidget->addItems(fileList);
+
+    // Set icon mode
+    listWidget->setViewMode(QListWidget::IconMode);
+
+    // Set context menu policy
+    listWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+
+    // Connect context menu signal
+    connect(listWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::showContextMenu);
+
+    setupContextMenu();
+}
+
+MainWindow::~MainWindow()
+{
+}
+
+void MainWindow::setupContextMenu()
+{
+    QAction* printAction = new QAction("Print Filename", this);
+    connect(printAction, &QAction::triggered, this, &MainWindow::printFilename);
+
+    listWidget->addAction(printAction);
+}
+
+void MainWindow::showContextMenu(const QPoint& pos)
+{
+    QPoint globalPos = listWidget->mapToGlobal(pos);
+
+    QMenu contextMenu;
+    contextMenu.addAction("Print Filename");
+
+    contextMenu.exec(globalPos);
+}
+
+void MainWindow::printFilename()
+{
+    QListWidgetItem* item = listWidget->currentItem();
+    if (item) {
+        QString filename = item->text();
+        std::cout << "Filename: " << filename.toStdString() << std::endl;
+    }
+}
+
+
+
+/*
+
+int main(int argc, char* argv[])
+{
+    AllocateConsole();
+    QApplication a(argc, argv);
+    MainWindow w;
+    w.showMaximized();
+    return a.exec();
+}
 
 
 
 
 
-
-
-
-
+*/
 
 
 
@@ -1141,15 +1232,17 @@ int main(int argc, char* argv[])
     //qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
     
     QApplication app(argc, argv);
+    
+
     ApplicationExplorer explorer(app);
 
     
-    VirtualKeyboard wind_v_keyb;
-    wind_v_keyb.show();
-    wind_v_keyb.hide();
+    VirtualKeyboard QKeyboard;
+    QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
 
     TaskGamepad gamepad;
-    gamepad.SetQKeyboard(&wind_v_keyb);
+    // Pass the window object to the gamepad task to handle virtual keyboard input
+    gamepad.SetQKeyboard(&QKeyboard);
 
 
 
@@ -1169,7 +1262,7 @@ int main(int argc, char* argv[])
     
     //explorer.setFixedSize(QGuiApplication::primaryScreen()->availableGeometry().size());
     explorer.showMaximized();
-    explorer.show();
+
 
     return app.exec();
 }

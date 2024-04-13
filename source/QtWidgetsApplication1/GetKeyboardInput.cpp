@@ -41,7 +41,7 @@ const DWORD DWORDKeys[] =
 
 //QWERTY variables
 int current_button = 15;
-bool caps_lock = false;
+
 
 
 
@@ -85,7 +85,7 @@ void UpdateKeyboardMenu()
         if (i == 10 || i == 20 || i == 30 || i == 40)
             cout << endl << endl << "   ";
 
-        if (!caps_lock)
+        if (!true)//caps_lock)
         {
             if (current_button == i)
             {
@@ -177,9 +177,10 @@ void VirtualKeyboard::SendKeyboardInput()
 
 
     //Caps lock
-    if (user->IsButtonJustDown(GAMEPAD_LB)) 
+    if (user->IsButtonJustDown(GAMEPAD_LEFT_THUMB))
     {
         caps_lock = !caps_lock;
+        CreateKeyboardUI();
         
     }
 
