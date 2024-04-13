@@ -108,27 +108,33 @@ QPalette ui_palette;
 
 
 
+
 // https://stackoverflow.com/questions/12459145/extracting-icon-using-winapi-in-qt-app
 QIcon GetFileIcon(const QString& file_path)
 {
-    
-    
     SHFILEINFO shfi;
     memset(&shfi, 0, sizeof(SHFILEINFO));
 
-    // Get the icon associated with the file
     //if (SHGetFileInfo(reinterpret_cast<const wchar_t*>(file_path.utf16()), 0, &shfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES))
-    if (SHGetFileInfo(reinterpret_cast<const wchar_t*>(file_path.utf16()), 0, &shfi, sizeof(SHFILEINFO), SHGFI_LARGEICON | SHGFI_ICON | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES))
+    //if (SHGetFileInfo(reinterpret_cast<const wchar_t*>(file_path.utf16()), 0, &shfi, sizeof(SHFILEINFO), SHGFI_LARGEICON | SHGFI_ICON | SHGFI_SMALLICON | SHGFI_USEFILEATTRIBUTES))
+    if (SHGetFileInfo(reinterpret_cast<const wchar_t*>(file_path.utf16()), 0, &shfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES))
     {
+        // Scale the icon to a desired size
+        //QPixmap pixmap = QPixmap::fromImage(QImage::fromHICON(shfi.hIcon)).scaled(QSize(256, 256), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap pixmap = QPixmap::fromImage(QImage::fromHICON(shfi.hIcon));
         QIcon icon(pixmap);
-        return icon;
 
+        // Cleanup the icon resource
+        DestroyIcon(shfi.hIcon);
+
+        return icon;
     }
 
     //return QFileIconProvider().icon(QFileInfo(filePath));
-    return QIcon(); 
+    return QIcon();
 }
+
+
 
 
 
@@ -477,15 +483,14 @@ private:
         QAction* action_edit = new QAction(tr("Edit"), this);
         connect(action_edit, &QAction::triggered, this, [this, item]() {
             // Edit action here
-            std::cout << "Edit clicked for item: " << item->text().toStdString();
+            
             });
 
 
         QAction* action_delete = new QAction(tr("Remove"), this);
-        connect(action_delete, &QAction::triggered, this, [this, item]() {
-            // Delete action here
-            std::cout << "Delete clicked for item: " << item->text().toStdString();
-            // NEW CODE
+        connect(action_delete, &QAction::triggered, this, [this, item]() 
+            {
+            
             int item_index = list_widget->row(item);
             app_list.erase(app_list.begin() + item_index);
             delete item;
@@ -499,7 +504,7 @@ private:
                 std::cout << "Added to favorites:" << item->text().toStdString() << std::endl;
             });
 
-        // NEW CODE
+        
         QAction* action_add_category = new QAction(tr("Add to Category"), this);
         connect(action_add_category, &QAction::triggered, [this, item]() {
             
