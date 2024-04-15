@@ -175,6 +175,7 @@ class ApplicationExplorer : public QWidget
 
     // QListWidget to display file names and icons
     QListWidget* list_widget = new QListWidget(this);
+    QListWidget* favorite_list = new QListWidget(this);
     QListWidget* directory_list = new QListWidget(this);
 
 
@@ -188,11 +189,11 @@ public:
 
 private:
     QLineEdit* text_input;
-    QString user_input;
     // NEW CODE
     QApplication& app; // Reference to QApplication object
     QComboBox* combo_box;
     QComboBox* cb_profile_switch;
+    QCheckBox* cb_file_extension;
 
     QTimer timer;
 
@@ -210,6 +211,7 @@ private:
 
         QWidget* tab_all_apps = new QWidget();
         QWidget* tab_settings = new QWidget();
+        QWidget* tab_favorites = new QWidget();
 
 
 
@@ -237,18 +239,31 @@ private:
 
         // Add tabs to tab widget
         tabs->addTab(tab_all_apps, "Applications");
+        tabs->addTab(tab_favorites, "Favorites");
         tabs->addTab(tab_settings, "Settings");
+        
 
 
         // Box layout to display list_widget items
         //QVBoxLayout* layout_all_apps = new QVBoxLayout(tab_all_apps);
         QGridLayout* layout_all_apps = new QGridLayout(tab_all_apps);
+        QGridLayout* layout_favorites = new QGridLayout(tab_favorites);
 
+        // List widget custom arguments
+        favorite_list->setViewMode(QListWidget::IconMode);
+        favorite_list->setMovement(QListView::Static);
+        //list_widget->setDragDropMode(QAbstractItemView::DragDrop);
+        favorite_list->setWordWrap(true);
+        favorite_list->setWrapping(true);
+        favorite_list->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        favorite_list->setSpacing(40);
+        favorite_list->setIconSize(QSize(64, 64)); // Set the size of the icons
+        favorite_list->sortItems();
 
 
         layout_root->addWidget(tabs);  // Add the tab widget to the layout
         setLayout(layout_root);
-
+        layout_favorites->addWidget(favorite_list);
 
         // Create the second tab
         QLabel* label_directories = new QLabel("Directories:");
@@ -272,6 +287,12 @@ private:
         combo_box->addItem("orange");
         combo_box->addItem("purple");
 
+
+        // File extension checkbox
+        cb_file_extension = new QCheckBox("Include File Extension", this);
+        
+
+
         cb_profile_switch = new QComboBox(this);
         cb_profile_switch->addItem("Profile1");
         cb_profile_switch->addItem("Profile2");
@@ -289,6 +310,7 @@ private:
         layout_dir_buttons->addWidget(button_save_settings);
 
         layout_settings->addWidget(label_app_theme);
+        layout_settings->addWidget(cb_file_extension);
         layout_settings->addWidget(combo_box);
         layout_settings->addWidget(cb_profile_switch);
         layout_settings->addWidget(label_directories);
@@ -331,6 +353,7 @@ private:
 
         layout_all_apps->addWidget(list_widget);
         //layout_all_apps->addWidget(list_widget, 10, 10, Qt::AlignCenter);
+        DirectoryListUpdated();
         UpdateListDelayed();
 
 
@@ -341,7 +364,7 @@ private:
         connect(list_widget, &QListWidget::itemDoubleClicked, this, &ApplicationExplorer::OnItemDoubleClicked);
         //connect(list_widget, &QListWidget::itemClicked, this, &ApplicationExplorer::OnItemClicked);
 
-        
+        connect(cb_file_extension, &QCheckBox::stateChanged, this, &ApplicationExplorer::UpdateListDelayed);
         // Delay before keyboard input triggers application search
         timer.setSingleShot(true);
         connect(&timer, &QTimer::timeout, this, &ApplicationExplorer::UpdateListDelayed);
@@ -362,12 +385,14 @@ private:
             }
             if (!directory.isEmpty())
                 directory_list->addItem(directory);
+            DirectoryListUpdated();
             UpdateListDelayed();
             });
 
         // Functionality to remove directories
         QObject::connect(button_remove_dir, &QPushButton::clicked, [this]() {
             qDeleteAll(directory_list->selectedItems());
+            DirectoryListUpdated();
             UpdateListDelayed();
             });
 
@@ -441,21 +466,6 @@ private:
 
 
 
-    QStringList favorite_apps;
-    void OnItemClicked(QListWidgetItem* item)
-    {
-        // Create a "Add to favorites" button
-        QPushButton* addToFavoritesButton = new QPushButton("Add to Favorites");
-        connect(addToFavoritesButton, &QPushButton::clicked, [this, item]() {
-            // Handle the "Add to favorites" action
-            // For example, you can add the item text to a separate list
-            favorite_apps.append(item->text());
-            std::cout << "Added to favorites:" << item->text().toStdString() << std::endl;
-            });
-
-        // Add the button to the item's widget
-        list_widget->setItemWidget(item, addToFavoritesButton);
-    }
 
 
 
@@ -500,8 +510,8 @@ private:
         QAction* action_add_favorite = new QAction(tr("Add to favorites"), this);
         connect(action_add_favorite, &QAction::triggered, this, [this, item]()
             {
-                favorite_apps.append(item->text());
-                std::cout << "Added to favorites:" << item->text().toStdString() << std::endl;
+                favorite_list->addItem(item);
+                //std::cout << "Added to favorites:" << item->text().toStdString() << std::endl;
             });
 
         
@@ -522,7 +532,7 @@ private:
 
 
 
-    void ExploreDirectory(const QString& path)
+    void ExploreDirectoryFiles(const QString& path)
     {
         QDir dir(path);
         QFileInfoList files = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
@@ -532,14 +542,19 @@ private:
             if (file_info.isDir())
             {
                 // Recursive call for subdirectories
-                ExploreDirectory(file_info.filePath());
+                ExploreDirectoryFiles(file_info.filePath());
             }
             else
             {
                 QString filename = file_info.fileName();
                 if (filename.endsWith(".exe") || filename.endsWith(".lnk"))
                 {
-                    applications_list.append(file_info.filePath());
+                    if (!applications_list.contains(file_info.filePath()))
+                    {
+                        applications_list.append(file_info.filePath());
+                        std::cout << file_info.fileName().toStdString() << std::endl;
+                    }
+                    
                 }
             }
         }
@@ -616,11 +631,11 @@ private slots:
         }
     }
 
-    void OnTextChanged(const QString& text)
+
+    // Start or restart the timer when text changes - helps avoiding performance issues
+    void OnTextChanged()
     {
-        // Start or restart the timer for debouncing
         timer.start(200);
-        user_input = text;
     }
 
 
@@ -766,7 +781,8 @@ private slots:
         app.setPalette(ui_palette);
     }
 
-    void UpdateListDelayed()
+
+    void DirectoryListUpdated()
     {
         applications_list.clear();
 
@@ -778,17 +794,23 @@ private slots:
 
             if (item)
             {
-                ExploreDirectory(item->text());
+                ExploreDirectoryFiles(item->text());
             }
         }
+    }
 
 
-        // Update the QStringList based on the input
-        this->list_widget->clear();
+    void UpdateListDelayed()
+    {
+        
+
+
+        // Update the QStringList based on the input on the search bar
+        list_widget->clear();
         current_list.clear();
         for (const QString& item : applications_list)
         {
-            if (item.toLower().contains(user_input.toLower()))
+            if (item.toLower().contains(text_input->text().toLower()))
             {
                 current_list << item;
             }
@@ -799,21 +821,24 @@ private slots:
         for (const QString& path : current_list)
         {
             QFileInfo file_info(path);
-            QString file_name = file_info.fileName();
             QIcon icon = GetFileIcon(path);
-            //QIcon icon = QFileIconProvider().icon(QFileInfo(path));
-
-            QListWidgetItem* item = new QListWidgetItem(icon, RemoveFileExtension(file_name));
-            item->setData(Qt::UserRole, path); // Store file path as item data
-            list_widget->addItem(item);
-
-            // NEW CODE
-            // Create & Add application object to application list
-            Application app_item;
-            app_item.filename = file_name;
-            app_item.path = path;
-            app_list.push_back(app_item);
             
+            QListWidgetItem* item;
+
+            // Create list widget item using the file name
+            if (cb_file_extension->isChecked())
+            {
+                item = new QListWidgetItem(icon, file_info.fileName());
+            }
+            else
+            {
+                item = new QListWidgetItem(icon, RemoveFileExtension(file_info.fileName()));
+            }
+            
+            
+            // Store file path as item data
+            item->setData(Qt::UserRole, path);
+            list_widget->addItem(item);
             
         }
 
