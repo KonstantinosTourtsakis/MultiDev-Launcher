@@ -84,20 +84,6 @@ void AllocateConsole()
 
 
 
-// NEW CODE
-class Application 
-{
-public:
-    int qt_index;
-    QString filename;
-    QString window_title;
-    QString path;
-    std::vector<QString> categories;
-
-
-};
-
-std::vector<Application> app_list = {};
 
 
 
@@ -160,6 +146,13 @@ QString RemoveFileExtension(const QString& fileName)
 
 
 
+int calculateWidthPercentage(double percentage) {
+    QScreen* primaryScreen = QGuiApplication::primaryScreen();
+    QRect screenGeometry = primaryScreen->geometry();
+    return static_cast<int>(percentage * screenGeometry.width() / 100.0);
+}
+
+
 
 
 
@@ -175,7 +168,7 @@ class ApplicationExplorer : public QWidget
 
     // QListWidget to display file names and icons
     QListWidget* list_widget = new QListWidget(this);
-    QListWidget* favorite_list = new QListWidget(this);
+    QListWidget* favorites_list = new QListWidget(this);
     QListWidget* directory_list = new QListWidget(this);
 
 
@@ -191,9 +184,9 @@ private:
     QLineEdit* text_input;
     // NEW CODE
     QApplication& app; // Reference to QApplication object
-    QComboBox* combo_box;
+    QComboBox* cb_theme;
     QComboBox* cb_profile_switch;
-    QCheckBox* cb_file_extension;
+    QCheckBox* chb_file_extension;
 
     QTimer timer;
 
@@ -204,7 +197,7 @@ private:
 
     void SetupUI()
     {
-
+        
 
         tabs = new QTabWidget(this);
         QVBoxLayout* layout_root = new QVBoxLayout(this);
@@ -250,20 +243,20 @@ private:
         QGridLayout* layout_favorites = new QGridLayout(tab_favorites);
 
         // List widget custom arguments
-        favorite_list->setViewMode(QListWidget::IconMode);
-        favorite_list->setMovement(QListView::Static);
+        favorites_list->setViewMode(QListWidget::IconMode);
+        favorites_list->setMovement(QListView::Static);
         //list_widget->setDragDropMode(QAbstractItemView::DragDrop);
-        favorite_list->setWordWrap(true);
-        favorite_list->setWrapping(true);
-        favorite_list->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-        favorite_list->setSpacing(40);
-        favorite_list->setIconSize(QSize(64, 64)); // Set the size of the icons
-        favorite_list->sortItems();
+        favorites_list->setWordWrap(true);
+        favorites_list->setWrapping(true);
+        favorites_list->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        favorites_list->setSpacing(40);
+        favorites_list->setIconSize(QSize(64, 64)); // Set the size of the icons
+        favorites_list->sortItems();
 
 
         layout_root->addWidget(tabs);  // Add the tab widget to the layout
         setLayout(layout_root);
-        layout_favorites->addWidget(favorite_list);
+        layout_favorites->addWidget(favorites_list);
 
         // Create the second tab
         QLabel* label_directories = new QLabel("Directories:");
@@ -277,19 +270,19 @@ private:
 
 
 
-        combo_box = new QComboBox(this);
-        combo_box->addItem("dark");
-        combo_box->addItem("light");
-        combo_box->addItem("red");
-        combo_box->addItem("green");
-        combo_box->addItem("blue");
-        combo_box->addItem("yellow");
-        combo_box->addItem("orange");
-        combo_box->addItem("purple");
+        cb_theme = new QComboBox(this);
+        cb_theme->addItem("dark");
+        cb_theme->addItem("light");
+        cb_theme->addItem("red");
+        cb_theme->addItem("green");
+        cb_theme->addItem("blue");
+        cb_theme->addItem("yellow");
+        cb_theme->addItem("orange");
+        cb_theme->addItem("purple");
 
 
         // File extension checkbox
-        cb_file_extension = new QCheckBox("Include File Extension", this);
+        chb_file_extension = new QCheckBox("Include File Extension", this);
         
 
 
@@ -299,7 +292,7 @@ private:
 
         // Load last used profile
         LoadProfile();
-        connect(combo_box, &QComboBox::currentTextChanged, this, &ApplicationExplorer::UpdateUIPalette);
+        connect(cb_theme, &QComboBox::currentTextChanged, this, &ApplicationExplorer::UpdateUIPalette);
         connect(cb_profile_switch, &QComboBox::currentTextChanged, this, &ApplicationExplorer::LoadProfile);
 
 
@@ -310,8 +303,8 @@ private:
         layout_dir_buttons->addWidget(button_save_settings);
 
         layout_settings->addWidget(label_app_theme);
-        layout_settings->addWidget(cb_file_extension);
-        layout_settings->addWidget(combo_box);
+        layout_settings->addWidget(chb_file_extension);
+        layout_settings->addWidget(cb_theme);
         layout_settings->addWidget(cb_profile_switch);
         layout_settings->addWidget(label_directories);
 
@@ -321,14 +314,16 @@ private:
 
 
 
-
+        QFont font("Arial", 18);
 
         // Input field for application searching
         text_input = new QLineEdit(this);
         text_input->setPlaceholderText("Search application");
-        text_input->resize(500, 500);
+        //text_input->resize(500, 500);
+        text_input->setFixedHeight(50);
+        text_input->setFont(font);
         layout_all_apps->addWidget(text_input);
-
+        
 
 
 
@@ -361,10 +356,13 @@ private:
 
         // CONNECTIONS
         //connect(this, &QListWidget::aboutToQuit, this, &ApplicationExplorer::cleanup);
-        connect(list_widget, &QListWidget::itemDoubleClicked, this, &ApplicationExplorer::OnItemDoubleClicked);
+        connect(list_widget, &QListWidget::itemActivated, this, &ApplicationExplorer::OnItemDoubleClicked);
         //connect(list_widget, &QListWidget::itemClicked, this, &ApplicationExplorer::OnItemClicked);
 
-        connect(cb_file_extension, &QCheckBox::stateChanged, this, &ApplicationExplorer::UpdateListDelayed);
+        //connect(list_widget, &QListWidget::itemEntered, this, &ApplicationExplorer::OnItemEntered);
+
+
+        connect(chb_file_extension, &QCheckBox::stateChanged, this, &ApplicationExplorer::UpdateListDelayed);
         // Delay before keyboard input triggers application search
         timer.setSingleShot(true);
         connect(&timer, &QTimer::timeout, this, &ApplicationExplorer::UpdateListDelayed);
@@ -401,6 +399,14 @@ private:
     }
 
 
+    void OnItemEntered(QListWidgetItem* item)
+    {
+        // Set the item as selected when the mouse hovers over it
+        if (item)
+            item->setSelected(true);
+
+    }
+
 
     void SaveProfile()
     {
@@ -408,7 +414,7 @@ private:
 
         settings.beginGroup(cb_profile_switch->itemText(cb_profile_switch->currentIndex()));
 
-        settings.setValue("CTheme", combo_box->currentIndex());
+        settings.setValue("CTheme", cb_theme->currentIndex());
 
         settings.endGroup();
     }
@@ -423,8 +429,8 @@ private:
 
         
         int index = settings.value("CTheme", 0).toInt();
-        combo_box->setCurrentIndex(index);
-        UpdateUIPalette(combo_box->itemText(index));
+        cb_theme->setCurrentIndex(index);
+        UpdateUIPalette(cb_theme->itemText(index));
 
         settings.endGroup();
     }
@@ -478,7 +484,7 @@ private:
         QModelIndex index = list_widget->indexAt(local_pos);
 
         // Check if the right-click occurred on an item
-        if (!index.isValid()) 
+        if (!index.isValid())
         {
             return;
         }
@@ -500,18 +506,17 @@ private:
         QAction* action_delete = new QAction(tr("Remove"), this);
         connect(action_delete, &QAction::triggered, this, [this, item]() 
             {
-            
-            int item_index = list_widget->row(item);
-            app_list.erase(app_list.begin() + item_index);
+
             delete item;
+            
             });
 
 
         QAction* action_add_favorite = new QAction(tr("Add to favorites"), this);
         connect(action_add_favorite, &QAction::triggered, this, [this, item]()
             {
-                favorite_list->addItem(item);
-                //std::cout << "Added to favorites:" << item->text().toStdString() << std::endl;
+                favorites_list->addItem(item);
+
             });
 
         
@@ -547,7 +552,7 @@ private:
             else
             {
                 QString filename = file_info.fileName();
-                if (filename.endsWith(".exe") || filename.endsWith(".lnk"))
+                if (filename.endsWith(".exe") || filename.endsWith(".lnk") || filename.endsWith(".url"))
                 {
                     if (!applications_list.contains(file_info.filePath()))
                     {
@@ -600,7 +605,7 @@ private slots:
             
             
             
-            if (file_path.endsWith(".lnk", Qt::CaseInsensitive))
+            if (file_path.endsWith(".lnk", Qt::CaseInsensitive) || file_path.endsWith(".url", Qt::CaseInsensitive))
             {
                 // Execute shortcuts using QDesktopServices
                 if (!QDesktopServices::openUrl(QUrl::fromLocalFile(file_path)))
@@ -825,8 +830,8 @@ private slots:
             
             QListWidgetItem* item;
 
-            // Create list widget item using the file name
-            if (cb_file_extension->isChecked())
+            // Create list widget item using the file name or file extension
+            if (chb_file_extension->isChecked())
             {
                 item = new QListWidgetItem(icon, file_info.fileName());
             }
@@ -1157,99 +1162,11 @@ private:
 
 
 
-class MainWindow : public QMainWindow
-{
-
-public:
-    MainWindow(QWidget* parent = nullptr);
-    ~MainWindow();
-
-private:
-    QListWidget* listWidget;
-
-    void setupContextMenu();
-
-private slots:
-    void showContextMenu(const QPoint& pos);
-    void printFilename();
-};
 
 
 
 
 
-MainWindow::MainWindow(QWidget* parent)
-    : QMainWindow(parent)
-{
-    listWidget = new QListWidget(this);
-    setCentralWidget(listWidget);
-
-    // Load files from a directory
-    QDir directory("C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Shortcuts");
-    QStringList fileList = directory.entryList(QDir::Files);
-    listWidget->addItems(fileList);
-
-    // Set icon mode
-    listWidget->setViewMode(QListWidget::IconMode);
-
-    // Set context menu policy
-    listWidget->setContextMenuPolicy(Qt::CustomContextMenu);
-
-    // Connect context menu signal
-    connect(listWidget, &QListWidget::customContextMenuRequested, this, &MainWindow::showContextMenu);
-
-    setupContextMenu();
-}
-
-MainWindow::~MainWindow()
-{
-}
-
-void MainWindow::setupContextMenu()
-{
-    QAction* printAction = new QAction("Print Filename", this);
-    connect(printAction, &QAction::triggered, this, &MainWindow::printFilename);
-
-    listWidget->addAction(printAction);
-}
-
-void MainWindow::showContextMenu(const QPoint& pos)
-{
-    QPoint globalPos = listWidget->mapToGlobal(pos);
-
-    QMenu contextMenu;
-    contextMenu.addAction("Print Filename");
-
-    contextMenu.exec(globalPos);
-}
-
-void MainWindow::printFilename()
-{
-    QListWidgetItem* item = listWidget->currentItem();
-    if (item) {
-        QString filename = item->text();
-        std::cout << "Filename: " << filename.toStdString() << std::endl;
-    }
-}
-
-
-
-/*
-
-int main(int argc, char* argv[])
-{
-    AllocateConsole();
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.showMaximized();
-    return a.exec();
-}
-
-
-
-
-
-*/
 
 
 
@@ -1263,12 +1180,15 @@ int main(int argc, char* argv[])
     
     QApplication app(argc, argv);
     
-
+    //QSize size = app.screens()[0]->size();
+    //std::cout << "Size: " << size.width() << "x" << size.height() << std::endl;
+    
     ApplicationExplorer explorer(app);
 
     
     VirtualKeyboard QKeyboard;
     QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
+    QKeyboard.showMaximized();
 
     TaskGamepad gamepad;
     // Pass the window object to the gamepad task to handle virtual keyboard input
@@ -1304,110 +1224,3 @@ int main(int argc, char* argv[])
 
 
 
-
-
-
-
-/*
-
-
-int main(int argc, char* argv[])
-{
-
-    AllocateConsole();
-
-
-    QApplication app(argc, argv);
-    QtWidgetsApplication1 main_window;
-    main_window.setWindowTitle("My first Qt Application in Qt6");
-    main_window.showMaximized();
-
-    /*
-    // Create a ColorWidget
-    ColorWidget* colorWidget = new ColorWidget(&main_window);
-
-    // Create a button to change color
-    QPushButton* button = new QPushButton("Change Color", &main_window);
-    QObject::connect(button, &QPushButton::clicked, [&]() {
-        // Set a random color
-        int r = rand() % 256;
-        int g = rand() % 256;
-        int b = rand() % 256;
-        colorWidget->setColor(r, g, b);
-        });
-
-    button->move(100, 10);
-
-    // Set layout
-    QVBoxLayout* layout = new QVBoxLayout(&main_window);
-    layout->addWidget(colorWidget);
-    layout->addWidget(button);
-    //main_window.setLayout(layout);
-    */
-
-
-    //FunctionIconListWidget();
-
-
-    // File listing ----------------------------------------------------------------
-
-    /*
-    QListWidget listWidget;
-    listWidget.setIconSize(QSize(32, 32));
-    listWidget.setViewMode(QListWidget::IconMode);
-    // Recursively iterate over the directory
-    for (const auto& dir : directories)
-    {
-        QDirIterator it(dir, QStringList() << "*.exe" << "*.lnk", QDir::Files, QDirIterator::Subdirectories);
-        while (it.hasNext())
-        {
-            it.next();
-            QString file_path = it.filePath();
-            QString filename = it.fileName();
-            
-
-            QIcon icon = GetFileIcon(file_path);
-            QListWidgetItem* item = new QListWidgetItem(icon, filename);
-
-            // Load icon from file
-            //QIcon icon("C:\\Users\\kosta\\Documents\\Icons\\CJ.png");
-            
-            //std::cout << filename.toStdString() << std::endl << file_path.toStdString() << std::endl;
-            
-            //item->setIcon(icon);
-            listWidget.addItem(file_path);
-        }
-    }
-
-    //std::vector<Application> apps = {};
-    for (int i = 0; i < listWidget.count(); ++i)
-    {
-        QListWidgetItem* item = listWidget.item(i);
-        qDebug() << "Item at index" << i << ":" << item->text();
-        std::cout << item->text().toStdString() << std::endl;
-        //apps.push_back({ item->text().toStdString(), item->text().toStdString(), item->text().toStdString(), "fav" })
-    }
-
-
-    main_window.setCentralWidget(&listWidget);
-    // Set selected list item
-    listWidget.setCurrentRow(0);
-    listWidget.setSelectionMode(QAbstractItemView::SingleSelection);
-
-
-    //main_window.setWindowTitle("A list of my files");
-    listWidget.show();
-
-
-    // File listing ----------------------------------------------------------------
-
-    */
-
-
-
-/*
-
-    main_window.show();
-    return app.exec();
-}
-*/

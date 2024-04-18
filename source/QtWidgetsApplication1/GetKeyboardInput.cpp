@@ -132,13 +132,6 @@ void VirtualKeyboard::SendKeyboardInput()
 {
     
 
-    
-
-
-    
-
-
-    
     current_button = 15;
 
     //Keep the window in which the input will be "sent"
@@ -150,14 +143,21 @@ void VirtualKeyboard::SendKeyboardInput()
     SetWindowPos(qt_keyboard_window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     ShowWindow(qt_keyboard_window, SW_MAXIMIZE);
 
-    // Space
+
+    // Space character
+    if (user->IsButtonJustDown(GAMEPAD_A))
+    {
+        SimulateKey(VK_SPACE);
+    }
+
+    // Space character
     if (user->IsButtonJustDown(GAMEPAD_Y)) 
     {
         virtual_input->insert(" ");
     }
 
 
-    //Backspace
+    // Backspace
     if (SmoothNavigation(GAMEPAD_X, 90, 90)) 
     {
         virtual_input->backspace();
