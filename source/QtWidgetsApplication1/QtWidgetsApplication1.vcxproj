@@ -101,7 +101,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ColorWidget.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CursorMode.h" />
     <ClInclude Include="GetKeyboardInput.h" />

@@ -23,9 +23,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ColorWidget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="keyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>

@@ -128,20 +128,28 @@ void UpdateKeyboardMenu()
 
 
 bool getting_input = false;
+bool input_init = true;
 void VirtualKeyboard::SendKeyboardInput()
 {
     
 
-    current_button = 15;
-
+    //current_button = 15;
     //Keep the window in which the input will be "sent"
     HWND foreground_window = GetForegroundWindow();
 
     // Get virtual keyboard window to start typing
     HWND qt_keyboard_window = FindWindow(NULL, L"Virtual Keyboard");
+
+    if (input_init)
+    {
+        
+
+        SetWindowPos(qt_keyboard_window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+        ShowWindow(qt_keyboard_window, SW_MAXIMIZE);
+
+        input_init = false;
+    }
     
-    SetWindowPos(qt_keyboard_window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-    ShowWindow(qt_keyboard_window, SW_MAXIMIZE);
 
 
     // Space character
@@ -200,6 +208,7 @@ void VirtualKeyboard::SendKeyboardInput()
         
 
         getting_input = false;
+        input_init = true;
         std::string temp_input = virtual_input->text().toStdString();
         
         //std::cout << "Keyboard input finished with: " << temp_input << std::endl;
