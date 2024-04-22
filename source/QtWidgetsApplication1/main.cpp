@@ -159,7 +159,8 @@ class ApplicationExplorer : public QWidget
     QListWidget* search_list = new QListWidget(this);
     QListWidget* favorites_list = new QListWidget(this);
     QListWidget* directory_list = new QListWidget(this);
-
+    QVBoxLayout* search_layout;
+    QLineEdit* search_bar;
 
 public:
     ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app)
@@ -180,6 +181,7 @@ private:
     QCheckBox* chb_file_extension;
 
     QTimer timer;
+    QTimer* ulaunch_timer;
 
     QTabWidget* tabs;
     QPushButton* button_add_tab;
@@ -384,8 +386,8 @@ private:
 
         // CONNECTIONS
         //connect(this, &QListWidget::aboutToQuit, this, &ApplicationExplorer::cleanup);
-        connect(list_widget, &QListWidget::itemActivated, this, &ApplicationExplorer::OnItemDoubleClicked);
-        connect(favorites_list, &QListWidget::itemActivated, this, &ApplicationExplorer::OnItemDoubleClicked);
+        connect(list_widget, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
+        connect(favorites_list, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
         
         
 
@@ -428,25 +430,79 @@ private:
         
         // ULauncher-like window for application searching through the keyboard
         search_window.setWindowTitle("ULauncher");
-        QVBoxLayout* search_layout = new QVBoxLayout();
+        search_layout = new QVBoxLayout();
+        //QVBoxLayout* sea_layout = new QVBoxLayout();
         search_window.setLayout(search_layout);
-        search_window.resize(300, 400);
-        search_window.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
-        search_window.show();
+        search_window.resize(300, 40);
+        search_window.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+        
 
         // Create UI elements
-        QLineEdit* search_bar = new QLineEdit(this);
+        search_bar = new QLineEdit(this);
         //search_list = list_widget;
         search_list->setViewMode(QListView::ListMode);
-
+        search_list->hide();
+        search_list->setFixedHeight(30);
         
         search_layout->addWidget(search_bar);
         search_layout->addWidget(search_list);
+        
+        //search_layout->addLayout(sea_layout);
+        
         connect(search_bar, &QLineEdit::textChanged, this, &ApplicationExplorer::SearchResults);
-        connect(search_list, &QListWidget::itemActivated, this, &ApplicationExplorer::OnItemDoubleClicked);
+        connect(search_list, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
         
 
+        ulaunch_timer = new QTimer(this);
+        //ulaunch_timer->setSingleShot(true);
+        connect(ulaunch_timer, &QTimer::timeout, this, &ApplicationExplorer::TaskUlaunchWindowActivation);
+        // Perform task constantly
+        ulaunch_timer->start(0);
     }
+
+    
+    void TaskUlaunchWindowActivation()
+    {
+
+        if (IsKeyDown(VK_CONTROL) && IsKeyJustDown(VK_SPACE))
+        {
+            if (search_window.isVisible())
+            {
+                search_window.hide();
+            }
+            else
+            {
+                search_bar->clear();
+                search_window.show();
+                search_bar->setEnabled(true);
+                search_bar->setFocus();
+            }
+        }
+
+
+
+        if (IsKeyJustDown(VK_DOWN) || IsKeyJustDown(VK_UP))
+        {
+            search_list->setFocus();
+        }
+
+
+        // Checks to return to keyboard input
+        for (int i = 'A'; i <= 'Z'; ++i)
+        {
+            if (IsKeyJustDown(i))
+            {
+                search_bar->setFocus();
+            }
+        }
+
+        if (IsKeyJustDown(VK_SPACE) || IsKeyJustDown(VK_BACK) || IsKeyJustDown(VK_LEFT) || IsKeyJustDown(VK_RIGHT))
+        {
+            search_bar->setFocus();
+        }
+
+    }
+
 
     
     // Searching for the ULauncher-like window
@@ -456,6 +512,11 @@ private:
 
         if (text.isEmpty())
         {
+            search_list->hide();
+            //search_window.resize(300, 40);
+            search_layout->update();
+            search_list->update();
+            std::cout << "Case 1" << std::endl;
             return;
         }
 
@@ -497,6 +558,23 @@ private:
                 }
             }
         }
+
+
+        if (search_list->count() == 0)
+        {
+            std::cout << "Case 2" << std::endl;
+            search_list->hide();
+            //search_window.resize(300, 40);
+        }
+        else
+        {
+            std::cout << "Case 3" << std::endl;
+            search_list->show();
+            //search_window.resize(300, 400);
+        }
+
+        search_layout->update();
+        search_list->update();
     }
 
 
@@ -738,13 +816,20 @@ private slots:
 
 
 
-    void OnItemDoubleClicked(QListWidgetItem* item) 
+    void ExecuteApplication(QListWidgetItem* item) 
     {
 
 
 
         if (item) 
         {
+            // Hide the ulauncher-like window if the application was executed through that
+            if (search_window.isVisible())
+            {
+                search_window.hide();
+            }
+
+
             QString file_path = item->data(Qt::UserRole).toString();
             QString file_name = RemoveFileExtension(item->text());
             //std::cout << file_path.toStdString() << std::endl;
@@ -1194,6 +1279,7 @@ public:
     TaskGamepad(QObject* parent = nullptr) : QObject(parent)
     {
         timer = new QTimer(this);
+        //timer->setSingleShot(true);
         connect(timer, &QTimer::timeout, this, &TaskGamepad::TaskGamepadNavigation);
         // Perform task constantly
         timer->start(0);
