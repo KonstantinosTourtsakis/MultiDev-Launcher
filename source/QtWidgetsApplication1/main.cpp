@@ -429,7 +429,7 @@ private:
 
         
         // ULauncher-like window for application searching through the keyboard
-        search_window.setWindowTitle("ULauncher");
+        search_window.setWindowTitle("Qt6ULauncher");
         search_layout = new QVBoxLayout();
         //QVBoxLayout* sea_layout = new QVBoxLayout();
         search_window.setLayout(search_layout);
@@ -439,7 +439,6 @@ private:
 
         // Create UI elements
         search_bar = new QLineEdit(this);
-        //search_list = list_widget;
         search_list->setViewMode(QListView::ListMode);
         search_list->hide();
         search_list->setFixedHeight(30);
@@ -447,14 +446,11 @@ private:
         search_layout->addWidget(search_bar);
         search_layout->addWidget(search_list);
         
-        //search_layout->addLayout(sea_layout);
-        
         connect(search_bar, &QLineEdit::textChanged, this, &ApplicationExplorer::SearchResults);
         connect(search_list, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
         
 
         ulaunch_timer = new QTimer(this);
-        //ulaunch_timer->setSingleShot(true);
         connect(ulaunch_timer, &QTimer::timeout, this, &ApplicationExplorer::TaskUlaunchWindowActivation);
         // Perform task constantly
         ulaunch_timer->start(0);
@@ -472,11 +468,16 @@ private:
             }
             else
             {
-                search_bar->clear();
+                //search_bar->clear();
                 search_window.show();
+                search_window.activateWindow();
+                search_window.raise();
+                search_window.setFocus();
                 search_bar->setEnabled(true);
                 search_bar->setFocus();
             }
+
+            return;
         }
 
 
