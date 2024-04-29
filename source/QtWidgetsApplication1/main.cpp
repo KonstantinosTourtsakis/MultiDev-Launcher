@@ -52,6 +52,11 @@
 
 
 
+
+
+
+
+
 void AllocateConsole(const LPCSTR console_title)
 {
     AllocConsole();
@@ -65,16 +70,6 @@ void AllocateConsole(const LPCSTR console_title)
     std::cerr.clear();
 }
 
-
-
-
-
-
-
-
-
-
-QPalette ui_palette;
 
 
 
@@ -144,6 +139,14 @@ int CalculateWidthPercentage(double percentage)
 
 
 
+// Some global controller variables
+bool controller_navigation = true;
+// Used to do some stuff once during the first loop in ControllerNavigation()
+bool temp = false;
+bool init_gamepad = false;
+// Global palette for the UI
+QPalette ui_palette;
+
 
 
 class ApplicationExplorer : public QWidget
@@ -155,7 +158,7 @@ class ApplicationExplorer : public QWidget
     QStringList removed_apps;
 
 
-    // QListWidget to display file names and icons
+    
     QListWidget* list_widget = new QListWidget(this);
     QListWidget* search_list = new QListWidget(this);
     QListWidget* favorites_list = new QListWidget(this);
@@ -163,9 +166,20 @@ class ApplicationExplorer : public QWidget
     QVBoxLayout* search_layout;
     QLineEdit* search_bar;
 
+
+    QTimer* timer;
+    
+
 public:
+    VirtualKeyboard* QKeyboard;
     ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app)
     {
+        
+        // Controller task loop - Perform task constantly
+        timer = new QTimer(this);
+        connect(timer, &QTimer::timeout, this, &ApplicationExplorer::TaskGamepadNavigation);
+        timer->start(0);
+
         QScreen* primaryScreen = QGuiApplication::primaryScreen();
         QRect screenGeometry = primaryScreen->geometry();
         setGeometry(screenGeometry);
@@ -198,17 +212,17 @@ private:
 
 
 
-    QMap<QString, int> usageFrequency; // Map to store usage frequency of each application
+    QMap<QString, int> app_usage_freq; // Map to store usage frequency of each application
     QStringList popular_apps;
     QCompleter* completer;
 
-    void UpdateMostUsedApplications()
+    void UpdatePopularAppsList()
     {
         // Sort application file paths based on usage frequency
-        QList<QString> sorted_apps = usageFrequency.keys();
+        QList<QString> sorted_apps = app_usage_freq.keys();
         std::sort(sorted_apps.begin(), sorted_apps.end(), [&](const QString& a, const QString& b) 
             {
-                return usageFrequency[a] > usageFrequency[b];
+                return app_usage_freq[a] > app_usage_freq[b];
             });
 
         // Get top 10 most used applications
@@ -221,15 +235,21 @@ private:
     {
         
         QVBoxLayout* layout_root = new QVBoxLayout(this);
-        tabs = new QTabWidget(this);
+        setLayout(layout_root);
         
 
+        tabs = new QTabWidget(this);
+        // Tabs
         QWidget* tab_all_apps = new QWidget();
         QWidget* tab_settings = new QWidget();
         QWidget* tab_favorites = new QWidget();
 
 
-
+        // Layouts
+        //QVBoxLayout* layout_all_apps = new QVBoxLayout(tab_all_apps);
+        QGridLayout* layout_all_apps = new QGridLayout(tab_all_apps);
+        QGridLayout* layout_favorites = new QGridLayout(tab_favorites);
+        QVBoxLayout* layout_settings = new QVBoxLayout(tab_settings);
 
 
         
@@ -256,11 +276,7 @@ private:
         
         layout_root->addWidget(tabs);
 
-        // Box layout to display list_widget items
-        //QVBoxLayout* layout_all_apps = new QVBoxLayout(tab_all_apps);
-        QGridLayout* layout_all_apps = new QGridLayout(tab_all_apps);
-        QGridLayout* layout_favorites = new QGridLayout(tab_favorites);
-        QVBoxLayout* layout_settings = new QVBoxLayout(tab_settings);
+        
 
 
         // List widget custom arguments
@@ -275,7 +291,7 @@ private:
 
 
         
-        setLayout(layout_root);
+        
         
 
         // Create the second tab
@@ -341,18 +357,7 @@ private:
         
         
 
-        // Calculate most used applications
-        UpdateMostUsedApplications();
-
         
-        //search_suggestions << "MKVMerge";
-        //search_suggestions << "sublime";
-        //search_suggestions << "spek";
-
-        completer = new QCompleter(popular_apps);
-        text_input->setCompleter(completer);
-
-        layout_all_apps->addWidget(text_input);
         
 
 
@@ -371,10 +376,12 @@ private:
         list_widget->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
         list_widget->setSpacing(40);
         list_widget->setIconSize(QSize(64, 64));
+        //list_widget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        //list_widget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         list_widget->sortItems();
 
         
-
+        layout_all_apps->addWidget(text_input);
         layout_favorites->addWidget(favorites_list);
         layout_all_apps->addWidget(list_widget);
         
@@ -384,13 +391,19 @@ private:
         connect(cb_theme, &QComboBox::currentTextChanged, this, &ApplicationExplorer::UpdateUIPalette);
         connect(cb_profile_switch, &QComboBox::currentTextChanged, this, &ApplicationExplorer::LoadProfile);
 
+
+        //for (const QString& app : popular_apps) { std::cout << app.toStdString() << std::endl; }
+        UpdatePopularAppsList();
+        completer = new QCompleter(popular_apps);
+        completer->setCaseSensitivity(Qt::CaseInsensitive);
+        text_input->setCompleter(completer);
+
         
 
 
 
-
         // CONNECTIONS
-        //connect(this, &QListWidget::aboutToQuit, this, &ApplicationExplorer::cleanup);
+        QObject::connect(&app, &QCoreApplication::aboutToQuit, this, &ApplicationExplorer::CleanUp);
         connect(list_widget, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
         connect(favorites_list, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
         
@@ -611,6 +624,17 @@ private:
         settings.beginGroup(cb_profile_switch->itemText(cb_profile_switch->currentIndex()));
 
         settings.setValue("Theme", cb_theme->currentIndex());
+        //settings.setValue("popular_apps", popular_apps);
+        
+        // Convert the QMap to a QVariantMap
+        QVariantMap map;
+        QMapIterator<QString, int> iter(app_usage_freq);
+        while (iter.hasNext()) 
+        {
+            iter.next();
+            map.insert(iter.key(), iter.value());
+        }
+        settings.setValue("app_frequency", map);
 
         QStringList directories;
 
@@ -636,6 +660,17 @@ private:
         settings.beginGroup(cb_profile_switch->itemText(cb_profile_switch->currentIndex()));
 
         
+        //popular_apps = settings.value("popular_apps").toStringList();
+        QVariantMap retrievedMap = settings.value("app_frequency").toMap();
+
+        // Convert the QVariantMap back to a QMap<QString, int>
+        QMapIterator<QString, QVariant> mapIter(retrievedMap);
+        while (mapIter.hasNext()) 
+        {
+            mapIter.next();
+            app_usage_freq.insert(mapIter.key(), mapIter.value().toInt());
+        }
+
         int index = settings.value("Theme", 0).toInt();
         cb_theme->setCurrentIndex(index);
         UpdateUIPalette(cb_theme->itemText(index));
@@ -668,6 +703,7 @@ private:
         
         settings.setValue("last_profile", cb_profile_switch->currentIndex());
         
+        
         settings.endGroup();
     }
 
@@ -690,7 +726,7 @@ private:
 
     void CleanUp()
     {
-        // application cleanup on execution ending
+        Beep(200, 200);
     }
 
 
@@ -888,7 +924,7 @@ private:
         }
     }
 
-private slots:
+
     
     
     void AddNewTab()
@@ -931,7 +967,6 @@ private slots:
 
             QString file_path = item->data(Qt::UserRole).toString();
             QString file_name = RemoveFileExtension(item->text());
-            //std::cout << file_path.toStdString() << std::endl;
             
             
             
@@ -941,7 +976,7 @@ private slots:
                 if (!QDesktopServices::openUrl(QUrl::fromLocalFile(file_path)))
                 {
                     std::cout << "Failed to open shortcut file:" << file_path.toStdString();
-                    exit(1);
+                    return;
                 }
                 
             }
@@ -963,21 +998,12 @@ private slots:
                     });
             }
 
-
-
-            usageFrequency[file_name]++;
-            UpdateMostUsedApplications();
-            
-            
-            
-
-
-            //completer->setModel(new QStringListModel(search_suggestions, completer));
-            completer = new QCompleter(popular_apps);
-            text_input->setCompleter(nullptr);
-            text_input->setCompleter(completer);
+            app_usage_freq[file_name]++;
         }
     }
+
+
+
     QWidget centralWidget;
     void SetupScreen()
     {
@@ -1017,7 +1043,7 @@ private slots:
     // Start or restart the timer when text changes - helps avoiding performance issues
     void OnTextChanged()
     {
-        timer.start(200);
+        timer_search.start(200);
     }
 
 
@@ -1227,200 +1253,11 @@ private slots:
     }
 
 
-    
-    
-};
 
 
 
 
 
-
-
-
-
-/*
-
-class VirtualKeyboard : public QMainWindow
-{
-
-public:
-    VirtualKeyboard()
-    {
-        setWindowTitle("Virtual Keyboard");
-        CreateKeyboardUI();
-    }
-
-
-
-
-
-private:
-    QLineEdit* virtual_input;
-    QLabel* label_instructions;
-
-
-
-
-    void CreateKeyboardUI()
-    {
-        QWidget* centralWidget = new QWidget(this);
-        setCentralWidget(centralWidget);
-
-
-        QVBoxLayout* main_layout = new QVBoxLayout(centralWidget);
-
-        virtual_input = new QLineEdit(this);
-        virtual_input->setReadOnly(true);
-        virtual_input->setPlaceholderText("Your input");
-        main_layout->addWidget(virtual_input);
-
-
-        QGridLayout* layout = new QGridLayout();
-        main_layout->addLayout(layout);
-
-
-        const QStringList UpperKeyLayout
-        {
-            "!", "@", "#", "$", "%", "^", "&", "*", "(", ")",
-            "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
-            "A", "S", "D", "F", "G", "H", "J", "K", "L", "_",
-            "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?",
-        };
-
-
-        const QStringList LowerKeyLayout
-        {
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
-            "q", "w", "e", "r", "t", "y", "u", "i", "o", "p",
-            "a", "s", "d", "f", "g", "h", "j", "k", "l", "-",
-            "z", "x", "c", "v", "b", "n", "m", ",", ".", "/",
-        };
-
-        QStringList KeyLayout = LowerKeyLayout;
-
-
-
-        // counting rows and columns
-        int row = 0, column = 0;
-        for (const QString& text : KeyLayout)
-        {
-
-            QPushButton* button = new QPushButton(text);
-
-            connect(button, &QPushButton::clicked, this, [=]()
-                {
-                    virtual_input->insert(text);
-                });
-
-            layout->addWidget(button, row, column);
-            column++;
-
-
-            if (column == 10)
-            {
-                column = 0;
-                row++;
-            }
-        }
-
-
-        // Creating the last row of buttons
-        QPushButton* button_back = new QPushButton("Backspace");
-        QPushButton* button_clear = new QPushButton("Clear");
-        QPushButton* button_left = new QPushButton("<");
-        QPushButton* button_right = new QPushButton(">");
-
-        connect(button_back, &QPushButton::clicked, this, [=]()
-            {
-                virtual_input->backspace();
-            });
-        column = 3;
-        row++;
-        layout->addWidget(button_back, row, column);
-        connect(button_clear, &QPushButton::clicked, this, [=]()
-            {
-                virtual_input->clear();
-            });
-        column++;
-        layout->addWidget(button_clear, row, column);
-
-        connect(button_left, &QPushButton::clicked, this, [=]()
-            {
-                virtual_input->cursorBackward(true, 1);
-            });
-        column++;
-        layout->addWidget(button_left, row, column);
-
-        connect(button_right, &QPushButton::clicked, this, [=]()
-            {
-                virtual_input->cursorForward(true, 1);
-            });
-        column++;
-        layout->addWidget(button_right, row, column);
-
-
-
-        label_instructions = new QLabel("Instructions: Click on the keys to input text", this);
-        main_layout->addWidget(label_instructions);
-    }
-
-};
-
-*/
-
-
-
-
-
-
-
-
-bool controller_navigation = true;
-bool temp = false; // Used to do some stuff once during the first loop in ControllerNavigation()
-
-
-
-
-
-void UpdateMainMenu() { return; }
-
-
-
-
-
-
-
-
-bool init_gamepad = false;
-
-
-
-
-class TaskGamepad : public QObject
-{
-
-public:
-    
-    TaskGamepad(QObject* parent = nullptr) : QObject(parent)
-    {
-        timer = new QTimer(this);
-        //timer->setSingleShot(true);
-        connect(timer, &QTimer::timeout, this, &TaskGamepad::TaskGamepadNavigation);
-        // Perform task constantly
-        timer->start(0);
-    }
-
-
-    void SetQKeyboard(VirtualKeyboard* app)
-    {
-        QKeyboard = app;
-    }
-    
-
-
-
-    
     void ControllerNavigation()
     {
 
@@ -1428,7 +1265,6 @@ public:
         if (user->IsButtonDown(GAMEPAD_BACK) && user->IsButtonJustDown(GAMEPAD_RIGHT_THUMB))
         {
             controller_navigation = !controller_navigation;
-            UpdateMainMenu();
             Beep(523, 500);
         }
 
@@ -1438,10 +1274,8 @@ public:
         if (user->IsButtonDown(GAMEPAD_BACK) && user->IsButtonJustDown(GAMEPAD_RB))
         {
             getting_input = true;
-            
             //QKeyboard->show();
             QKeyboard->showMaximized();
-            UpdateMainMenu();
         }
 
 
@@ -1455,17 +1289,17 @@ public:
 
         if (controller_navigation)
         {
-            Reset_Key_Press_Counter(); // Used in Smooth scrolling/navigating with the arrows/D-Pad --- must be called once every loop
+            // Used in Smooth scrolling/navigating with the arrows/D-Pad --- must be called once every loop
+            Reset_Key_Press_Counter();
             CursorMode();
         }
 
     }
 
 
-public slots:
     void TaskGamepadNavigation()
     {
-        
+
         // Perform gamepad initialization (once)
         if (!init_gamepad)
         {
@@ -1480,33 +1314,18 @@ public slots:
             user->left_trigger = user->GetState().Gamepad.bLeftTrigger / 255.0f;
             user->right_trigger = user->GetState().Gamepad.bRightTrigger / 255.0f;
             ControllerNavigation();
-            
 
-            /*if (user->IsButtonJustDown(GAMEPAD_B)) //B
-            {
-                user->Vibrate(65535, 0);
-                cout << "B is just down" << endl;
-            }*/
         }
-        /*else
-        {
-
-            menu_controller_color = 12;
-            UpdateMainMenu();
-
-            if (user->IsConnected())
-            {
-                menu_controller_color = 10; // reseting the color in case the controller is connected afterwards
-                UpdateMainMenu(); //Updating the menu again cause it only gets updated when needed
-            }
-
-        } */
     }
-
-private:
-    QTimer* timer;
-    VirtualKeyboard* QKeyboard;
+    
 };
+
+
+
+
+
+
+
 
 
 
@@ -1534,30 +1353,17 @@ int main(int argc, char* argv[])
     QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
     //QKeyboard.showMaximized();
 
-    TaskGamepad gamepad;
     // Pass the window object to the gamepad task to handle virtual keyboard input
-    gamepad.SetQKeyboard(&QKeyboard);
-
+    //explorer.SetQKeyboard(&QKeyboard);
+    explorer.QKeyboard = &QKeyboard;
+    
 
 
     //explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
-
-    
     //explorer.resize(QGuiApplication::primaryScreen()->availableGeometry().size());
-    
     //explorer.setWindowState(Qt::WindowMaximized);
-    //explorer.showMaximized();
-    //QSize window_size = explorer.size();
     
-    //explorer.setFixedSize(window_size);
-
-    //explorer.setCentralWidget(tabWidget);
     explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
-    //explorer.show();
-
-    //explorer.setFixedSize(QGuiApplication::primaryScreen()->availableGeometry().size());
-    //explorer.showMaximized();
-
 
     return app.exec();
 }
