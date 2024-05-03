@@ -52,18 +52,18 @@ public:
     XBOXController(int playerNumber);
     XINPUT_STATE GetState();
     bool IsConnected();
-    void Vibrate(int leftVal = 0, int rightVal = 0);
+    void Vibrate(const int leftVal = 0, const int rightVal = 0);
     SHORT GetLeftAnalogX();
     SHORT GetLeftAnalogY();
     SHORT GetRightAnalogX();
     SHORT GetRightAnalogY();
-    bool IsButtonDown(int button);
-    bool IsButtonJustUp(int button);
-    bool IsButtonJustDown(int button);
+    bool IsButtonDown(const int button);
+    bool IsButtonJustUp(const int button);
+    bool IsButtonJustDown(const int button);
 };
 
 
-void Reset_Key_Press_Counter();
+void ResetKeyPressCounter();
 bool SmoothNavigation(int controller_button, int timer1 = 90, int timer2 = 40);
 
 

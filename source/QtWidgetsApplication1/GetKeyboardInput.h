@@ -9,11 +9,9 @@
 #include <QListWidget>
 
 
-extern HANDLE hConsole;
 
 
 
-void PrintText(const char* text, WORD color = 15);
 extern bool getting_input;
 
 

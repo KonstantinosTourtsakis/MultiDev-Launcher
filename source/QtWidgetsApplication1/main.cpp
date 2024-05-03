@@ -153,21 +153,7 @@ class ApplicationExplorer : public QWidget
 {
 
 
-    QStringList applications_list;
-    QStringList current_list;
-    QStringList removed_apps;
-
-
     
-    QListWidget* list_widget = new QListWidget(this);
-    QListWidget* search_list = new QListWidget(this);
-    QListWidget* favorites_list = new QListWidget(this);
-    QListWidget* directory_list = new QListWidget(this);
-    QVBoxLayout* search_layout;
-    QLineEdit* search_bar;
-
-
-    QTimer* timer;
     
 
 public:
@@ -193,7 +179,18 @@ public:
 
 
 private:
-    QLineEdit* text_input;
+    QStringList applications_list;
+    QListWidget* list_widget = new QListWidget(this);
+    QListWidget* list_favorites = new QListWidget(this);
+    QListWidget* search_list = new QListWidget(this);
+    QListWidget* directory_list = new QListWidget(this);
+    QVBoxLayout* search_layout;
+    QLineEdit* search_bar;
+    QTimer* timer;
+
+
+    QLineEdit* line_all_search;
+    QLineEdit* line_fav_search;
 
     // Reference to QApplication object
     QApplication& app; 
@@ -211,10 +208,12 @@ private:
     
 
 
-
-    QMap<QString, int> app_usage_freq; // Map to store usage frequency of each application
+    // QMap to store usage frequency of each application
+    QMap<QString, int> app_usage_freq; 
     QStringList popular_apps;
     QCompleter* completer;
+
+
 
     void UpdatePopularAppsList()
     {
@@ -247,23 +246,13 @@ private:
 
         // Layouts
         //QVBoxLayout* layout_all_apps = new QVBoxLayout(tab_all_apps);
-        QGridLayout* layout_all_apps = new QGridLayout(tab_all_apps);
+        QVBoxLayout* layout_all_apps = new QVBoxLayout(tab_all_apps);
         QGridLayout* layout_favorites = new QGridLayout(tab_favorites);
         QVBoxLayout* layout_settings = new QVBoxLayout(tab_settings);
 
 
         
         
-
-        /*
-        button_add_tab = new QPushButton("Add Tab", this);
-        connect(button_add_tab, &QPushButton::clicked, this, &ApplicationExplorer::AddNewTab);
-        layout_root->addWidget(button_add_tab);
-
-        button_remove_tab = new QPushButton("Remove Tab", this);
-        connect(button_remove_tab, &QPushButton::clicked, this, &ApplicationExplorer::RemoveTab);
-        layout_root->addWidget(button_remove_tab);
-        */
 
 
 
@@ -280,14 +269,14 @@ private:
 
 
         // List widget custom arguments
-        favorites_list->setViewMode(QListWidget::IconMode);
-        favorites_list->setMovement(QListView::Static);
-        favorites_list->setWordWrap(true);
-        favorites_list->setWrapping(true);
-        favorites_list->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-        favorites_list->setSpacing(40);
-        favorites_list->setIconSize(QSize(64, 64));
-        favorites_list->sortItems();
+        list_favorites->setViewMode(QListWidget::IconMode);
+        list_favorites->setMovement(QListView::Static);
+        list_favorites->setWordWrap(true);
+        list_favorites->setWrapping(true);
+        list_favorites->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
+        list_favorites->setSpacing(40);
+        list_favorites->setIconSize(QSize(64, 64));
+        list_favorites->sortItems();
 
 
         
@@ -318,13 +307,16 @@ private:
         // File extension checkbox
         chb_file_extension = new QCheckBox("Include File Extension", this);
         
-
+        QFont font("Arial", 18);
 
         cb_profile_switch = new QComboBox(this);
         cb_profile_switch->addItem("Profile1");
         cb_profile_switch->addItem("Profile2");
 
-        
+        QLineEdit* line_add_profile = new QLineEdit(this);
+        line_add_profile->setPlaceholderText("Add profile");
+        line_add_profile->setFixedHeight(50);
+        line_add_profile->setFont(font);
 
 
 
@@ -337,6 +329,8 @@ private:
         layout_settings->addWidget(chb_file_extension);
         layout_settings->addWidget(cb_theme);
         layout_settings->addWidget(cb_profile_switch);
+        layout_settings->addWidget(line_add_profile);
+        
         layout_settings->addWidget(label_directories);
         layout_settings->addWidget(directory_list);
         layout_settings->addLayout(layout_dir_buttons);
@@ -344,29 +338,21 @@ private:
 
 
 
-        QFont font("Arial", 18);
+        
 
         // Input field for application searching
-        text_input = new QLineEdit(this);
-        text_input->setPlaceholderText("Search application");
-        text_input->setFixedHeight(50);
-        text_input->setFont(font);
+        line_all_search = new QLineEdit(this);
+        line_all_search->setPlaceholderText("Search application");
+        line_all_search->setFixedHeight(50);
+        line_all_search->setFont(font);
+
+        line_fav_search = new QLineEdit(this);
+        line_fav_search->setPlaceholderText("Search application");
+        line_fav_search->setFixedHeight(50);
+        line_fav_search->setFont(font);
 
 
         
-        
-        
-
-        
-        
-
-
-
-
-
-        current_list = applications_list;
-
-
 
         // List widget custom arguments
         list_widget->setViewMode(QListWidget::IconMode);
@@ -381,9 +367,11 @@ private:
         list_widget->sortItems();
 
         
-        layout_all_apps->addWidget(text_input);
-        layout_favorites->addWidget(favorites_list);
+        layout_all_apps->addWidget(line_all_search);
         layout_all_apps->addWidget(list_widget);
+        layout_favorites->addWidget(line_fav_search);
+        layout_favorites->addWidget(list_favorites);
+        
         
 
         // Load last used profile
@@ -396,7 +384,7 @@ private:
         UpdatePopularAppsList();
         completer = new QCompleter(popular_apps);
         completer->setCaseSensitivity(Qt::CaseInsensitive);
-        text_input->setCompleter(completer);
+        line_all_search->setCompleter(completer);
 
         
 
@@ -405,22 +393,32 @@ private:
         // CONNECTIONS
         QObject::connect(&app, &QCoreApplication::aboutToQuit, this, &ApplicationExplorer::CleanUp);
         connect(list_widget, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
-        connect(favorites_list, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
+        connect(list_favorites, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
         
-        
+        //QObject::connect(cb_profile_switch, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ApplicationExplorer::SaveProfile);
 
-        connect(chb_file_extension, &QCheckBox::stateChanged, this, &ApplicationExplorer::UpdateListDelayed);
-        // Delay before keyboard input triggers application search
+        //connect(chb_file_extension, &QCheckBox::stateChanged, this, [this] {ApplicationExplorer::UpdateListWidget(applications_list, list_widget); });
+        
+        //// Delay before keyboard input triggers application search
         timer_search.setSingleShot(true);
-        connect(&timer_search, &QTimer::timeout, this, &ApplicationExplorer::UpdateListDelayed);
-        connect(text_input, &QLineEdit::textChanged, this, &ApplicationExplorer::OnTextChanged);
+        //connect(&timer_search, &QTimer::timeout, this, [this] {ApplicationExplorer::UpdateListWidget(applications_list, list_widget); });
+        connect(line_all_search, &QLineEdit::textChanged, this, [this] {ApplicationExplorer::SearchApplication(line_all_search, list_widget); });
+        connect(line_fav_search, &QLineEdit::textChanged, this, [this] {ApplicationExplorer::SearchApplication(line_fav_search, list_favorites); });
+        connect(line_add_profile, &QLineEdit::returnPressed, this, [this, line_add_profile] {
+            if (line_add_profile->text() != "")
+            {
+                cb_profile_switch->addItem(line_add_profile->text());
+                cb_profile_switch->setCurrentIndex(cb_profile_switch->count() - 1);
+                
+            }
+            });
 
         setContextMenuPolicy(Qt::CustomContextMenu);
         connect(this, &QListWidget::customContextMenuRequested, this, [this] {
             ApplicationExplorer::ShowContextMenu(QCursor::pos(), list_widget);
             });
         connect(this, &QListWidget::customContextMenuRequested, this, [this] {
-            ApplicationExplorer::ShowContextMenu(QCursor::pos(), favorites_list);
+            ApplicationExplorer::ShowContextMenu(QCursor::pos(), list_favorites);
             });
 
         // Functionality to add directories
@@ -437,14 +435,14 @@ private:
             if (!directory.isEmpty())
                 directory_list->addItem(directory);
             DirectoryListUpdated();
-            UpdateListDelayed();
+            UpdateListWidget(applications_list, list_widget);
             });
 
         // Functionality to remove directories
         QObject::connect(button_remove_dir, &QPushButton::clicked, [this]() {
             qDeleteAll(directory_list->selectedItems());
             DirectoryListUpdated();
-            UpdateListDelayed();
+            UpdateListWidget(applications_list, list_widget);
             });
 
         connect(button_save_settings, &QPushButton::clicked, this, &ApplicationExplorer::SaveProfile);
@@ -536,7 +534,30 @@ private:
 
 
 
-        // Handling controller navigator - UI communication
+        // Handling controller navigation - UI communication
+
+
+        if (user->IsButtonJustDown(GAMEPAD_DPAD_UP) && list_widget->currentRow() == 0)
+        {
+            line_all_search->setFocus();
+        }
+
+        if (user->IsButtonJustDown(GAMEPAD_DPAD_DOWN) && line_all_search->hasFocus())
+        {
+            list_widget->setFocus();
+        }
+
+        if (user->IsButtonJustDown(GAMEPAD_LB))
+        {
+            tabs->setCurrentIndex(0);
+        }
+
+        if (user->IsButtonJustDown(GAMEPAD_RB))
+        {
+            tabs->setCurrentIndex(1);
+        }
+
+
 
 
     }
@@ -688,7 +709,7 @@ private:
         }
 
         DirectoryListUpdated();
-        UpdateListDelayed();
+        UpdateListWidget(applications_list, list_widget);
 
         settings.endGroup();
     }
@@ -726,6 +747,7 @@ private:
 
     void CleanUp()
     {
+        ApplicationExplorer::SaveProfile();
         Beep(200, 200);
     }
 
@@ -793,22 +815,17 @@ private:
         QAction* action_delete = new QAction(tr("Remove"), this);
         connect(action_delete, &QAction::triggered, this, [this, item]()
             {
-                removed_apps.append(item->data(Qt::UserRole).toString());
-                delete item;
-                for (QString ite : removed_apps)
-                {
-                    std::cout << ite.toStdString() << std::endl;
-                }
+                delete item;   
             });
 
 
         
         bool found = false;
 
-        for (int i = 0; i < favorites_list->count(); ++i) 
+        for (int i = 0; i < list_favorites->count(); ++i)
         {
             
-            QListWidgetItem* currentItem = favorites_list->item(i);
+            QListWidgetItem* currentItem = list_favorites->item(i);
 
             if (currentItem->text() == item->text()) 
             {
@@ -831,11 +848,11 @@ private:
                         return;
                     }
 
-                    int index = favorites_list->row(item);
-                    QListWidgetItem* item_to_remove = favorites_list->takeItem(index);
+                    int index = list_favorites->row(item);
+                    QListWidgetItem* item_to_remove = list_favorites->takeItem(index);
                     delete item_to_remove;
-                    favorites_list->update();
-
+                    list_favorites->update();
+                    list_widget->update();
                 });
 
         }
@@ -872,7 +889,7 @@ private:
 
                     // Store file path as item data
                     item2->setData(Qt::UserRole, path);
-                    favorites_list->addItem(item2);
+                    list_favorites->addItem(item2);
 
                 });
         }
@@ -916,7 +933,6 @@ private:
                     if (!applications_list.contains(file_info.filePath()))
                     {
                         applications_list.append(file_info.filePath());
-                        std::cout << file_info.fileName().toStdString() << std::endl;
                     }
                     
                 }
@@ -925,29 +941,68 @@ private:
     }
 
 
-    
-    
-    void AddNewTab()
-    {
-        QString tab_text = QString("Tab %1").arg(tabs->count() + 1);
-        QWidget *new_tab = new QWidget(tabs);
-        tabs->addTab(new_tab, tab_text);
-    }
 
-    void RemoveTab()
+
+
+    void UpdateListWidget(QStringList current_list, QListWidget* list_wid)
     {
 
-        if (tabs->currentIndex() > 1)
+        // Add items to the list widget
+        for (const QString& path : current_list)
         {
-            tabs->removeTab(tabs->currentIndex());
+            QFileInfo file_info(path);
+            QIcon icon = GetFileIcon(path);
+
+            QListWidgetItem* item;
+
+            // Create list widget item using the file name or file extension
+            if (chb_file_extension->isChecked())
+            {
+                item = new QListWidgetItem(icon, file_info.fileName());
+            }
+            else
+            {
+                item = new QListWidgetItem(icon, RemoveFileExtension(file_info.fileName()));
+            }
+
+
+            // Store file path as item data
+            item->setData(Qt::UserRole, path);
+            list_wid->addItem(item);
+
         }
 
-
+        list_wid->update();
     }
 
     
 
+    // Start or restart the timer when text changes - helps avoiding performance issues
+    void SearchApplication(QLineEdit* line, QListWidget* list_wid)
+    {
+        list_wid->clear();
+        if (line->text() == "")
+        {
+            UpdateListWidget(applications_list, list_wid);
+            timer_search.start(200);
+            return;
+        }
 
+        // Update the QStringList based on the input on the search bar
+        
+        QStringList new_list;
+        for (const QString& item : applications_list)
+        {
+            if (item.toLower().contains(line->text().toLower()))
+            {
+                new_list << item;
+            }
+        }
+
+        UpdateListWidget(new_list, list_wid);
+        timer_search.start(200);
+
+    }
 
 
 
@@ -1004,6 +1059,27 @@ private:
 
 
 
+    void DirectoryListUpdated()
+    {
+        applications_list.clear();
+
+        // Update directories list
+        for (int i = 0; i < directory_list->count(); ++i)
+        {
+
+            QListWidgetItem* item = directory_list->item(i);
+            
+            if (item)
+            {
+                ExploreDirectoryFiles(item->text());
+            }
+        }
+    }
+
+
+
+
+
     QWidget centralWidget;
     void SetupScreen()
     {
@@ -1040,11 +1116,7 @@ private:
     }
 
 
-    // Start or restart the timer when text changes - helps avoiding performance issues
-    void OnTextChanged()
-    {
-        timer_search.start(200);
-    }
+    
 
 
     
@@ -1190,67 +1262,9 @@ private:
     }
 
 
-    void DirectoryListUpdated()
-    {
-        applications_list.clear();
-
-        // Update directories list
-        for (int i = 0; i < directory_list->count(); ++i)
-        {
-
-            QListWidgetItem* item = directory_list->item(i);
-
-            if (item)
-            {
-                ExploreDirectoryFiles(item->text());
-            }
-        }
-    }
+    
 
 
-    void UpdateListDelayed()
-    {
-        
-
-
-        // Update the QStringList based on the input on the search bar
-        list_widget->clear();
-        current_list.clear();
-        for (const QString& item : applications_list)
-        {
-            if (item.toLower().contains(text_input->text().toLower()))
-            {
-                current_list << item;
-            }
-        }
-
-
-        // Add items to the list widget
-        for (const QString& path : current_list)
-        {
-            QFileInfo file_info(path);
-            QIcon icon = GetFileIcon(path);
-            
-            QListWidgetItem* item;
-
-            // Create list widget item using the file name or file extension
-            if (chb_file_extension->isChecked())
-            {
-                item = new QListWidgetItem(icon, file_info.fileName());
-            }
-            else
-            {
-                item = new QListWidgetItem(icon, RemoveFileExtension(file_info.fileName()));
-            }
-            
-            
-            // Store file path as item data
-            item->setData(Qt::UserRole, path);
-            list_widget->addItem(item);
-            
-        }
-
-    }
 
 
 
@@ -1290,7 +1304,7 @@ private:
         if (controller_navigation)
         {
             // Used in Smooth scrolling/navigating with the arrows/D-Pad --- must be called once every loop
-            Reset_Key_Press_Counter();
+            ResetKeyPressCounter();
             CursorMode();
         }
 

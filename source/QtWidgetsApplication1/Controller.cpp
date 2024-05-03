@@ -151,7 +151,7 @@ DWORD rest_time = GetTickCount() + 150;
 int keypresses = 0;
 
 
-void Reset_Key_Press_Counter() //should be called in loop
+void ResetKeyPressCounter() //should be called in loop
 {
     if (Button[GAMEPAD_DPAD_UP].up == true && Button[GAMEPAD_DPAD_DOWN].up == true && Button[GAMEPAD_DPAD_LEFT].up == true && Button[GAMEPAD_DPAD_RIGHT].up == true)
     {
@@ -175,7 +175,7 @@ bool SmoothNavigation(int controller_button, int timer1, int timer2)
 
     }
 
-    if (user->IsButtonDown(controller_button) /*|| IsButtonPressed(0, button)*/)
+    if (user->IsButtonDown(controller_button))
     {
         rest = GetTickCount() >= rest_time;
         return (GetTickCount() >= rest_time);
@@ -234,7 +234,7 @@ bool XBOXController::IsConnected()
     }
 }
 
-void XBOXController::Vibrate(int leftVal, int rightVal)
+void XBOXController::Vibrate(const int leftVal, const int rightVal)
 {
     // Create a Vibraton State
     XINPUT_VIBRATION Vibration;
@@ -281,7 +281,7 @@ SHORT XBOXController::GetRightAnalogY()
 
 
 
-bool XBOXController::IsButtonDown(int button)
+bool XBOXController::IsButtonDown(const int button)
 {
     if (this->GetState().Gamepad.wButtons & Button[button].button)
     {
@@ -296,7 +296,7 @@ bool XBOXController::IsButtonDown(int button)
 }
 
 
-bool XBOXController::IsButtonJustUp(int button)
+bool XBOXController::IsButtonJustUp(const int button)
 {
     if (this->GetState().Gamepad.wButtons & Button[button].button)
     {
@@ -316,7 +316,7 @@ bool XBOXController::IsButtonJustUp(int button)
 
 
 
-bool XBOXController::IsButtonJustDown(int button)
+bool XBOXController::IsButtonJustDown(const int button)
 {
     if ((this->GetState().Gamepad.wButtons & Button[button].button) && Button[button].down == false)
     {
