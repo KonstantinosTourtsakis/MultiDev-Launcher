@@ -154,32 +154,32 @@ class ApplicationExplorer : public QWidget
 
 
     
-    
-
 public:
     VirtualKeyboard* QKeyboard;
     ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app)
     {
         
+        
         // Controller task loop - Perform task constantly
         timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, &ApplicationExplorer::TaskGamepadNavigation);
         timer->start(0);
-
-        QScreen* primaryScreen = QGuiApplication::primaryScreen();
-        QRect screenGeometry = primaryScreen->geometry();
-        setGeometry(screenGeometry);
-        showMaximized();
-
-        SetupScreen();
-        SetupUI();
+        
+        
+        //SetupScreen();
+        //SetupUI();
 
     }
 
-
+    void DoTheUI()
+    {
+        
+        this->SetupUI();
+    }
 
 private:
     QStringList applications_list;
+    QStringList favorites_list;
     QListWidget* list_widget = new QListWidget(this);
     QListWidget* list_favorites = new QListWidget(this);
     QListWidget* search_list = new QListWidget(this);
@@ -200,6 +200,8 @@ private:
 
     QTimer timer_search;
     QTimer* communication_task_timer;
+
+    QGridLayout* layout_all_apps;
 
     QTabWidget* tabs;
     QPushButton* button_add_tab;
@@ -246,7 +248,7 @@ private:
 
         // Layouts
         //QVBoxLayout* layout_all_apps = new QVBoxLayout(tab_all_apps);
-        QVBoxLayout* layout_all_apps = new QVBoxLayout(tab_all_apps);
+        layout_all_apps = new QGridLayout(tab_all_apps);
         QGridLayout* layout_favorites = new QGridLayout(tab_favorites);
         QVBoxLayout* layout_settings = new QVBoxLayout(tab_settings);
 
@@ -364,6 +366,7 @@ private:
         list_widget->setIconSize(QSize(64, 64));
         //list_widget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         //list_widget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        
         list_widget->sortItems();
 
         
@@ -402,8 +405,8 @@ private:
         //// Delay before keyboard input triggers application search
         timer_search.setSingleShot(true);
         //connect(&timer_search, &QTimer::timeout, this, [this] {ApplicationExplorer::UpdateListWidget(applications_list, list_widget); });
-        connect(line_all_search, &QLineEdit::textChanged, this, [this] {ApplicationExplorer::SearchApplication(line_all_search, list_widget); });
-        connect(line_fav_search, &QLineEdit::textChanged, this, [this] {ApplicationExplorer::SearchApplication(line_fav_search, list_favorites); });
+        connect(line_all_search, &QLineEdit::textChanged, this, [this] {ApplicationExplorer::SearchApplication(line_all_search, list_widget, applications_list); });
+        connect(line_fav_search, &QLineEdit::textChanged, this, [this] {ApplicationExplorer::SearchApplication(line_fav_search, list_favorites, favorites_list); });
         connect(line_add_profile, &QLineEdit::returnPressed, this, [this, line_add_profile] {
             if (line_add_profile->text() != "")
             {
@@ -480,6 +483,33 @@ private:
         // Perform task constantly
         communication_task_timer->start(0);
 
+        DirectoryListUpdated();
+        UpdateListWidget(applications_list, list_widget);
+
+        line_all_search->setText("grand");
+        SearchApplication(line_all_search, list_widget, applications_list);
+        line_all_search->setText("su");
+        SearchApplication(line_all_search, list_widget, applications_list);
+        
+        for (int row = 0; row < layout_all_apps->rowCount(); ++row) 
+        {
+            for (int column = 0; column < layout_all_apps->columnCount(); ++column) 
+            {
+                QLayoutItem* layoutItem = layout_all_apps->itemAtPosition(row, column);
+                if (layoutItem) 
+                {
+                    std::cout << "Item at: " << row << column << std::endl;
+                    
+                    QWidget* widget = layoutItem->widget();
+                    
+                    if (widget) 
+                    {
+                        // Here you can perform operations with the widget
+                        // For example, you can check if it's a QListWidget item
+                    }
+                }
+            }
+        }
 
     }
 
@@ -708,8 +738,9 @@ private:
             directory_list->addItem(dir);
         }
 
-        DirectoryListUpdated();
-        UpdateListWidget(applications_list, list_widget);
+        //DirectoryListUpdated();
+        //UpdateListWidget(applications_list, list_widget);
+        
 
         settings.endGroup();
     }
@@ -759,7 +790,7 @@ private:
     void ShowContextMenu(const QPoint& pos, QListWidget* list)
     {
         
-        QPoint local_pos = list->mapFromGlobal(pos);
+        /*QPoint local_pos = list->mapFromGlobal(pos);
 
         // Get the index of the item at the local position
         QModelIndex index = list->indexAt(local_pos);
@@ -769,12 +800,12 @@ private:
         {
             return;
         }
-
+        */
 
         QListWidgetItem* item = list->currentItem();
         if (!item)
             return;
-
+        std::cout << item->data(Qt::UserRole).toString().toStdString() << std::endl;
         QMenu context_menu(tr("Context Menu"), this);
 
         QAction* action_edit = new QAction(tr("Add application"), this);
@@ -848,11 +879,37 @@ private:
                         return;
                     }
 
+                    
+                    int string_index = -1;
+                    std::cout << "Target: " << item->data(Qt::UserRole).toString().toStdString() << std::endl;
+                    for (int i = 0; i < favorites_list.count(); ++i)
+                    {
+                        std::cout << "Index: " << i << " Item: " << favorites_list[i].toStdString() << std::endl;
+                        if (item->data(Qt::UserRole) == favorites_list[i])
+                        {
+                            std::cout << "Found at index: " << i << std::endl;
+                            string_index = i;
+                            break;
+                        }
+                    }
+
+
+                    if (string_index != -1)
+                    {
+                        std::cout << "Removing at: " << string_index << std::endl;
+                        favorites_list.removeAt(string_index);
+                        
+                        UpdateListWidget(favorites_list, list_favorites);
+                    }
+                    else
+                    {
+                        std::cout << "Favorites list string index was not found" << std::endl;
+                    }
+                    return;
                     int index = list_favorites->row(item);
                     QListWidgetItem* item_to_remove = list_favorites->takeItem(index);
                     delete item_to_remove;
-                    list_favorites->update();
-                    list_widget->update();
+                    
                 });
 
         }
@@ -868,7 +925,18 @@ private:
                         return;
                     }
 
+                    QString path = item->data(Qt::UserRole).toString();
+                    QFileInfo file_info(path);
 
+                    if (!favorites_list.contains(file_info.filePath()))
+                    {
+                        
+                        favorites_list.append(file_info.filePath());
+                        UpdateListWidget(favorites_list, list_favorites);
+                    }
+
+                    
+                    /*return;
                     // Add item to favorites
                     QString path = item->data(Qt::UserRole).toString();
                     QFileInfo file_info(path);
@@ -890,6 +958,8 @@ private:
                     // Store file path as item data
                     item2->setData(Qt::UserRole, path);
                     list_favorites->addItem(item2);
+
+                    */
 
                 });
         }
@@ -946,7 +1016,7 @@ private:
 
     void UpdateListWidget(QStringList current_list, QListWidget* list_wid)
     {
-
+        list_wid->clear();
         // Add items to the list widget
         for (const QString& path : current_list)
         {
@@ -973,17 +1043,19 @@ private:
         }
 
         list_wid->update();
+
+        
     }
 
     
 
     // Start or restart the timer when text changes - helps avoiding performance issues
-    void SearchApplication(QLineEdit* line, QListWidget* list_wid)
+    void SearchApplication(QLineEdit* line, QListWidget* list_wid, QStringList app_list)
     {
-        list_wid->clear();
+        
         if (line->text() == "")
         {
-            UpdateListWidget(applications_list, list_wid);
+            UpdateListWidget(app_list, list_wid);
             timer_search.start(200);
             return;
         }
@@ -991,7 +1063,7 @@ private:
         // Update the QStringList based on the input on the search bar
         
         QStringList new_list;
-        for (const QString& item : applications_list)
+        for (const QString& item : app_list)
         {
             if (item.toLower().contains(line->text().toLower()))
             {
@@ -1355,14 +1427,16 @@ private:
 int main(int argc, char* argv[]) 
 {
     AllocateConsole("Debug console for Qt6");
-    //qputenv("QT_IM_MODULE", QByteArray("qtvirtualkeyboard"));
     
     QApplication app(argc, argv);
     
     ApplicationExplorer explorer(app);
+    explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
+    explorer.resize(800, 600);
+    explorer.showMaximized();
     
+    explorer.DoTheUI();
     
-
     VirtualKeyboard QKeyboard;
     QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
     //QKeyboard.showMaximized();
@@ -1374,11 +1448,9 @@ int main(int argc, char* argv[])
 
 
     //explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
-    //explorer.resize(QGuiApplication::primaryScreen()->availableGeometry().size());
-    //explorer.setWindowState(Qt::WindowMaximized);
     
-    explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
-
+    
+    
     return app.exec();
 }
 
