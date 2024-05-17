@@ -10,14 +10,16 @@
 \contentsline {subsection}{\numberline {B.3.3}Δημιουργία λίστας αντικειμένων}{8}{}%
 \contentsline {subsection}{\numberline {B.3.4}Διάβασμα αρχείων από directory}{9}{}%
 \contentsline {subsection}{\numberline {B.3.5}Δημιουργία input field}{10}{}%
-\contentsline {chapter}{\numberline {C}Η βιβλιοθήκη XInput}{12}{}%
-\contentsline {section}{\numberline {C.1}Τι είναι το XInput;}{12}{}%
-\contentsline {section}{\numberline {C.2}Η κλάση του χειριστηρίου}{12}{}%
-\contentsline {chapter}{\numberline {D}Σχήματα και Πίνακες}{13}{}%
-\contentsline {section}{\numberline {D.1}Σχήματα}{13}{}%
-\contentsline {section}{\numberline {D.2}Πίνακες}{14}{}%
-\contentsline {chapter}{\numberline {E}Τελευταία Μέρη}{19}{}%
-\contentsline {chapter}{Παράρτημα Α'}{21}{}%
-\contentsline {chapter}{Βιβλιογραφία}{22}{}%
-\contentsline {chapter}{Συντμήσεις}{23}{}%
-\contentsline {chapter}{Γλωσσάρι Ξενικών Όρων}{24}{}%
+\contentsline {subsection}{\numberline {B.3.6}Αποθήκευση στοιχείων στον δίσκο}{11}{}%
+\contentsline {subsection}{\numberline {B.3.7}Ανάκτηση εικονιδίων συστήματος αρχείων}{12}{}%
+\contentsline {chapter}{\numberline {C}Η βιβλιοθήκη XInput}{14}{}%
+\contentsline {section}{\numberline {C.1}Τι είναι το XInput;}{14}{}%
+\contentsline {section}{\numberline {C.2}Η κλάση του χειριστηρίου}{14}{}%
+\contentsline {chapter}{\numberline {D}Σχήματα και Πίνακες}{15}{}%
+\contentsline {section}{\numberline {D.1}Σχήματα}{15}{}%
+\contentsline {section}{\numberline {D.2}Πίνακες}{16}{}%
+\contentsline {chapter}{\numberline {E}Τελευταία Μέρη}{21}{}%
+\contentsline {chapter}{Παράρτημα Α'}{23}{}%
+\contentsline {chapter}{Βιβλιογραφία}{24}{}%
+\contentsline {chapter}{Συντμήσεις}{26}{}%
+\contentsline {chapter}{Γλωσσάρι Ξενικών Όρων}{27}{}%
