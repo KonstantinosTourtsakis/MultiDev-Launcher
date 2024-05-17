@@ -73,6 +73,20 @@ void AllocateConsole(const LPCSTR console_title)
 
 
 
+// Some global controller variables
+bool controller_navigation = true;
+// Used to do some stuff once during the first loop in ControllerNavigation()
+bool temp = false;
+bool init_gamepad = false;
+// Global palette for the UI
+QPalette ui_palette;
+
+
+
+
+
+
+
 
 
 // https://stackoverflow.com/questions/12459145/extracting-icon-using-winapi-in-qt-app
@@ -86,8 +100,8 @@ QIcon GetFileIcon(const QString& file_path)
     if (SHGetFileInfo(reinterpret_cast<const wchar_t*>(file_path.utf16()), 0, &shfi, sizeof(SHFILEINFO), SHGFI_ICON | SHGFI_USEFILEATTRIBUTES))
     {
         // Scale the icon to a desired size
-        //QPixmap pixmap = QPixmap::fromImage(QImage::fromHICON(shfi.hIcon)).scaled(QSize(256, 256), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        QPixmap pixmap = QPixmap::fromImage(QImage::fromHICON(shfi.hIcon));
+        QPixmap pixmap = QPixmap::fromImage(QImage::fromHICON(shfi.hIcon))\
+            .scaled(QSize(PercentToWidth(6.66), PercentToHeight(11.85)), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QIcon icon(pixmap);
 
         // Cleanup the icon resource
@@ -127,25 +141,7 @@ QString RemoveFileExtension(const QString& file_name)
 
 
 
-int CalculateWidthPercentage(double percentage) 
-{
-    QScreen* primary_screen = QGuiApplication::primaryScreen();
-    QRect screen_geometry = primary_screen->geometry();
-    
-    return static_cast<int>(percentage * screen_geometry.width() / 100.0);
-}
 
-
-
-
-
-// Some global controller variables
-bool controller_navigation = true;
-// Used to do some stuff once during the first loop in ControllerNavigation()
-bool temp = false;
-bool init_gamepad = false;
-// Global palette for the UI
-QPalette ui_palette;
 
 
 
@@ -166,10 +162,19 @@ public:
         timer->start(0);
         
         
+        
+
+        
+        
         //SetupScreen();
-        SetupUI();
+        //SetupUI();
 
     }
+
+
+    void DrawUI() { SetupUI(); }
+
+
 
 
     void OnApplicationLaunch()
@@ -241,7 +246,7 @@ private:
     
     void SetupUI()
     {
-        
+        QFont font("Arial", 18);
         QVBoxLayout* layout_root = new QVBoxLayout(this);
         setLayout(layout_root);
         
@@ -251,6 +256,8 @@ private:
         QWidget* tab_all_apps = new QWidget();
         QWidget* tab_settings = new QWidget();
         QWidget* tab_favorites = new QWidget();
+
+        
 
 
         // Layouts
@@ -316,7 +323,7 @@ private:
         // File extension checkbox
         chb_file_extension = new QCheckBox("Include File Extension", this);
         
-        QFont font("Arial", 18);
+        
 
         cb_profile_switch = new QComboBox(this);
         cb_profile_switch->addItem("Profile1");
@@ -324,7 +331,7 @@ private:
 
         QLineEdit* line_add_profile = new QLineEdit(this);
         line_add_profile->setPlaceholderText("Add profile");
-        line_add_profile->setFixedHeight(50);
+        line_add_profile->setFixedHeight(PercentToHeight(2.32));
         line_add_profile->setFont(font);
 
 
@@ -352,12 +359,12 @@ private:
         // Input field for application searching
         line_all_search = new QLineEdit(this);
         line_all_search->setPlaceholderText("Search application");
-        line_all_search->setFixedHeight(50);
+        line_all_search->setFixedHeight(PercentToHeight(2.32));
         line_all_search->setFont(font);
 
         line_fav_search = new QLineEdit(this);
         line_fav_search->setPlaceholderText("Search application");
-        line_fav_search->setFixedHeight(50);
+        line_fav_search->setFixedHeight(PercentToHeight(2.32));
         line_fav_search->setFont(font);
 
 
@@ -473,17 +480,17 @@ private:
         search_layout = new QVBoxLayout();
         //QVBoxLayout* sea_layout = new QVBoxLayout();
         search_window.setLayout(search_layout);
-        search_window.resize(300, 40);
+        search_window.resize(PercentToWidth(7.81), PercentToHeight(1.85));
         search_window.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
         
 
         // Create UI elements
         search_bar = new QLineEdit(this);
-        search_bar->setFixedHeight(50);
+        search_bar->setFixedHeight(PercentToHeight(2.32));
         search_bar->setFont(font);
         search_list->setViewMode(QListView::ListMode);
         search_list->hide();
-        search_list->setFixedHeight(50);
+        search_list->setFixedHeight(PercentToHeight(2.32));
         search_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         search_list->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         
@@ -1439,22 +1446,34 @@ int main(int argc, char* argv[])
 {
     AllocateConsole("Debug console for Qt6");
     
+
     QApplication app(argc, argv);
     
     ApplicationExplorer explorer(app);
     explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
-    explorer.resize(800, 600);
     explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
+    explorer.resize(800, 600);
     explorer.showMaximized();
+    // Storing screen resolution
+    screen_width = GetSystemMetrics(SM_CXSCREEN);
+    screen_height = GetSystemMetrics(SM_CYSCREEN);
+    std::cout << "Screen resolution: " << screen_width << "x" << screen_height << std::endl;
+
+    explorer.DrawUI();
     
     VirtualKeyboard QKeyboard;
     QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
-    //QKeyboard.showMaximized();
+    QKeyboard.showMaximized();
 
     // Pass the window object to the gamepad task to handle virtual keyboard input
     //explorer.SetQKeyboard(&QKeyboard);
     explorer.QKeyboard = &QKeyboard;
     
+    
+    
+
+    
+
     
     explorer.OnApplicationLaunch();
     return app.exec();

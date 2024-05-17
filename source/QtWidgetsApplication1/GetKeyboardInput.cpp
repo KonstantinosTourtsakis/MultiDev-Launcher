@@ -14,11 +14,23 @@
 
 
 
-
-
-
+int screen_width = 0, screen_height = 0;
 bool getting_input = false;
 bool input_init = true;
+
+
+int PercentToWidth(const double percentage)
+{
+    return static_cast<int>(percentage * screen_width / 100.00);
+}
+
+
+int PercentToHeight(const double percentage)
+{
+    return static_cast<int>(percentage * screen_height / 100.00);
+}
+
+
 
 
 void VirtualKeyboard::SendKeyboardInput()

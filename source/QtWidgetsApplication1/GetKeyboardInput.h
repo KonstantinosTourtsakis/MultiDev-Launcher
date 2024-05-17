@@ -9,6 +9,12 @@
 #include <QListWidget>
 
 
+extern int screen_width;
+extern int screen_height;
+
+
+int PercentToWidth(const double percentage);
+int PercentToHeight(const double percentage);
 
 
 
@@ -47,7 +53,7 @@ private:
         QFont font("Arial", 18);
 
         QVBoxLayout* main_layout = new QVBoxLayout(centralWidget);
-        virtual_input->setFixedSize(3840, 40);
+        virtual_input->setFixedSize(PercentToWidth(100.00), PercentToHeight(3.00));
         virtual_input->setFont(font);
         
         main_layout->addWidget(virtual_input);
@@ -128,7 +134,7 @@ private:
         {
 
             QPushButton* button = new QPushButton(text);
-            button->setFixedSize(100, 70);
+            button->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
             button->setFont(font);
 
             connect(button, &QPushButton::pressed, this, [=]()
@@ -160,16 +166,16 @@ private:
         QPushButton* button_left = new QPushButton("<");
         QPushButton* button_right = new QPushButton(">");
 
-        button_back->setFixedSize(100, 70);
+        button_back->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
         button_back->setFont(font);
 
-        button_clear->setFixedSize(100, 70);
+        button_clear->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
         button_clear->setFont(font);
 
-        button_left->setFixedSize(100, 70);
+        button_left->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
         button_left->setFont(font);
 
-        button_right->setFixedSize(100, 70);
+        button_right->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
         button_right->setFont(font);
 
         connect(button_back, &QPushButton::clicked, this, [=]()
