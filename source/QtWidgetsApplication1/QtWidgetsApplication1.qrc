@@ -1,4 +1,5 @@
 <RCC>
-    <qresource prefix="QtWidgetsApplication1">
+    <qresource prefix="/QtWidgetsApplication1">
+        <file>WinControllerNavigator.ico</file>
     </qresource>
 </RCC>

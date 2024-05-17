@@ -167,14 +167,21 @@ public:
         
         
         //SetupScreen();
-        //SetupUI();
+        SetupUI();
 
     }
 
-    void DoTheUI()
+
+    void OnApplicationLaunch()
     {
-        
-        this->SetupUI();
+        QEventLoop loop;
+        QTimer::singleShot(5, &loop, &QEventLoop::quit);
+
+        // Execute the event loop, blocking until the timer fires
+        loop.exec();
+
+        // Fixes vertical icons bug
+        SearchApplication(line_all_search, list_widget, applications_list);
     }
 
 private:
@@ -400,8 +407,13 @@ private:
         
         //QObject::connect(cb_profile_switch, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ApplicationExplorer::SaveProfile);
 
-        //connect(chb_file_extension, &QCheckBox::stateChanged, this, [this] {ApplicationExplorer::UpdateListWidget(applications_list, list_widget); });
+        connect(chb_file_extension, &QCheckBox::stateChanged, this, [this] {
+            ApplicationExplorer::UpdateListWidget(applications_list, list_widget); 
+            ApplicationExplorer::UpdateListWidget(favorites_list, list_favorites); 
+            });
         
+
+
         //// Delay before keyboard input triggers application search
         timer_search.setSingleShot(true);
         //connect(&timer_search, &QTimer::timeout, this, [this] {ApplicationExplorer::UpdateListWidget(applications_list, list_widget); });
@@ -412,17 +424,21 @@ private:
             {
                 cb_profile_switch->addItem(line_add_profile->text());
                 cb_profile_switch->setCurrentIndex(cb_profile_switch->count() - 1);
-                
+                line_add_profile->clear();
             }
             });
 
         setContextMenuPolicy(Qt::CustomContextMenu);
+        
         connect(this, &QListWidget::customContextMenuRequested, this, [this] {
             ApplicationExplorer::ShowContextMenu(QCursor::pos(), list_widget);
             });
         connect(this, &QListWidget::customContextMenuRequested, this, [this] {
             ApplicationExplorer::ShowContextMenu(QCursor::pos(), list_favorites);
             });
+
+
+
 
         // Functionality to add directories
         QObject::connect(button_add_dir, &QPushButton::clicked, [this]() {
@@ -486,33 +502,9 @@ private:
         DirectoryListUpdated();
         UpdateListWidget(applications_list, list_widget);
 
-        line_all_search->setText("grand");
-        SearchApplication(line_all_search, list_widget, applications_list);
-        line_all_search->setText("su");
-        SearchApplication(line_all_search, list_widget, applications_list);
-        
-        for (int row = 0; row < layout_all_apps->rowCount(); ++row) 
-        {
-            for (int column = 0; column < layout_all_apps->columnCount(); ++column) 
-            {
-                QLayoutItem* layoutItem = layout_all_apps->itemAtPosition(row, column);
-                if (layoutItem) 
-                {
-                    std::cout << "Item at: " << row << column << std::endl;
-                    
-                    QWidget* widget = layoutItem->widget();
-                    
-                    if (widget) 
-                    {
-                        // Here you can perform operations with the widget
-                        // For example, you can check if it's a QListWidget item
-                    }
-                }
-            }
-        }
-
     }
 
+    
     
     void TaskHandleDevicesUICommunication()
     {
@@ -567,24 +559,36 @@ private:
         // Handling controller navigation - UI communication
 
 
-        if (user->IsButtonJustDown(GAMEPAD_DPAD_UP) && list_widget->currentRow() == 0)
+        // Focus on the search input field
+        if (user->IsButtonJustDown(GAMEPAD_DPAD_UP) && list_widget->currentRow() <= 12)
         {
             line_all_search->setFocus();
         }
 
+        // Focus on the applications list
         if (user->IsButtonJustDown(GAMEPAD_DPAD_DOWN) && line_all_search->hasFocus())
         {
             list_widget->setFocus();
         }
 
+
+        // LB - go to the left tab
         if (user->IsButtonJustDown(GAMEPAD_LB))
         {
-            tabs->setCurrentIndex(0);
+            if (tabs->currentIndex() > 0)
+            {
+                tabs->setCurrentIndex(tabs->currentIndex() - 1);
+            }
         }
 
+
+        // LB - go to the right tab
         if (user->IsButtonJustDown(GAMEPAD_RB))
         {
-            tabs->setCurrentIndex(1);
+            if (tabs->currentIndex() < 2)
+            {
+                tabs->setCurrentIndex(tabs->currentIndex() + 1);
+            }
         }
 
 
@@ -878,6 +882,21 @@ private:
                         std::cout << "Invalid item" << std::endl;
                         return;
                     }
+
+                    QString path = item->data(Qt::UserRole).toString();
+                    //QFileInfo file_info(path);
+
+                    int index_fav = favorites_list.indexOf(path);
+                    if (index_fav != -1)
+                    {
+                        std::cout << "Removing: " << path.toStdString() << std::endl;
+                        favorites_list.removeAt(index_fav);
+                        UpdateListWidget(favorites_list, list_favorites);
+                    }
+                    
+
+
+                    return;
 
                     
                     int string_index = -1;
@@ -1416,14 +1435,6 @@ private:
 
 
 
-
-
-
-
-
-
-
-
 int main(int argc, char* argv[]) 
 {
     AllocateConsole("Debug console for Qt6");
@@ -1433,9 +1444,8 @@ int main(int argc, char* argv[])
     ApplicationExplorer explorer(app);
     explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
     explorer.resize(800, 600);
+    explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
     explorer.showMaximized();
-    
-    explorer.DoTheUI();
     
     VirtualKeyboard QKeyboard;
     QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
@@ -1445,17 +1455,10 @@ int main(int argc, char* argv[])
     //explorer.SetQKeyboard(&QKeyboard);
     explorer.QKeyboard = &QKeyboard;
     
-
-
-    //explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
     
-    
-    
+    explorer.OnApplicationLaunch();
     return app.exec();
 }
-
-
-
 
 
 

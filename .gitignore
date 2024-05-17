@@ -8,3 +8,7 @@ source/QtWidgetsApplication1/CursorMode.cpp
 source/QtWidgetsApplication1/CursorMode.h
 source/QtWidgetsApplication1/keyboard.cpp
 source/QtWidgetsApplication1/keyboard.h
+
+
+report/report.log
+report/report.aux
