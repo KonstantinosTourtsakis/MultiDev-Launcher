@@ -160,19 +160,28 @@ public:
         timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, &ApplicationExplorer::TaskGamepadNavigation);
         timer->start(0);
-        
-        
-        
-
-        
-        
-        //SetupScreen();
-        //SetupUI();
 
     }
 
 
-    void DrawUI() { SetupUI(); }
+    void CreateUI() 
+    { 
+
+        LoadAppData();
+        setLayout(layout_root);
+        if (is_first_launch)
+        {
+
+            SetupIntroScreen();
+        }
+        else
+        {
+            //LoadProfile();
+            SetupUI();
+        }
+        
+        
+    }
 
 
 
@@ -190,12 +199,14 @@ public:
     }
 
 private:
+    bool is_first_launch = true;
     QStringList applications_list;
     QStringList favorites_list;
     QListWidget* list_widget = new QListWidget(this);
     QListWidget* list_favorites = new QListWidget(this);
     QListWidget* search_list = new QListWidget(this);
     QListWidget* directory_list = new QListWidget(this);
+    QVBoxLayout* layout_root = new QVBoxLayout(this);
     QVBoxLayout* search_layout;
     QLineEdit* search_bar;
     QTimer* timer;
@@ -207,7 +218,7 @@ private:
     // Reference to QApplication object
     QApplication& app; 
     QComboBox* cb_theme;
-    QComboBox* cb_profile_switch;
+    QComboBox* cb_profile_switch = new QComboBox(this);
     QCheckBox* chb_file_extension;
 
     QTimer timer_search;
@@ -246,18 +257,39 @@ private:
     
     void SetupUI()
     {
+        
+        
         QFont font("Arial", 18);
-        QVBoxLayout* layout_root = new QVBoxLayout(this);
-        setLayout(layout_root);
         
 
         tabs = new QTabWidget(this);
         // Tabs
         QWidget* tab_all_apps = new QWidget();
-        QWidget* tab_settings = new QWidget();
         QWidget* tab_favorites = new QWidget();
-
+        QWidget* tab_settings = new QWidget();
+       
+        /*
         
+        QWidget* tab_intro = new QWidget();
+
+
+
+        if (cb_profile_switch->count() == 0)
+        {
+            tab_all_apps->setEnabled(false);
+            tab_favorites->setEnabled(false);
+            tab_settings->setEnabled(false);
+            tab_intro->setEnabled(true);
+        }
+        else
+        {
+            tab_all_apps->setEnabled(true);
+            tab_favorites->setEnabled(true);
+            tab_settings->setEnabled(true);
+            tab_intro->setEnabled(false);
+        }
+
+        */
 
 
         // Layouts
@@ -265,6 +297,7 @@ private:
         layout_all_apps = new QGridLayout(tab_all_apps);
         QGridLayout* layout_favorites = new QGridLayout(tab_favorites);
         QVBoxLayout* layout_settings = new QVBoxLayout(tab_settings);
+        //QVBoxLayout* layout_intro = new QVBoxLayout(tab_intro);
 
 
         
@@ -278,6 +311,7 @@ private:
         tabs->addTab(tab_all_apps, "Applications");
         tabs->addTab(tab_favorites, "Favorites");
         tabs->addTab(tab_settings, "Settings");
+        //tabs->addTab(tab_intro, "Welcome!");
         
         layout_root->addWidget(tabs);
 
@@ -325,9 +359,9 @@ private:
         
         
 
-        cb_profile_switch = new QComboBox(this);
-        cb_profile_switch->addItem("Profile1");
-        cb_profile_switch->addItem("Profile2");
+        //cb_profile_switch = new QComboBox(this);
+        //cb_profile_switch->addItem("Profile1");
+        //cb_profile_switch->addItem("Profile2");
 
         QLineEdit* line_add_profile = new QLineEdit(this);
         line_add_profile->setPlaceholderText("Add profile");
@@ -508,6 +542,10 @@ private:
 
         DirectoryListUpdated();
         UpdateListWidget(applications_list, list_widget);
+
+
+
+        
 
     }
 
@@ -758,31 +796,39 @@ private:
 
 
 
-    void SaveAppdata()
+    void SaveAppData()
     {
         QSettings settings("MyQt6Application1");
         
         settings.beginGroup("application");
         
         settings.setValue("last_profile", cb_profile_switch->currentIndex());
-        
+        settings.setValue("is_first_launch", is_first_launch);
         
         settings.endGroup();
     }
 
-    void LoadAppdata()
+
+    void LoadAppData()
     {
         QSettings settings("MyQt6Application1");
         
         settings.beginGroup("application");
 
-        // Load the saved index of the combo box
-        int index = settings.value("last_profile", 0).toInt();
-        cb_profile_switch->setCurrentIndex(index);
-        LoadProfile();
+
+        is_first_launch = settings.value("is_first_launch", true).toBool();
+        
+        if (!is_first_launch)
+        {
+            // Load the saved index of the combo box
+            int index = settings.value("last_profile", 0).toInt();
+            cb_profile_switch->setCurrentIndex(index);
+        }
+        
 
         // End reading settings
         settings.endGroup();
+        
     }
 
 
@@ -1178,38 +1224,63 @@ private:
 
 
 
-    QWidget centralWidget;
-    void SetupScreen()
+    void SetupIntroScreen()
     {
+        QFont font("Arial", 26);
+        QFont font2("Arial", 18);
+
+
+        QLabel* title = new QLabel("First time setup", this);
+        title->setAlignment(Qt::AlignCenter);
+        title->setFont(font);
+
+
+        QLabel* label_username = new QLabel("Welcome to the Application Launcher!\n\
+This is the first time setup window.\n\
+You can type in your own user name or\n\
+use the default given below.", this);
+        label_username->setAlignment(Qt::AlignCenter);
+        label_username->setFont(font2);
+        
+
+        QLineEdit* line_username = new QLineEdit(this);
+        line_username->setFixedHeight(PercentToHeight(2.32));
+        line_username->setFixedWidth(PercentToWidth(12.32));
+        line_username->setFont(font2);
+        line_username->setAlignment(Qt::AlignCenter);
+        line_username->setText("user1");
+
         
         
-
-        QVBoxLayout* layout = new QVBoxLayout();
-        centralWidget.setLayout(layout);
-
-        QLabel* titleLabel = new QLabel("Welcome to Your Application", this);
-        titleLabel->setAlignment(Qt::AlignCenter);
-        layout->addWidget(titleLabel);
-
-        QLabel* usernameLabel = new QLabel("Please enter your username:", this);
-        usernameLabel->setAlignment(Qt::AlignCenter);
-        layout->addWidget(usernameLabel);
-
-
-        QLineEdit* usernameInput = new QLineEdit(this);
-        layout->addWidget(usernameInput);
-
-        
-        //centralWidget.setCentralWidget(centralWidget);
-        centralWidget.setWindowTitle("Introduction Screen");
 
         QPushButton* continueButton = new QPushButton("Continue", this);
-        connect(continueButton, &QPushButton::clicked, this, [usernameInput, this] {
-            std::cout << "Username: " << usernameInput->text().toStdString() << std::endl;
-            centralWidget.close();
-            });
-        layout->addWidget(continueButton, 0, Qt::AlignCenter);
+        continueButton->setFixedSize(300, 100);
+        continueButton->setFont(font);
+        connect(continueButton, &QPushButton::clicked, this, [title, label_username, line_username, continueButton, this] 
+            {
+            std::cout << "Username: " << line_username->text().toStdString() << std::endl;
+            cb_profile_switch->addItem(line_username->text());
+            cb_profile_switch->setCurrentIndex(0);
+            is_first_launch = false;
+            SaveAppData();
+            layout_root->removeWidget(title);
+            layout_root->removeWidget(label_username);
+            layout_root->removeWidget(line_username);
+            layout_root->removeWidget(continueButton);
 
+            delete title;
+            delete label_username;
+            delete line_username;
+            delete continueButton;
+            CreateUI();
+            });
+
+        
+
+        layout_root->addWidget(title);
+        layout_root->addWidget(label_username);
+        layout_root->addWidget(line_username);
+        layout_root->addWidget(continueButton, 0, Qt::AlignCenter);
         
     }
 
@@ -1442,6 +1513,7 @@ private:
 
 
 
+
 int main(int argc, char* argv[]) 
 {
     AllocateConsole("Debug console for Qt6");
@@ -1459,11 +1531,11 @@ int main(int argc, char* argv[])
     screen_height = GetSystemMetrics(SM_CYSCREEN);
     std::cout << "Screen resolution: " << screen_width << "x" << screen_height << std::endl;
 
-    explorer.DrawUI();
+    explorer.CreateUI();
     
     VirtualKeyboard QKeyboard;
     QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
-    QKeyboard.showMaximized();
+    //QKeyboard.showMaximized();
 
     // Pass the window object to the gamepad task to handle virtual keyboard input
     //explorer.SetQKeyboard(&QKeyboard);
@@ -1475,7 +1547,7 @@ int main(int argc, char* argv[])
     
 
     
-    explorer.OnApplicationLaunch();
+    //explorer.OnApplicationLaunch();
     return app.exec();
 }
 
