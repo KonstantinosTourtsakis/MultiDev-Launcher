@@ -804,6 +804,14 @@ private:
         
         settings.setValue("last_profile", cb_profile_switch->currentIndex());
         settings.setValue("is_first_launch", is_first_launch);
+
+        QStringList profile_items;
+
+        for (int i = 0; i < cb_profile_switch->count(); ++i)
+        {
+            profile_items.append(cb_profile_switch->itemText(i));
+        }
+        settings.setValue("profiles", profile_items);
         
         settings.endGroup();
     }
@@ -818,8 +826,16 @@ private:
 
         is_first_launch = settings.value("is_first_launch", true).toBool();
         
+
+        // Might be a problem on first launch
+        // Trying to read items on first launch might cause an issue
         if (!is_first_launch)
         {
+            QStringList profile_items = settings.value("profiles").toStringList();
+            cb_profile_switch->clear();
+            cb_profile_switch->addItems(profile_items);
+
+
             // Load the saved index of the combo box
             int index = settings.value("last_profile", 0).toInt();
             cb_profile_switch->setCurrentIndex(index);
@@ -1226,6 +1242,15 @@ private:
 
     void SetupIntroScreen()
     {
+        /*this->setGeometry(
+            QStyle::alignedRect(
+                Qt::LeftToRight,
+                Qt::AlignCenter,
+                this->size(),
+                app.primaryScreen()->availableGeometry()
+            )
+        );*/
+
         QFont font("Arial", 26);
         QFont font2("Arial", 18);
 
@@ -1246,8 +1271,9 @@ use the default given below.", this);
         QLineEdit* line_username = new QLineEdit(this);
         line_username->setFixedHeight(PercentToHeight(2.32));
         line_username->setFixedWidth(PercentToWidth(12.32));
+        
         line_username->setFont(font2);
-        line_username->setAlignment(Qt::AlignCenter);
+        //line_username->setAlignment(Qt::AlignCenter);
         line_username->setText("user1");
 
         
@@ -1295,19 +1321,19 @@ use the default given below.", this);
 
         if(text == "dark")
         {
-            ui_palette.setColor(QPalette::Window, QColor(53, 53, 53));
+            ui_palette.setColor(QPalette::Window, QColor(30, 30, 30)); // Main window background area
             ui_palette.setColor(QPalette::WindowText, Qt::white);
-            ui_palette.setColor(QPalette::Base, QColor(25, 25, 25));
-            ui_palette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
+            ui_palette.setColor(QPalette::Base, QColor(45, 45, 45)); // List layout box area
+            ui_palette.setColor(QPalette::AlternateBase, QColor(53, 53, 53)); 
             ui_palette.setColor(QPalette::ToolTipBase, Qt::white);
             ui_palette.setColor(QPalette::ToolTipText, Qt::white);
-            ui_palette.setColor(QPalette::Text, Qt::white);
-            ui_palette.setColor(QPalette::Button, QColor(53, 53, 53));
-            ui_palette.setColor(QPalette::ButtonText, Qt::white);
+            ui_palette.setColor(QPalette::Text, Qt::white); // Text color in combo boxes etc
+            ui_palette.setColor(QPalette::Button, QColor(53, 53, 53)); // Background color of buttons, combo boxes etc
+            ui_palette.setColor(QPalette::ButtonText, Qt::white); // Button text
             ui_palette.setColor(QPalette::BrightText, Qt::red);
             ui_palette.setColor(QPalette::Link, QColor(42, 130, 218));
             ui_palette.setColor(QPalette::Highlight, QColor(42, 130, 218));
-            ui_palette.setColor(QPalette::HighlightedText, Qt::black);
+            ui_palette.setColor(QPalette::HighlightedText, Qt::white); // Highlighted text in input fields
 
             
         }
@@ -1315,13 +1341,13 @@ use the default given below.", this);
         {
             ui_palette.setColor(QPalette::Window, Qt::white);
             ui_palette.setColor(QPalette::WindowText, Qt::black);
-            ui_palette.setColor(QPalette::Base, Qt::white);
+            ui_palette.setColor(QPalette::Base, QColor(110, 110, 110));
             ui_palette.setColor(QPalette::AlternateBase, Qt::lightGray);
             ui_palette.setColor(QPalette::ToolTipBase, Qt::white);
             ui_palette.setColor(QPalette::ToolTipText, Qt::black);
             ui_palette.setColor(QPalette::Text, Qt::black);
-            ui_palette.setColor(QPalette::Button, Qt::white);
-            ui_palette.setColor(QPalette::ButtonText, Qt::black);
+            ui_palette.setColor(QPalette::Button, QColor(110, 110, 110));
+            ui_palette.setColor(QPalette::ButtonText, Qt::white);
             ui_palette.setColor(QPalette::BrightText, Qt::red);
             ui_palette.setColor(QPalette::Link, QColor(42, 130, 218));
             ui_palette.setColor(QPalette::Highlight, QColor(42, 130, 218));
