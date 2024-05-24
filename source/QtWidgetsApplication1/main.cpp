@@ -171,13 +171,13 @@ public:
         setLayout(layout_root);
         if (is_first_launch)
         {
-
             SetupIntroScreen();
         }
         else
         {
             //LoadProfile();
             SetupUI();
+            OnApplicationLaunch();
         }
         
         
@@ -336,22 +336,24 @@ private:
         // Create the second tab
         QLabel* label_directories = new QLabel("Directories:");
         QLabel* label_app_theme = new QLabel("Theme");
+        QLabel* label_profile = new QLabel("Profile");
 
         QPushButton* button_add_dir = new QPushButton("Add Directory");
         QPushButton* button_remove_dir = new QPushButton("Remove Directory");
-        QPushButton* button_save_settings = new QPushButton("Save changes");
+        QPushButton* button_delete_profile = new QPushButton("Delete Current Profile");
+        button_delete_profile->setStyleSheet("text-align: left");
 
 
 
         cb_theme = new QComboBox(this);
-        cb_theme->addItem("dark");
-        cb_theme->addItem("light");
-        cb_theme->addItem("red");
-        cb_theme->addItem("green");
-        cb_theme->addItem("blue");
-        cb_theme->addItem("yellow");
-        cb_theme->addItem("orange");
-        cb_theme->addItem("purple");
+        cb_theme->addItem("Dark");
+        cb_theme->addItem("Light");
+        cb_theme->addItem("Red");
+        cb_theme->addItem("Green");
+        cb_theme->addItem("Blue");
+        cb_theme->addItem("Yellow");
+        cb_theme->addItem("Orange");
+        cb_theme->addItem("Purple");
 
 
         // File extension checkbox
@@ -364,7 +366,7 @@ private:
         //cb_profile_switch->addItem("Profile2");
 
         QLineEdit* line_add_profile = new QLineEdit(this);
-        line_add_profile->setPlaceholderText("Add profile");
+        line_add_profile->setPlaceholderText("Create New Profile");
         line_add_profile->setFixedHeight(PercentToHeight(2.32));
         line_add_profile->setFont(font);
 
@@ -374,17 +376,16 @@ private:
         layout_dir_buttons->addWidget(button_add_dir);
         layout_dir_buttons->addWidget(button_remove_dir);
         
-
-        layout_settings->addWidget(label_app_theme);
         layout_settings->addWidget(chb_file_extension);
-        layout_settings->addWidget(cb_theme);
+        layout_settings->addWidget(label_profile);
         layout_settings->addWidget(cb_profile_switch);
+        layout_settings->addWidget(button_delete_profile);
         layout_settings->addWidget(line_add_profile);
-        
+        layout_settings->addWidget(label_app_theme);
+        layout_settings->addWidget(cb_theme);
         layout_settings->addWidget(label_directories);
         layout_settings->addWidget(directory_list);
         layout_settings->addLayout(layout_dir_buttons);
-        layout_settings->addWidget(button_save_settings);
 
 
 
@@ -460,23 +461,65 @@ private:
         //connect(&timer_search, &QTimer::timeout, this, [this] {ApplicationExplorer::UpdateListWidget(applications_list, list_widget); });
         connect(line_all_search, &QLineEdit::textChanged, this, [this] {ApplicationExplorer::SearchApplication(line_all_search, list_widget, applications_list); });
         connect(line_fav_search, &QLineEdit::textChanged, this, [this] {ApplicationExplorer::SearchApplication(line_fav_search, list_favorites, favorites_list); });
+        
+        connect(button_delete_profile, &QPushButton::clicked, this, [this] {
+                if (cb_profile_switch->count() > 1)
+                {
+                    QString output = "Are you sure that you want to delete profile \"" + cb_profile_switch->currentText() + "\"?\n\
+All data in this profile will be permanently deleted.";
+                    int ret = QMessageBox::question(this, "Confirmation Dialog", output, QMessageBox::Yes | QMessageBox::No);
+
+                    if (ret == QMessageBox::Yes)
+                    {
+                        // Delete profile
+                        cb_profile_switch->removeItem(cb_profile_switch->currentIndex());
+                        // Clear profile data on disk
+                        QSettings settings("ThesisOrganization", "QtWidgetsApp1");
+                        settings.beginGroup("group_name");
+                        settings.clear();
+                        settings.endGroup();
+
+                    }
+                    else
+                    {
+                        // Skip deleting profile
+                        return;
+                    }
+                }
+                else
+                {
+                    QMessageBox::information(this, "Information", "Cannot delete all user profiles...");
+                }
+            });
         connect(line_add_profile, &QLineEdit::returnPressed, this, [this, line_add_profile] {
             if (line_add_profile->text() != "")
             {
-                cb_profile_switch->addItem(line_add_profile->text());
-                cb_profile_switch->setCurrentIndex(cb_profile_switch->count() - 1);
-                line_add_profile->clear();
+                int index = cb_profile_switch->findText(line_add_profile->text());
+
+                if (index != -1) 
+                {
+                    QMessageBox::information(this, "Username exists", "This username already exists. Try again!");
+                    return;
+                }
+                else 
+                {
+                    cb_profile_switch->addItem(line_add_profile->text());
+                    cb_profile_switch->setCurrentIndex(cb_profile_switch->count() - 1);
+                    QString output = "Profile \"" + line_add_profile->text() + "\" has been successfully created!";
+                    line_add_profile->clear();
+                    QMessageBox::information(this, "Profile creation completed", output);
+                }
             }
             });
 
-        setContextMenuPolicy(Qt::CustomContextMenu);
+
+        // Custom context menu for the list widgets
+        list_widget->setContextMenuPolicy(Qt::CustomContextMenu);
+        list_favorites->setContextMenuPolicy(Qt::CustomContextMenu);
         
-        connect(this, &QListWidget::customContextMenuRequested, this, [this] {
-            ApplicationExplorer::ShowContextMenu(QCursor::pos(), list_widget);
-            });
-        connect(this, &QListWidget::customContextMenuRequested, this, [this] {
-            ApplicationExplorer::ShowContextMenu(QCursor::pos(), list_favorites);
-            });
+        
+        connect(list_widget, &QListWidget::customContextMenuRequested, this, &ApplicationExplorer::ShowContextMenuForListWidget);
+        connect(list_favorites, &QListWidget::customContextMenuRequested, this, &ApplicationExplorer::ShowContextMenuForListFavorites);
 
 
 
@@ -496,6 +539,7 @@ private:
                 directory_list->addItem(directory);
             DirectoryListUpdated();
             UpdateListWidget(applications_list, list_widget);
+            SaveProfile();
             });
 
         // Functionality to remove directories
@@ -503,11 +547,10 @@ private:
             qDeleteAll(directory_list->selectedItems());
             DirectoryListUpdated();
             UpdateListWidget(applications_list, list_widget);
+            ApplicationExplorer::SaveProfile();
             });
 
-        connect(button_save_settings, &QPushButton::clicked, this, &ApplicationExplorer::SaveProfile);
-
-
+        
         
         // ULauncher-like window for application searching through the keyboard
         search_window.setWindowTitle("Qt6ULauncher");
@@ -544,9 +587,6 @@ private:
         UpdateListWidget(applications_list, list_widget);
 
 
-
-        
-
     }
 
     
@@ -566,8 +606,8 @@ private:
             {
                 search_bar->clear();
                 search_window.show();
-                search_window.activateWindow();
-                search_window.raise();
+                //search_window.activateWindow();
+                //search_window.raise();
                 search_window.setFocus();
                 search_bar->setEnabled(true);
                 search_bar->setFocus();
@@ -719,7 +759,7 @@ private:
     
     void SaveProfile()
     {
-        QSettings settings("MyQt6Application1");
+        QSettings settings("ThesisOrganization", "QtWidgetsApp1");
 
         settings.beginGroup(cb_profile_switch->itemText(cb_profile_switch->currentIndex()));
 
@@ -755,7 +795,7 @@ private:
     void LoadProfile()
     {
 
-        QSettings settings("MyQt6Application1");
+        QSettings settings("ThesisOrganization", "QtWidgetsApp1");
         
         settings.beginGroup(cb_profile_switch->itemText(cb_profile_switch->currentIndex()));
 
@@ -782,7 +822,7 @@ private:
         directory_list->clear();
 
         // Add directories from settings to the listWidget
-        foreach(const QString & dir, directories) 
+        foreach(const QString & dir, directories)
         {
             directory_list->addItem(dir);
         }
@@ -798,9 +838,9 @@ private:
 
     void SaveAppData()
     {
-        QSettings settings("MyQt6Application1");
+        QSettings settings("ThesisOrganization", "QtWidgetsApp1");
         
-        settings.beginGroup("application");
+        settings.beginGroup("application_default");
         
         settings.setValue("last_profile", cb_profile_switch->currentIndex());
         settings.setValue("is_first_launch", is_first_launch);
@@ -819,9 +859,9 @@ private:
 
     void LoadAppData()
     {
-        QSettings settings("MyQt6Application1");
+        QSettings settings("ThesisOrganization", "QtWidgetsApp1");
         
-        settings.beginGroup("application");
+        settings.beginGroup("application_default");
 
 
         is_first_launch = settings.value("is_first_launch", true).toBool();
@@ -857,17 +897,19 @@ private:
 
 
 
+    void ShowContextMenuForListWidget(const QPoint& pos){ ShowContextMenu(pos, list_widget); }
+    void ShowContextMenuForListFavorites(const QPoint& pos){ ShowContextMenu(pos, list_favorites); }
 
 
 
     void ShowContextMenu(const QPoint& pos, QListWidget* list)
     {
-        
+
         /*QPoint local_pos = list->mapFromGlobal(pos);
 
         // Get the index of the item at the local position
         QModelIndex index = list->indexAt(local_pos);
-        
+
         // Check if the right-click occurred on an item
         if (!index.isValid())
         {
@@ -884,7 +926,7 @@ private:
         QAction* action_edit = new QAction(tr("Add application"), this);
         connect(action_edit, &QAction::triggered, this, [this, item]() {
 
-            
+
             std::cout << "\n\nPopular apps:\n";
             for (const QString& app : popular_apps)
             {
@@ -919,21 +961,21 @@ private:
         QAction* action_delete = new QAction(tr("Remove"), this);
         connect(action_delete, &QAction::triggered, this, [this, item]()
             {
-                delete item;   
+                delete item;
             });
 
 
-        
+
         bool found = false;
 
         for (int i = 0; i < list_favorites->count(); ++i)
         {
-            
+
             QListWidgetItem* currentItem = list_favorites->item(i);
 
-            if (currentItem->text() == item->text()) 
+            if (currentItem->text() == item->text())
             {
-                
+
                 found = true;
                 break;
             }
@@ -962,12 +1004,12 @@ private:
                         favorites_list.removeAt(index_fav);
                         UpdateListWidget(favorites_list, list_favorites);
                     }
-                    
+
 
 
                     return;
 
-                    
+
                     int string_index = -1;
                     std::cout << "Target: " << item->data(Qt::UserRole).toString().toStdString() << std::endl;
                     for (int i = 0; i < favorites_list.count(); ++i)
@@ -986,7 +1028,7 @@ private:
                     {
                         std::cout << "Removing at: " << string_index << std::endl;
                         favorites_list.removeAt(string_index);
-                        
+
                         UpdateListWidget(favorites_list, list_favorites);
                     }
                     else
@@ -997,7 +1039,7 @@ private:
                     int index = list_favorites->row(item);
                     QListWidgetItem* item_to_remove = list_favorites->takeItem(index);
                     delete item_to_remove;
-                    
+
                 });
 
         }
@@ -1018,12 +1060,12 @@ private:
 
                     if (!favorites_list.contains(file_info.filePath()))
                     {
-                        
+
                         favorites_list.append(file_info.filePath());
                         UpdateListWidget(favorites_list, list_favorites);
                     }
 
-                    
+
                     /*return;
                     // Add item to favorites
                     QString path = item->data(Qt::UserRole).toString();
@@ -1051,10 +1093,10 @@ private:
 
                 });
         }
-        
-        
 
-        
+
+
+
         QAction* action_add_category = new QAction(tr("Add to Category"), this);
         connect(action_add_category, &QAction::triggered, [this, item]() {
             // To do?
@@ -1065,9 +1107,12 @@ private:
         context_menu.addAction(action_add_favorite);
         context_menu.addAction(action_add_category);
 
-        
+
         context_menu.exec(mapToGlobal(pos));
     }
+
+
+    
 
 
 
@@ -1274,7 +1319,7 @@ use the default given below.", this);
         
         line_username->setFont(font2);
         //line_username->setAlignment(Qt::AlignCenter);
-        line_username->setText("user1");
+        line_username->setText("Profile_1");
 
         
         
@@ -1319,7 +1364,7 @@ use the default given below.", this);
     {
 
 
-        if(text == "dark")
+        if(text == "Dark")
         {
             ui_palette.setColor(QPalette::Window, QColor(30, 30, 30)); // Main window background area
             ui_palette.setColor(QPalette::WindowText, Qt::white);
@@ -1337,7 +1382,7 @@ use the default given below.", this);
 
             
         }
-        else if(text == "light")
+        else if(text == "Light")
         {
             ui_palette.setColor(QPalette::Window, Qt::white);
             ui_palette.setColor(QPalette::WindowText, Qt::black);
@@ -1354,7 +1399,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::HighlightedText, Qt::white);
             
         }
-        else if(text == "blue")
+        else if(text == "Blue")
         {
             ui_palette.setColor(QPalette::Window, QColor(20, 20, 40));
             ui_palette.setColor(QPalette::WindowText, Qt::white);
@@ -1370,7 +1415,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Highlight, QColor(0, 160, 240));
             ui_palette.setColor(QPalette::HighlightedText, Qt::black);
         }
-        else if(text == "green")
+        else if(text == "Green")
         {
             ui_palette.setColor(QPalette::Window, QColor(20, 40, 20));
             ui_palette.setColor(QPalette::WindowText, Qt::white);
@@ -1386,7 +1431,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Highlight, QColor(0, 160, 0));
             ui_palette.setColor(QPalette::HighlightedText, Qt::black);
         }
-        else if(text == "red")
+        else if(text == "Red")
         {
             ui_palette.setColor(QPalette::Window, QColor(40, 20, 20));
             ui_palette.setColor(QPalette::WindowText, Qt::white);
@@ -1402,7 +1447,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Highlight, QColor(160, 0, 0));
             ui_palette.setColor(QPalette::HighlightedText, Qt::black);
         }
-        else if (text == "yellow")
+        else if (text == "Yellow")
         {
             ui_palette.setColor(QPalette::Window, QColor(40, 40, 20));
             ui_palette.setColor(QPalette::WindowText, Qt::white);
@@ -1418,7 +1463,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Highlight, QColor(160, 160, 0));
             ui_palette.setColor(QPalette::HighlightedText, Qt::black);
         }
-        else if(text == "orange")
+        else if(text == "Orange")
         {
             ui_palette.setColor(QPalette::Window, QColor(60, 40, 20));
             ui_palette.setColor(QPalette::WindowText, Qt::white);
@@ -1435,7 +1480,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::HighlightedText, Qt::black);
 
         }
-        else if(text == "purple")
+        else if(text == "Purple")
         {
             ui_palette.setColor(QPalette::Window, QColor(40, 20, 40));
             ui_palette.setColor(QPalette::WindowText, Qt::white);
@@ -1567,13 +1612,8 @@ int main(int argc, char* argv[])
     //explorer.SetQKeyboard(&QKeyboard);
     explorer.QKeyboard = &QKeyboard;
     
-    
-    
 
-    
 
-    
-    //explorer.OnApplicationLaunch();
     return app.exec();
 }
 
