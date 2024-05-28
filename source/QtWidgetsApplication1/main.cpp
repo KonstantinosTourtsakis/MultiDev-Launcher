@@ -90,6 +90,7 @@ QPalette ui_palette;
 
 
 // https://stackoverflow.com/questions/12459145/extracting-icon-using-winapi-in-qt-app
+
 QIcon GetFileIcon(const QString& file_path)
 {
     SHFILEINFO shfi;
@@ -266,36 +267,26 @@ private:
         // Tabs
         QWidget* tab_all_apps = new QWidget();
         QWidget* tab_favorites = new QWidget();
+        //QWidget* tab_popular = new QWidget();
         QWidget* tab_settings = new QWidget();
        
-        /*
+        //tab_all_apps->setToolTip("A list with all of your applications");
+        //tab_favorites->setToolTip("A list with your favorite applications");
+        //tab_settings->setToolTip("Personalize the launcher");
         
-        QWidget* tab_intro = new QWidget();
 
-
-
-        if (cb_profile_switch->count() == 0)
-        {
-            tab_all_apps->setEnabled(false);
-            tab_favorites->setEnabled(false);
-            tab_settings->setEnabled(false);
-            tab_intro->setEnabled(true);
-        }
-        else
-        {
-            tab_all_apps->setEnabled(true);
-            tab_favorites->setEnabled(true);
-            tab_settings->setEnabled(true);
-            tab_intro->setEnabled(false);
-        }
-
-        */
-
+        QComboBox* cb_sort_by = new QComboBox(this);
+        cb_sort_by->addItem("Ascending");
+        cb_sort_by->addItem("Descending");
+        cb_sort_by->addItem("Popularity");
+        
+        
 
         // Layouts
         //QVBoxLayout* layout_all_apps = new QVBoxLayout(tab_all_apps);
         layout_all_apps = new QGridLayout(tab_all_apps);
         QGridLayout* layout_favorites = new QGridLayout(tab_favorites);
+        //QGridLayout* layout_popular = new QGridLayout(tab_popular);
         QVBoxLayout* layout_settings = new QVBoxLayout(tab_settings);
         //QVBoxLayout* layout_intro = new QVBoxLayout(tab_intro);
 
@@ -310,6 +301,7 @@ private:
         // Add tabs to tab widget
         tabs->addTab(tab_all_apps, "Applications");
         tabs->addTab(tab_favorites, "Favorites");
+        //tabs->addTab(tab_favorites, "Popular");
         tabs->addTab(tab_settings, "Settings");
         //tabs->addTab(tab_intro, "Welcome!");
         
@@ -341,11 +333,18 @@ private:
         QPushButton* button_add_dir = new QPushButton("Add Directory");
         QPushButton* button_remove_dir = new QPushButton("Remove Directory");
         QPushButton* button_delete_profile = new QPushButton("Delete Current Profile");
-        button_delete_profile->setStyleSheet("text-align: left");
+        button_delete_profile->setStyleSheet("text-align: left; color: red;");
+        button_remove_dir->setStyleSheet("color: red;");
+        button_add_dir->setToolTip("Add a directory in which the launcher will be looking for applications to execute.\
+The launcher is looking for executables and local or internet shortcut files.");
+        button_remove_dir->setToolTip("Remove the currently selected directory from the application launcher.");
+        
+        
 
 
 
         cb_theme = new QComboBox(this);
+        cb_theme->setToolTip("Change the launcher's theme.");
         cb_theme->addItem("Dark");
         cb_theme->addItem("Light");
         cb_theme->addItem("Red");
@@ -358,19 +357,26 @@ private:
 
         // File extension checkbox
         chb_file_extension = new QCheckBox("Include File Extension", this);
+        chb_file_extension->setToolTip("Include file extension theme in application icons.");
         
         
-
-        //cb_profile_switch = new QComboBox(this);
-        //cb_profile_switch->addItem("Profile1");
-        //cb_profile_switch->addItem("Profile2");
+        
 
         QLineEdit* line_add_profile = new QLineEdit(this);
         line_add_profile->setPlaceholderText("Create New Profile");
         line_add_profile->setFixedHeight(PercentToHeight(2.32));
-        line_add_profile->setFont(font);
-
-
+        
+        
+        tab_settings->setFont(font);
+        //button_add_dir->setFont(font);
+        //button_remove_dir->setFont(font);
+        //directory_list->setFont(font);
+        //cb_theme->setFont(font);
+        //cb_profile_switch->setFont(font);
+        button_delete_profile->setFont(font);
+        button_remove_dir->setFont(font);
+        //chb_file_extension->setFont(font);
+        //line_add_profile->setFont(font);
 
         QHBoxLayout* layout_dir_buttons = new QHBoxLayout();
         layout_dir_buttons->addWidget(button_add_dir);
@@ -420,6 +426,7 @@ private:
 
         
         layout_all_apps->addWidget(line_all_search);
+        layout_all_apps->addWidget(cb_sort_by);
         layout_all_apps->addWidget(list_widget);
         layout_favorites->addWidget(line_fav_search);
         layout_favorites->addWidget(list_favorites);
@@ -430,6 +437,7 @@ private:
         LoadProfile();
         connect(cb_theme, &QComboBox::currentTextChanged, this, &ApplicationExplorer::UpdateUIPalette);
         connect(cb_profile_switch, &QComboBox::currentTextChanged, this, &ApplicationExplorer::LoadProfile);
+        connect(cb_sort_by, &QComboBox::currentTextChanged, this, &ApplicationExplorer::SortingChanged);
 
 
         //for (const QString& app : popular_apps) { std::cout << app.toStdString() << std::endl; }
@@ -443,7 +451,7 @@ private:
 
 
         // CONNECTIONS
-        QObject::connect(&app, &QCoreApplication::aboutToQuit, this, &ApplicationExplorer::CleanUp);
+        QObject::connect(&app, &QCoreApplication::aboutToQuit, this, &ApplicationExplorer::OnApplicationExit);
         connect(list_widget, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
         connect(list_favorites, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
         
@@ -526,6 +534,7 @@ All data in this profile will be permanently deleted.";
 
         // Functionality to add directories
         QObject::connect(button_add_dir, &QPushButton::clicked, [this]() {
+
             QString directory = QFileDialog::getExistingDirectory(nullptr, "Select Directory", QDir::homePath());
             for (int i = 0; i < directory_list->count(); ++i)
             {
@@ -889,7 +898,7 @@ All data in this profile will be permanently deleted.";
 
 
 
-    void CleanUp()
+    void OnApplicationExit()
     {
         ApplicationExplorer::SaveProfile();
         Beep(200, 200);
@@ -904,8 +913,8 @@ All data in this profile will be permanently deleted.";
 
     void ShowContextMenu(const QPoint& pos, QListWidget* list)
     {
-
-        /*QPoint local_pos = list->mapFromGlobal(pos);
+        /*
+        QPoint local_pos = list->mapFromGlobal(pos);
 
         // Get the index of the item at the local position
         QModelIndex index = list->indexAt(local_pos);
@@ -914,55 +923,49 @@ All data in this profile will be permanently deleted.";
         if (!index.isValid())
         {
             return;
-        }
-        */
+        } */
 
         QListWidgetItem* item = list->currentItem();
         if (!item)
             return;
-        std::cout << item->data(Qt::UserRole).toString().toStdString() << std::endl;
+        
         QMenu context_menu(tr("Context Menu"), this);
 
-        QAction* action_edit = new QAction(tr("Add application"), this);
+        QAction* action_edit = new QAction(tr("Add Application"), this);
         connect(action_edit, &QAction::triggered, this, [this, item]() {
-
-
-            std::cout << "\n\nPopular apps:\n";
-            for (const QString& app : popular_apps)
-            {
-                std::cout << app.toStdString() << std::endl;
-            }
-
-            return;
+            
             QFileDialog dialog;
-
-            dialog.setWindowTitle("Add a missing application");
-
+            dialog.setWindowTitle("Select application file");
+            dialog.setNameFilters({ "Shortcut files (*.lnk)", "Executable files (*.exe)", "URL files (*.url)" });
             dialog.setFileMode(QFileDialog::ExistingFile);
-            dialog.setDirectory(QDir::homePath());
-            dialog.setNameFilter("Executable Files (*.exe);;Shortcut Files (*.lnk *.url)");
 
-            // Show the dialog and wait for the user's selection
-            if (dialog.exec())
+            // Execute the file dialog and check if the user selected a file
+            if (dialog.exec() == QDialog::Accepted)
             {
-                // Get the selected file(s)
-                QStringList file_names = dialog.selectedFiles();
+                QString file_selected = dialog.selectedFiles().first();
+                
+                std::cout << "File selected: " << file_selected.toStdString() << std::endl;
 
-                // Iterate over the selected files and do something with them
-                foreach(QString name, file_names)
+                for (int i = 0; i < directory_list->count(); ++i)
                 {
-                    std::cout << "Selected file:" << name.toStdString();
-                    // Here you can perform operations with the selected file(s)
+
+                    if (file_selected == directory_list->item(i)->text())
+                    {
+                        return;
+                    }
                 }
+                if (!file_selected.isEmpty())
+                    directory_list->addItem(file_selected);
 
-            }});
+                DirectoryListUpdated();
+                UpdateListWidget(applications_list, list_widget);
+                SaveProfile();
 
-
-        QAction* action_delete = new QAction(tr("Remove"), this);
-        connect(action_delete, &QAction::triggered, this, [this, item]()
-            {
-                delete item;
+            }
             });
+
+
+        
 
 
 
@@ -1000,7 +1003,6 @@ All data in this profile will be permanently deleted.";
                     int index_fav = favorites_list.indexOf(path);
                     if (index_fav != -1)
                     {
-                        std::cout << "Removing: " << path.toStdString() << std::endl;
                         favorites_list.removeAt(index_fav);
                         UpdateListWidget(favorites_list, list_favorites);
                     }
@@ -1055,41 +1057,13 @@ All data in this profile will be permanently deleted.";
                         return;
                     }
 
-                    QString path = item->data(Qt::UserRole).toString();
-                    QFileInfo file_info(path);
-
+                    
+                    QFileInfo file_info(item->data(Qt::UserRole).toString());
                     if (!favorites_list.contains(file_info.filePath()))
                     {
-
                         favorites_list.append(file_info.filePath());
                         UpdateListWidget(favorites_list, list_favorites);
                     }
-
-
-                    /*return;
-                    // Add item to favorites
-                    QString path = item->data(Qt::UserRole).toString();
-                    QFileInfo file_info(path);
-                    QIcon icon = GetFileIcon(path);
-
-                    QListWidgetItem* item2;
-
-                    // Create list widget item using the file name or file extension
-                    if (chb_file_extension->isChecked())
-                    {
-                        item2 = new QListWidgetItem(icon, file_info.fileName());
-                    }
-                    else
-                    {
-                        item2 = new QListWidgetItem(icon, RemoveFileExtension(file_info.fileName()));
-                    }
-
-
-                    // Store file path as item data
-                    item2->setData(Qt::UserRole, path);
-                    list_favorites->addItem(item2);
-
-                    */
 
                 });
         }
@@ -1097,18 +1071,13 @@ All data in this profile will be permanently deleted.";
 
 
 
-        QAction* action_add_category = new QAction(tr("Add to Category"), this);
-        connect(action_add_category, &QAction::triggered, [this, item]() {
-            // To do?
-            });
-
         context_menu.addAction(action_edit);
-        context_menu.addAction(action_delete);
         context_menu.addAction(action_add_favorite);
-        context_menu.addAction(action_add_category);
 
 
-        context_menu.exec(mapToGlobal(pos));
+        //context_menu.exec(mapToGlobal(pos));
+        context_menu.exec(QCursor::pos());
+
     }
 
 
@@ -1273,10 +1242,40 @@ All data in this profile will be permanently deleted.";
         {
 
             QListWidgetItem* item = directory_list->item(i);
+            QString path = item->text();
             
             if (item)
             {
-                ExploreDirectoryFiles(item->text());
+                QFileInfo file_info(path);
+                if (file_info.exists())
+                {
+                    if (file_info.isDir()) 
+                    {
+                        ExploreDirectoryFiles(path);
+                    }
+                    else if (file_info.isFile()) 
+                    {
+                        if (path.endsWith(".exe") || path.endsWith(".lnk") || path.endsWith(".url"))
+                        {
+                            if (!applications_list.contains(file_info.filePath()))
+                            {
+                                applications_list.append(file_info.filePath());
+                            }
+
+                        }
+                    }
+                    else 
+                    {
+                        QString output = "This isn't a file: " + path;
+                        QMessageBox::information(this, "Information", output);
+                    }
+                }
+                else 
+                {
+                    QString output = "This item doesn't exist: " + path;
+                    QMessageBox::information(this, "Information", output);
+                }
+                
             }
         }
     }
@@ -1355,11 +1354,71 @@ use the default given below.", this);
         
     }
 
+    
 
     
 
 
     
+    void SortingChanged(const QString& text)
+    {
+        if (text == "Ascending")
+        {
+            list_widget->sortItems(Qt::AscendingOrder);
+        }
+        else if (text == "Descending")
+        {
+            list_widget->sortItems(Qt::DescendingOrder);
+
+        }
+        else if (text == "Popularity")
+        {
+            QList<QString> sorted_apps = app_usage_freq.keys();
+            std::sort(sorted_apps.begin(), sorted_apps.end(), [&](const QString& a, const QString& b)
+                {
+                    return app_usage_freq[a] > app_usage_freq[b];
+                });
+
+            for (int k = 0; k < sorted_apps.count(); ++k)
+            {
+                std::cout << sorted_apps[k].toStdString() << std::endl;
+            }
+            return;
+            
+            for (int i = 0; i < sorted_apps.count(); ++i)
+            {
+                for (int j = 0; j < list_widget->count(); ++j)
+                {
+                    QListWidgetItem* item1 = list_widget->takeItem(j);
+                    QString path = item1->data(Qt::UserRole).toString();
+                    QFileInfo file_info(path);
+                    QString file_name = file_info.fileName();
+                    file_name = RemoveFileExtension(file_name);
+
+                    if (sorted_apps[i] == file_name)
+                    {
+                        //new_list->addItem(item);
+
+                        list_widget->insertItem(i, item1);
+
+                        //QListWidgetItem* item2 = list_widget->takeItem(i + 1);
+                        //list_widget->insertItem(j, item2);
+                        
+                    }
+                }
+
+            }
+
+            //list_widget = new_list;
+        }
+    }
+
+
+
+
+
+
+
     void UpdateUIPalette(const QString &text)
     {
 
@@ -1371,7 +1430,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Base, QColor(45, 45, 45)); // List layout box area
             ui_palette.setColor(QPalette::AlternateBase, QColor(53, 53, 53)); 
             ui_palette.setColor(QPalette::ToolTipBase, Qt::white);
-            ui_palette.setColor(QPalette::ToolTipText, Qt::white);
+            ui_palette.setColor(QPalette::ToolTipText, Qt::black);
             ui_palette.setColor(QPalette::Text, Qt::white); // Text color in combo boxes etc
             ui_palette.setColor(QPalette::Button, QColor(53, 53, 53)); // Background color of buttons, combo boxes etc
             ui_palette.setColor(QPalette::ButtonText, Qt::white); // Button text
@@ -1406,7 +1465,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Base, QColor(30, 30, 60));
             ui_palette.setColor(QPalette::AlternateBase, QColor(20, 20, 40));
             ui_palette.setColor(QPalette::ToolTipBase, Qt::white);
-            ui_palette.setColor(QPalette::ToolTipText, Qt::white);
+            ui_palette.setColor(QPalette::ToolTipText, Qt::black);
             ui_palette.setColor(QPalette::Text, Qt::white);
             ui_palette.setColor(QPalette::Button, QColor(30, 30, 60));
             ui_palette.setColor(QPalette::ButtonText, Qt::white);
@@ -1422,7 +1481,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Base, QColor(30, 60, 30));
             ui_palette.setColor(QPalette::AlternateBase, QColor(20, 40, 20));
             ui_palette.setColor(QPalette::ToolTipBase, Qt::white);
-            ui_palette.setColor(QPalette::ToolTipText, Qt::white);
+            ui_palette.setColor(QPalette::ToolTipText, Qt::black);
             ui_palette.setColor(QPalette::Text, Qt::white);
             ui_palette.setColor(QPalette::Button, QColor(30, 60, 30));
             ui_palette.setColor(QPalette::ButtonText, Qt::white);
@@ -1438,7 +1497,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Base, QColor(60, 30, 30));
             ui_palette.setColor(QPalette::AlternateBase, QColor(40, 20, 20));
             ui_palette.setColor(QPalette::ToolTipBase, Qt::white);
-            ui_palette.setColor(QPalette::ToolTipText, Qt::white);
+            ui_palette.setColor(QPalette::ToolTipText, Qt::black);
             ui_palette.setColor(QPalette::Text, Qt::white);
             ui_palette.setColor(QPalette::Button, QColor(60, 30, 30));
             ui_palette.setColor(QPalette::ButtonText, Qt::white);
@@ -1454,7 +1513,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Base, QColor(60, 60, 30));
             ui_palette.setColor(QPalette::AlternateBase, QColor(40, 40, 20));
             ui_palette.setColor(QPalette::ToolTipBase, Qt::white);
-            ui_palette.setColor(QPalette::ToolTipText, Qt::white);
+            ui_palette.setColor(QPalette::ToolTipText, Qt::black);
             ui_palette.setColor(QPalette::Text, Qt::white);
             ui_palette.setColor(QPalette::Button, QColor(60, 60, 30));
             ui_palette.setColor(QPalette::ButtonText, Qt::white);
@@ -1470,7 +1529,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Base, QColor(90, 60, 30));
             ui_palette.setColor(QPalette::AlternateBase, QColor(60, 40, 20));
             ui_palette.setColor(QPalette::ToolTipBase, Qt::white);
-            ui_palette.setColor(QPalette::ToolTipText, Qt::white);
+            ui_palette.setColor(QPalette::ToolTipText, Qt::black);
             ui_palette.setColor(QPalette::Text, Qt::white);
             ui_palette.setColor(QPalette::Button, QColor(90, 60, 30));
             ui_palette.setColor(QPalette::ButtonText, Qt::white);
@@ -1487,7 +1546,7 @@ use the default given below.", this);
             ui_palette.setColor(QPalette::Base, QColor(60, 30, 60));
             ui_palette.setColor(QPalette::AlternateBase, QColor(40, 20, 40));
             ui_palette.setColor(QPalette::ToolTipBase, Qt::white);
-            ui_palette.setColor(QPalette::ToolTipText, Qt::white);
+            ui_palette.setColor(QPalette::ToolTipText, Qt::black);
             ui_palette.setColor(QPalette::Text, Qt::white);
             ui_palette.setColor(QPalette::Button, QColor(60, 30, 60));
             ui_palette.setColor(QPalette::ButtonText, Qt::white);
@@ -1605,8 +1664,8 @@ int main(int argc, char* argv[])
     explorer.CreateUI();
     
     VirtualKeyboard QKeyboard;
-    QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
-    //QKeyboard.showMaximized();
+    //QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
+    QKeyboard.showMaximized();
 
     // Pass the window object to the gamepad task to handle virtual keyboard input
     //explorer.SetQKeyboard(&QKeyboard);

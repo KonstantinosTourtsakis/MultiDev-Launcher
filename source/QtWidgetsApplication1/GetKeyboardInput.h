@@ -6,11 +6,14 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPushButton>
-#include <QListWidget>
 
 
 extern int screen_width;
 extern int screen_height;
+extern bool getting_input;
+extern int current_row, current_column;
+
+
 
 
 int PercentToWidth(const double percentage);
@@ -18,7 +21,9 @@ int PercentToHeight(const double percentage);
 
 
 
-extern bool getting_input;
+
+
+
 
 
 
@@ -42,12 +47,40 @@ public:
 private:
     QLineEdit* virtual_input;
     QLabel* label_instructions;
-
+    QGridLayout* layout_keyboard;
+    QString current_char = "h";
     bool caps_lock = false;
+
+
+
+    QWidget* widgetAt(QGridLayout* layout, int row, int column)
+    {
+        // Iterate over all items in the layout
+        for (int i = 0; i < layout->count(); ++i)
+        {
+            QLayoutItem* item = layout->itemAt(i);
+
+            if (item->widget())
+            {
+                int r, c, rs, cs;
+                layout->getItemPosition(i, &r, &c, &rs, &cs);
+                if (r == row && c == column)
+                {
+                    return item->widget();
+                }
+            }
+        }
+
+        return nullptr; // No widget at the specified position
+    }
+
+
 
 
     void CreateKeyboardUI()
     {
+        
+        
         QWidget* centralWidget = new QWidget(this);
         setCentralWidget(centralWidget);
         QFont font("Arial", 18);
@@ -55,12 +88,12 @@ private:
         QVBoxLayout* main_layout = new QVBoxLayout(centralWidget);
         virtual_input->setFixedSize(PercentToWidth(100.00), PercentToHeight(3.00));
         virtual_input->setFont(font);
-        
+
         main_layout->addWidget(virtual_input);
 
-
-        QGridLayout* layout = new QGridLayout();
-        main_layout->addLayout(layout);
+        layout_keyboard = new QGridLayout();
+        
+        main_layout->addLayout(layout_keyboard);
 
 
         const QStringList UpperKeyLayout
@@ -83,50 +116,6 @@ private:
         QStringList KeyLayout = caps_lock ? UpperKeyLayout : LowerKeyLayout;
 
 
-        /*
-        int row = 0, column = 0;
-        QListWidget* keys_list = new QListWidget(this);
-        keys_list->setFixedSize(400, 200);
-        keys_list->setIconSize(QSize(64, 64)); // Set the size of the icons
-
-        for (const QString& text : KeyLayout)
-        {
-
-
-            QListWidgetItem* item = new QListWidgetItem(text);
-
-            keys_list->addItem(item);
-
-            
-            
-            
-            column++;
-
-
-            if (column == 10)
-            {
-                column = 0;
-                row++;
-            }
-
-        }
-
-
-
-        //keys_list->setViewMode(QListWidget::IconMode);
-        //keys_list->setMovement(QListView::Static);
-        //keys_list->setItemAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-        //keys_list->setCurrentItem(keys_list->itemAt(QPoint(2, 5)));
-        //keys_list->setSpacing(40);
-        
-        
-        layout->addWidget(keys_list, 0, 0, 10, 10, Qt::AlignCenter);
-        //layout->addWidget(keys_list);
-
-
-        connect(keys_list, &QListWidget::itemActivated, this, &VirtualKeyboard::OnKeyClicked);
-        */
-
         
         // counting rows and columns
         int row = 0, column = 0;
@@ -136,14 +125,21 @@ private:
             QPushButton* button = new QPushButton(text);
             button->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
             button->setFont(font);
+            
+            //button->setFocusPolicy(Qt::ClickFocus);
+            if (row == current_row && column == current_column)
+            {
+                button->setFixedSize(PercentToWidth(1.60), PercentToHeight(2.24));
+                current_char = text;
+            }
 
             connect(button, &QPushButton::pressed, this, [=]()
                 {
                     virtual_input->insert(text);
                 });
 
-            layout->addWidget(button, row, column);
-            
+            layout_keyboard->addWidget(button, row, column);
+
             if (row == 2 && column == 5)
             {
                 button->setChecked(true);
@@ -157,7 +153,7 @@ private:
                 row++;
             }
 
-            
+
         }
 
         // Creating the last row of buttons
@@ -184,46 +180,39 @@ private:
             });
         column = 3;
         row++;
-        layout->addWidget(button_back, row, column);
+        layout_keyboard->addWidget(button_back, row, column);
         connect(button_clear, &QPushButton::clicked, this, [=]()
             {
                 virtual_input->clear();
             });
         column++;
-        layout->addWidget(button_clear, row, column);
+        layout_keyboard->addWidget(button_clear, row, column);
 
         connect(button_left, &QPushButton::clicked, this, [=]()
             {
                 virtual_input->cursorBackward(true, 1);
             });
         column++;
-        layout->addWidget(button_left, row, column);
+        layout_keyboard->addWidget(button_left, row, column);
 
         connect(button_right, &QPushButton::clicked, this, [=]()
             {
                 virtual_input->cursorForward(true, 1);
             });
         column++;
-        layout->addWidget(button_right, row, column);
+        layout_keyboard->addWidget(button_right, row, column);
 
 
 
         label_instructions = new QLabel("Instructions: Click on the keys to input text", this);
         label_instructions->setFont(font);
         main_layout->addWidget(label_instructions);
+
+        setFixedSize(1280, 720);
     }
 
-private slots:
-    void OnKeyClicked(QListWidgetItem* item)
-    {
-        if (item)
-        {
-            virtual_input->insert(item->text());
-        }
-    }
 
 };
-
 
 
 

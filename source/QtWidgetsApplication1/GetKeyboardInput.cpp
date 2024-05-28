@@ -4,10 +4,10 @@
 #include "GetKeyboardInput.h"
 #include "Controller.h"
 #include "Controller.h"
+#include "keyboard.h"
 
 
-
-
+#include <iostream>
 
 
 
@@ -33,6 +33,11 @@ int PercentToHeight(const double percentage)
 
 
 
+
+
+int current_row = 2, current_column = 5;
+
+
 void VirtualKeyboard::SendKeyboardInput()
 {
     
@@ -53,13 +58,103 @@ void VirtualKeyboard::SendKeyboardInput()
 
         input_init = false;
     }
-    
+
+
+
+
+
+    if (user->IsButtonJustDown(GAMEPAD_DPAD_UP))
+    {
+        if (current_row == 0)
+        {
+            current_row = 3;
+        }
+        else
+        {
+            current_row--;
+        }
+        
+        QWidget* widget = widgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
+        if (widget)
+        {
+            widget->setFocus();
+        }
+        std::cout << "Row: " << current_row << "\nColumn: " << current_column << std::endl;
+        
+        CreateKeyboardUI();
+    }
+
+    if (user->IsButtonJustDown(GAMEPAD_DPAD_DOWN))
+    {
+        if (current_row == 3)
+        {
+            current_row = 0;
+        }
+        else
+        {
+            current_row++;
+        }
+        QWidget* widget = widgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
+        if (widget)
+        {
+            widget->setFocus();
+        }
+        std::cout << "Row: " << current_row << "\nColumn: " << current_column << std::endl;
+        
+        CreateKeyboardUI();
+    }
+
+    if (user->IsButtonJustDown(GAMEPAD_DPAD_LEFT))
+    {
+        if (current_column == 0)
+        {
+            current_column = 9;
+        }
+        else
+        {
+            current_column--;
+        }
+        QWidget* widget = widgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
+        if (widget)
+        {
+            widget->setFocus();
+        }
+
+        std::cout << "Row: " << current_row << "\nColumn: " << current_column << std::endl;
+        
+        CreateKeyboardUI();
+        
+    }
+
+    if (user->IsButtonJustDown(GAMEPAD_DPAD_RIGHT))
+    {
+        if (current_column == 9)
+        {
+            current_column = 0;
+        }
+        else
+        {
+            current_column++;
+        }
+        QWidget* widget = widgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
+        if (widget)
+        {
+            widget->setFocus();
+        }
+        std::cout << "Row: " << current_row << "\nColumn: " << current_column << std::endl;
+        
+        CreateKeyboardUI();
+    }
+
+
+
 
 
     // Space character
     if (user->IsButtonJustDown(GAMEPAD_A))
     {
-        SimulateKey(VK_SPACE);
+        //SimulateKey(VK_SPACE);
+        virtual_input->insert(current_char);
     }
 
     // Space character
