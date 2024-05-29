@@ -8,3 +8,40 @@
 Οι συγκεκριμένες συσκευές είναι χειριστήρια Xbox οποιασδήποτε γεννιάς.
 
 \section{Η κλάση του χειριστηρίου}
+
+Για την διαχείρηση των εντολών εισόδου του χειριστηρίου έχει δημιουργηθεί
+η αντίστοιχη κλάση. Η κλάση περιλαμβάνει δεδομένα που αφορούν καταστάσεις
+του χειριστηρίου, μεθόδους σχετικά με τον έλεγχο καταστάσεων των κουμπιών
+του αλλά και μεθόδους που ελέγχουν την συνδεσιμότητα της συσκευής. Παρακάτω
+βλέπουμε αναλυτικότερα τον ορισμό της κλάσης και τα στοιχεία που την απαρτίζουν.
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+class XBOXController
+{
+private:
+    XINPUT_STATE controller_state;
+    int controller_number;
+public:
+    float left_trigger = 0.0f;
+    float right_trigger = 0.0f;
+
+    XBOXController(int playerNumber);
+    XINPUT_STATE GetState();
+    bool IsConnected();
+    void Vibrate(const int leftVal = 0, const int rightVal = 0);
+    SHORT GetLeftAnalogX();
+    SHORT GetLeftAnalogY();
+    SHORT GetRightAnalogX();
+    SHORT GetRightAnalogY();
+    bool IsButtonDown(const int button);
+    bool IsButtonJustUp(const int button);
+    bool IsButtonJustDown(const int button);
+};
+\end{lstlisting}
+
+
+
+
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+\end{lstlisting}

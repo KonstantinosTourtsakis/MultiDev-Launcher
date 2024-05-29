@@ -160,7 +160,7 @@ public:
         // Controller task loop - Perform task constantly
         timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, &ApplicationExplorer::TaskGamepadNavigation);
-        timer->start(0);
+        timer->start();
 
     }
 
@@ -302,7 +302,7 @@ private:
         tabs->addTab(tab_all_apps, "Applications");
         tabs->addTab(tab_favorites, "Favorites");
         //tabs->addTab(tab_favorites, "Popular");
-        tabs->addTab(tab_settings, "Settings");
+        tabs->addTab(tab_settings, "Settings & About");
         //tabs->addTab(tab_intro, "Welcome!");
         
         layout_root->addWidget(tabs);
@@ -333,6 +333,7 @@ private:
         QPushButton* button_add_dir = new QPushButton("Add Directory");
         QPushButton* button_remove_dir = new QPushButton("Remove Directory");
         QPushButton* button_delete_profile = new QPushButton("Delete Current Profile");
+        QPushButton* button_virtual_keyb = new QPushButton("Open Virtual Keyboard");
         button_delete_profile->setStyleSheet("text-align: left; color: red;");
         button_remove_dir->setStyleSheet("color: red;");
         button_add_dir->setToolTip("Add a directory in which the launcher will be looking for applications to execute.\
@@ -381,7 +382,39 @@ The launcher is looking for executables and local or internet shortcut files.");
         QHBoxLayout* layout_dir_buttons = new QHBoxLayout();
         layout_dir_buttons->addWidget(button_add_dir);
         layout_dir_buttons->addWidget(button_remove_dir);
+
+
+        QVBoxLayout* layout_about = new QVBoxLayout();
+        // Create a QLabel for the header
+        QLabel* header_keyb_launcher = new QLabel("Keyboard application launcher");
+        header_keyb_launcher->setStyleSheet("font-size: 16pt; font-weight: bold;");
+
+        // Create a QLabel for the regular text
+        QLabel* label_keyb_launcher = new QLabel("\
+A keyboard application launcher is hidden within the functionality of this application. Keyboard users can use the\n\
+ application launcher which is designed specifically for keyboard use only. In order to access the window with the\n\
+ functionality mentioned you need to press CTRL + Space. Then you'll see a window with an input field. Then you can\n\
+ proceed with typing the application that you're looking for and finally use the arrows to navigate through the\n\
+ applications that have been found below. The application will be executed by hitting Return (Enter) key on the\n\
+ keyboard.The keyboard application launcher is looking for applications in the same directories given by the user\n\
+ in Settings.");
+        QLabel* header_controller_nav = new QLabel("Xbox Gamepad navigation");
+        header_keyb_launcher->setStyleSheet("font-size: 16pt; font-weight: bold;");
+
+        QLabel* label_controller_nav = new QLabel("\
+The final device supported from this application is the Xbox Gamepad. Much like mouses, the Xbox controllers are\n\
+ taking advantage of the main application window in which all application are displayed as icons. Below you can learn\n\
+ how to use the application using a controller handled by XInput.");
         
+
+
+        //layout_about->addWidget(header_keyb_launcher);
+        //layout_about->addWidget(label_keyb_launcher);
+        //layout_about->addWidget(header_controller_nav);
+        //layout_about->addWidget(label_controller_nav);
+
+
+        layout_settings->addWidget(button_virtual_keyb);
         layout_settings->addWidget(chb_file_extension);
         layout_settings->addWidget(label_profile);
         layout_settings->addWidget(cb_profile_switch);
@@ -392,6 +425,9 @@ The launcher is looking for executables and local or internet shortcut files.");
         layout_settings->addWidget(label_directories);
         layout_settings->addWidget(directory_list);
         layout_settings->addLayout(layout_dir_buttons);
+        layout_settings->addLayout(layout_about);
+
+        
 
 
 
@@ -462,6 +498,7 @@ The launcher is looking for executables and local or internet shortcut files.");
             ApplicationExplorer::UpdateListWidget(favorites_list, list_favorites); 
             });
         
+        //connect(button_virtual_keyb, QPushButton::clicked, this, &[] {});
 
 
         //// Delay before keyboard input triggers application search
@@ -566,19 +603,26 @@ All data in this profile will be permanently deleted.";
         search_layout = new QVBoxLayout();
         //QVBoxLayout* sea_layout = new QVBoxLayout();
         search_window.setLayout(search_layout);
-        search_window.resize(PercentToWidth(7.81), PercentToHeight(1.85));
-        search_window.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+        search_window.setStyleSheet("background-color: transparent;");
+        search_window.resize(400, 100);//(PercentToWidth(7.81), PercentToHeight(1.85));
+        //search_window.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+        search_window.setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+        //search_window.setWindowFlags(Qt::Popup);
         
 
         // Create UI elements
         search_bar = new QLineEdit(this);
-        search_bar->setFixedHeight(PercentToHeight(2.32));
-        search_bar->setFont(font);
+        search_bar->setFixedHeight(70);//(PercentToHeight(2.32));
+        search_bar->setFont(QFont("Arial", 26));
+        //search_bar->setFocusPolicy()
+
         search_list->setViewMode(QListView::ListMode);
         search_list->hide();
-        search_list->setFixedHeight(PercentToHeight(2.32));
+        search_list->setFixedHeight(120);//(PercentToHeight(2.32));
         search_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         search_list->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        
+        search_list->setFont(font);
         
         search_layout->addWidget(search_bar);
         search_layout->addWidget(search_list);
@@ -613,13 +657,16 @@ All data in this profile will be permanently deleted.";
             }
             else
             {
-                search_bar->clear();
+                
+
                 search_window.show();
-                //search_window.activateWindow();
                 //search_window.raise();
-                search_window.setFocus();
-                search_bar->setEnabled(true);
+                //search_window.activateWindow();
+                //search_window.setFocus();
+                
+                //search_bar->setEnabled(true);
                 search_bar->setFocus();
+                search_bar->clear();
             }
 
             return;
@@ -629,8 +676,10 @@ All data in this profile will be permanently deleted.";
 
         if (!search_list->hasFocus() && (IsKeyJustDown(VK_DOWN) || IsKeyJustDown(VK_UP)))
         {
-            search_list->setFocus();
+            //search_list->setFocusPolicy(Qt::NoFocus);
             search_list->setCurrentRow(0);
+            
+            search_list->setFocus();
         }
 
 
@@ -700,16 +749,16 @@ All data in this profile will be permanently deleted.";
         if (text.isEmpty())
         {
             search_list->hide();
-            //search_window.resize(300, 40);
+            search_window.resize(400, 100);
             search_layout->update();
             search_list->update();
-            std::cout << "Case 1" << std::endl;
             return;
         }
 
         int max_results = 10;
         int count = 0;
 
+        
         for (int i = 0; i < list_widget->count(); ++i)
         {
             QListWidgetItem* item = list_widget->item(i);
@@ -749,15 +798,11 @@ All data in this profile will be permanently deleted.";
 
         if (search_list->count() == 0)
         {
-            std::cout << "Case 2" << std::endl;
             search_list->hide();
-            //search_window.resize(300, 40);
         }
         else
         {
-            std::cout << "Case 3" << std::endl;
             search_list->show();
-            //search_window.resize(300, 400);
         }
 
         search_layout->update();
@@ -1209,7 +1254,7 @@ All data in this profile will be permanently deleted.";
                 }
                 
             }
-            else 
+            else if(file_path.endsWith(".exe", Qt::CaseInsensitive))
             {
                 // If it's not a shortcut create a QProcess and start it
                 QProcess* process = new QProcess();
@@ -1225,6 +1270,10 @@ All data in this profile will be permanently deleted.";
                 QObject::connect(process, &QProcess::errorOccurred, [](QProcess::ProcessError error) {
                     std::cout << "Error occurred:" << error;
                     });
+            }
+            else
+            {
+                return;
             }
 
             app_usage_freq[file_name]++;
@@ -1636,6 +1685,28 @@ use the default given below.", this);
 
 
 
+
+class Worker : public QObject 
+{
+
+public slots:
+    void DoWork() 
+    {
+        while (true) 
+        {
+            // Your loop code here
+            qDebug() << "Worker iteration";
+            QThread::sleep(1); // Sleep to simulate some work and prevent busy-waiting
+            // Break the loop if a condition is met
+            // if (conditionToStop) break;
+        }
+
+        emit finished();
+    }
+
+signals:
+    void finished();
+};
 
 
 
