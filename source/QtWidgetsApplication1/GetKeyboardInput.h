@@ -6,6 +6,10 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QClipboard>
+#include <QApplication>
+
+#include "Controller.h"
 
 
 extern int screen_width;
@@ -127,7 +131,7 @@ private:
             button->setFont(font);
             
             //button->setFocusPolicy(Qt::ClickFocus);
-            if (row == current_row && column == current_column)
+            if (user->IsConnected() && row == current_row && column == current_column)
             {
                 button->setFixedSize(PercentToWidth(1.60), PercentToHeight(2.24));
                 current_char = text;
@@ -157,10 +161,23 @@ private:
         }
 
         // Creating the last row of buttons
+        QPushButton* button_copy = new QPushButton("Copy Input");
+        QPushButton* button_caps = new QPushButton("Caps Lock");
+        QPushButton* button_space = new QPushButton("Space");
         QPushButton* button_back = new QPushButton("Backspace");
         QPushButton* button_clear = new QPushButton("Clear");
         QPushButton* button_left = new QPushButton("<");
         QPushButton* button_right = new QPushButton(">");
+
+
+        button_copy->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
+        button_copy->setFont(font);
+
+        button_caps->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
+        button_caps->setFont(font);
+
+        button_space->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
+        button_space->setFont(font);
 
         button_back->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
         button_back->setFont(font);
@@ -173,35 +190,62 @@ private:
 
         button_right->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
         button_right->setFont(font);
+        
+
+        connect(button_copy, &QPushButton::clicked, this, [=]()
+            {
+                QClipboard* clipboard = QGuiApplication::clipboard();
+                clipboard->setText(virtual_input->text());
+            });
+
+        connect(button_caps, &QPushButton::clicked, this, [=]()
+            {
+                caps_lock = !caps_lock;
+                CreateKeyboardUI();
+            });
+        
+        connect(button_space, &QPushButton::clicked, this, [=]()
+            {
+                virtual_input->insert(" ");
+            });
 
         connect(button_back, &QPushButton::clicked, this, [=]()
             {
                 virtual_input->backspace();
             });
-        column = 3;
-        row++;
-        layout_keyboard->addWidget(button_back, row, column);
+        
         connect(button_clear, &QPushButton::clicked, this, [=]()
             {
                 virtual_input->clear();
             });
-        column++;
-        layout_keyboard->addWidget(button_clear, row, column);
 
         connect(button_left, &QPushButton::clicked, this, [=]()
             {
                 virtual_input->cursorBackward(true, 1);
             });
-        column++;
-        layout_keyboard->addWidget(button_left, row, column);
-
+        
         connect(button_right, &QPushButton::clicked, this, [=]()
             {
                 virtual_input->cursorForward(true, 1);
             });
+        
+        column = 0;
+        row++;
+
+
+        layout_keyboard->addWidget(button_copy, row, column);
+        column++;
+        layout_keyboard->addWidget(button_caps, row, column);
+        column++;
+        layout_keyboard->addWidget(button_space, row, column);
+        column++;
+        layout_keyboard->addWidget(button_back, row, column);
+        column++;
+        layout_keyboard->addWidget(button_clear, row, column);
+        column++;
+        layout_keyboard->addWidget(button_left, row, column);
         column++;
         layout_keyboard->addWidget(button_right, row, column);
-
 
 
         label_instructions = new QLabel("Instructions: Click on the keys to input text", this);

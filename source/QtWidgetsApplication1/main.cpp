@@ -302,7 +302,7 @@ private:
         tabs->addTab(tab_all_apps, "Applications");
         tabs->addTab(tab_favorites, "Favorites");
         //tabs->addTab(tab_favorites, "Popular");
-        tabs->addTab(tab_settings, "Settings & About");
+        tabs->addTab(tab_settings, "Settings");
         //tabs->addTab(tab_intro, "Welcome!");
         
         layout_root->addWidget(tabs);
@@ -330,8 +330,8 @@ private:
         QLabel* label_app_theme = new QLabel("Theme");
         QLabel* label_profile = new QLabel("Profile");
 
-        QPushButton* button_add_dir = new QPushButton("Add Directory");
-        QPushButton* button_remove_dir = new QPushButton("Remove Directory");
+        QPushButton* button_add_dir = new QPushButton("Add Directory or Application");
+        QPushButton* button_remove_dir = new QPushButton("Remove Selected Item");
         QPushButton* button_delete_profile = new QPushButton("Delete Current Profile");
         QPushButton* button_virtual_keyb = new QPushButton("Open Virtual Keyboard");
         button_delete_profile->setStyleSheet("text-align: left; color: red;");
@@ -498,7 +498,7 @@ The final device supported from this application is the Xbox Gamepad. Much like 
             ApplicationExplorer::UpdateListWidget(favorites_list, list_favorites); 
             });
         
-        //connect(button_virtual_keyb, QPushButton::clicked, this, &[] {});
+        connect(button_virtual_keyb, &QPushButton::clicked, this, [this] {QKeyboard->showMaximized(); });
 
 
         //// Delay before keyboard input triggers application search
@@ -1736,8 +1736,7 @@ int main(int argc, char* argv[])
     
     VirtualKeyboard QKeyboard;
     //QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
-    QKeyboard.showMaximized();
-
+    
     // Pass the window object to the gamepad task to handle virtual keyboard input
     //explorer.SetQKeyboard(&QKeyboard);
     explorer.QKeyboard = &QKeyboard;
