@@ -189,6 +189,7 @@ public:
 
     void OnApplicationLaunch()
     {
+        showMaximized();
         QEventLoop loop;
         QTimer::singleShot(5, &loop, &QEventLoop::quit);
 
@@ -197,6 +198,7 @@ public:
 
         // Fixes vertical icons bug
         SearchApplication(line_all_search, list_widget, applications_list);
+        
     }
 
 private:
@@ -221,6 +223,8 @@ private:
     QComboBox* cb_theme;
     QComboBox* cb_profile_switch = new QComboBox(this);
     QCheckBox* chb_file_extension;
+    QCheckBox* chb_icon_mode;
+    QCheckBox* chb_wrapping;
 
     QTimer timer_search;
     QTimer* communication_task_timer;
@@ -311,7 +315,7 @@ private:
 
 
         // List widget custom arguments
-        list_favorites->setViewMode(QListWidget::IconMode);
+        list_favorites->setViewMode(QListView::IconMode);
         list_favorites->setMovement(QListView::Static);
         list_favorites->setWordWrap(true);
         list_favorites->setWrapping(true);
@@ -358,7 +362,11 @@ The launcher is looking for executables and local or internet shortcut files.");
 
         // File extension checkbox
         chb_file_extension = new QCheckBox("Include File Extension", this);
-        chb_file_extension->setToolTip("Include file extension theme in application icons.");
+        chb_file_extension->setToolTip("Include file extension in application text.");
+        chb_icon_mode = new QCheckBox("Icon Mode", this);
+        chb_icon_mode->setToolTip("Display items as icons instead of lists.");
+        chb_wrapping = new QCheckBox("Wrapping", this);
+        chb_wrapping->setToolTip("Wrap list items.");
         
         
         
@@ -416,6 +424,8 @@ The final device supported from this application is the Xbox Gamepad. Much like 
 
         layout_settings->addWidget(button_virtual_keyb);
         layout_settings->addWidget(chb_file_extension);
+        layout_settings->addWidget(chb_icon_mode);
+        layout_settings->addWidget(chb_wrapping);
         layout_settings->addWidget(label_profile);
         layout_settings->addWidget(cb_profile_switch);
         layout_settings->addWidget(button_delete_profile);
@@ -448,7 +458,7 @@ The final device supported from this application is the Xbox Gamepad. Much like 
         
 
         // List widget custom arguments
-        list_widget->setViewMode(QListWidget::IconMode);
+        list_widget->setViewMode(QListView::IconMode);
         list_widget->setMovement(QListView::Static);
         list_widget->setWordWrap(true);
         list_widget->setWrapping(true);
@@ -496,6 +506,24 @@ The final device supported from this application is the Xbox Gamepad. Much like 
         connect(chb_file_extension, &QCheckBox::stateChanged, this, [this] {
             ApplicationExplorer::UpdateListWidget(applications_list, list_widget); 
             ApplicationExplorer::UpdateListWidget(favorites_list, list_favorites); 
+            });
+        connect(chb_icon_mode, &QCheckBox::stateChanged, this, [this] {
+            if (chb_icon_mode->isChecked())
+            {
+                list_widget->setViewMode(QListWidget::IconMode);
+                list_favorites->setViewMode(QListWidget::IconMode);
+            }
+            else
+            {
+                list_widget->setViewMode(QListWidget::ListMode);
+                list_favorites->setViewMode(QListWidget::ListMode);
+            }
+            });
+
+
+        connect(chb_wrapping, &QCheckBox::stateChanged, this, [this] {
+            list_widget->setWrapping(chb_wrapping->isChecked());
+            list_favorites->setWrapping(chb_wrapping->isChecked());
             });
         
         connect(button_virtual_keyb, &QPushButton::clicked, this, [this] {QKeyboard->showMaximized(); });
@@ -639,7 +667,7 @@ All data in this profile will be permanently deleted.";
         DirectoryListUpdated();
         UpdateListWidget(applications_list, list_widget);
 
-
+        
     }
 
     
@@ -818,7 +846,8 @@ All data in this profile will be permanently deleted.";
         settings.beginGroup(cb_profile_switch->itemText(cb_profile_switch->currentIndex()));
 
         settings.setValue("Theme", cb_theme->currentIndex());
-        //settings.setValue("popular_apps", popular_apps);
+        settings.setValue("icon_mode", chb_icon_mode->isChecked());
+        settings.setValue("wrapping", chb_wrapping->isChecked());
         
         // Convert the QMap to a QVariantMap
         QVariantMap map;
@@ -880,6 +909,14 @@ All data in this profile will be permanently deleted.";
         {
             directory_list->addItem(dir);
         }
+
+
+        chb_icon_mode->setChecked(settings.value("icon_mode", true).toBool());
+        chb_wrapping->setChecked(settings.value("wrapping", true).toBool());
+        list_widget->setViewMode(chb_icon_mode->isChecked() ? QListWidget::IconMode : QListWidget::ListMode);
+        list_favorites->setViewMode(chb_icon_mode->isChecked() ? QListWidget::IconMode : QListWidget::ListMode);
+        list_widget->setWrapping(chb_wrapping->isChecked());
+        list_favorites->setWrapping(chb_wrapping->isChecked());
 
         //DirectoryListUpdated();
         //UpdateListWidget(applications_list, list_widget);
@@ -1726,7 +1763,7 @@ int main(int argc, char* argv[])
     explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
     explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
     explorer.resize(800, 600);
-    explorer.showMaximized();
+    
     // Storing screen resolution
     screen_width = GetSystemMetrics(SM_CXSCREEN);
     screen_height = GetSystemMetrics(SM_CYSCREEN);
@@ -1736,13 +1773,11 @@ int main(int argc, char* argv[])
     
     VirtualKeyboard QKeyboard;
     //QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
-    
-    // Pass the window object to the gamepad task to handle virtual keyboard input
-    //explorer.SetQKeyboard(&QKeyboard);
     explorer.QKeyboard = &QKeyboard;
     
-
-
+    
+    
+    
     return app.exec();
 }
 
