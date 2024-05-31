@@ -274,9 +274,6 @@ private:
         //QWidget* tab_popular = new QWidget();
         QWidget* tab_settings = new QWidget();
        
-        //tab_all_apps->setToolTip("A list with all of your applications");
-        //tab_favorites->setToolTip("A list with your favorite applications");
-        //tab_settings->setToolTip("Personalize the launcher");
         
 
         QComboBox* cb_sort_by = new QComboBox(this);
@@ -305,9 +302,8 @@ private:
         // Add tabs to tab widget
         tabs->addTab(tab_all_apps, "Applications");
         tabs->addTab(tab_favorites, "Favorites");
-        //tabs->addTab(tab_favorites, "Popular");
         tabs->addTab(tab_settings, "Settings");
-        //tabs->addTab(tab_intro, "Welcome!");
+        
         
         layout_root->addWidget(tabs);
 
@@ -338,6 +334,7 @@ private:
         QPushButton* button_remove_dir = new QPushButton("Remove Selected Item");
         QPushButton* button_delete_profile = new QPushButton("Delete Current Profile");
         QPushButton* button_virtual_keyb = new QPushButton("Open Virtual Keyboard");
+
         button_delete_profile->setStyleSheet("text-align: left; color: red;");
         button_remove_dir->setStyleSheet("color: red;");
         button_add_dir->setToolTip("Add a directory in which the launcher will be looking for applications to execute.\
@@ -933,6 +930,7 @@ All data in this profile will be permanently deleted.";
         
         settings.beginGroup("application_default");
         
+
         settings.setValue("last_profile", cb_profile_switch->currentIndex());
         settings.setValue("is_first_launch", is_first_launch);
 
@@ -1723,27 +1721,6 @@ use the default given below.", this);
 
 
 
-class Worker : public QObject 
-{
-
-public slots:
-    void DoWork() 
-    {
-        while (true) 
-        {
-            // Your loop code here
-            qDebug() << "Worker iteration";
-            QThread::sleep(1); // Sleep to simulate some work and prevent busy-waiting
-            // Break the loop if a condition is met
-            // if (conditionToStop) break;
-        }
-
-        emit finished();
-    }
-
-signals:
-    void finished();
-};
 
 
 
@@ -1772,12 +1749,14 @@ int main(int argc, char* argv[])
     explorer.CreateUI();
     
     VirtualKeyboard QKeyboard;
+    
     //QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
     explorer.QKeyboard = &QKeyboard;
     
     
     
     
+    explorer.showMaximized();
     return app.exec();
 }
 

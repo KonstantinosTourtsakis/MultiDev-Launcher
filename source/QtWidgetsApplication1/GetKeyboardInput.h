@@ -119,19 +119,18 @@ private:
 
         QStringList KeyLayout = caps_lock ? UpperKeyLayout : LowerKeyLayout;
 
-
+        
         
         // counting rows and columns
         int row = 0, column = 0;
         for (const QString& text : KeyLayout)
         {
-
             QPushButton* button = new QPushButton(text);
             button->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
             button->setFont(font);
             
-            //button->setFocusPolicy(Qt::ClickFocus);
-            if (user->IsConnected() && row == current_row && column == current_column)
+            
+            if (row == current_row && column == current_column && getting_input)
             {
                 button->setFixedSize(PercentToWidth(1.60), PercentToHeight(2.24));
                 current_char = text;
@@ -159,7 +158,7 @@ private:
 
 
         }
-
+        
         // Creating the last row of buttons
         QPushButton* button_copy = new QPushButton("Copy Input");
         QPushButton* button_caps = new QPushButton("Caps Lock");
@@ -191,7 +190,7 @@ private:
         button_right->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
         button_right->setFont(font);
         
-
+        
         connect(button_copy, &QPushButton::clicked, this, [=]()
             {
                 QClipboard* clipboard = QGuiApplication::clipboard();
@@ -247,12 +246,21 @@ private:
         column++;
         layout_keyboard->addWidget(button_right, row, column);
 
-
-        label_instructions = new QLabel("Instructions: Click on the keys to input text", this);
+        if (getting_input)
+        {
+            label_instructions = new QLabel("A: type key   Y: insert space   X: Backspace   Start: send input", this);
+        }
+        else
+        {
+            label_instructions = new QLabel("Click on the keys and then use the copy button to save input to clipboard", this);
+        }
+        
         label_instructions->setFont(font);
-        main_layout->addWidget(label_instructions);
+        main_layout->addWidget(label_instructions, 0, Qt::AlignCenter);
 
         setFixedSize(1280, 720);
+
+        
     }
 
 
