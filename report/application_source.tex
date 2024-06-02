@@ -1,0 +1,115 @@
+
+
+
+
+
+
+
+\section{Ο κώδικας του λογισμικού}
+
+Όπως αναφέρθηκε στην εισαγωγή το παρόν πρόγραμμα έχει γραφεί σε C++. Σκοπός
+είναι η δημιουργία μιας desktop εφαρμογής σε Qt6 περιβάλλον η οποία δεν
+θα υλοποιεί τις ανάγκες της εφαρμογής και θα αξιοποιεί τους πόρους του
+συστήματος για καλύτερες αποδόσεις. Στην συνέχεια θα περιγραφεί ο τρόπος
+με τον οποίο λειτουργεί η εφαρμογή αναφέροντας τις σημαντικότερες διαδικασίες
+που αναγράφονται σε κώδικα και εξηγούν πως φτάνουμε στο τελικό αποτέλεσμα
+που είδαμε προηγουμένως.
+
+
+\section{Η συνάρτηση main}
+Κάθε πρόγραμμα γραμμένο σε C++ ξεκινάει με την συνάρτηση main να αποτελεί το
+σημείο εκκίνησης του προγράμματος. Επομένως αξίζει να δούμε αναλυτικότερα τι
+συμβαίνει σε αυτό το κομμάτι του κώδικα για να μπορέσουμε να κατανοήσουμε
+καλύτερα την ροή και τις ενέργειες του προγράμματος.
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+int main(int argc, char* argv[]) 
+{
+    QApplication app(argc, argv);
+    
+    ApplicationExplorer explorer(app);
+    explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
+    explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
+    explorer.resize(800, 600);
+    
+    // Storing screen resolution
+    screen_width = GetSystemMetrics(SM_CXSCREEN);
+    screen_height = GetSystemMetrics(SM_CYSCREEN);
+    
+    explorer.CreateUI();
+    
+    VirtualKeyboard QKeyboard;
+    
+    //QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
+    explorer.QKeyboard = &QKeyboard;
+    
+
+    explorer.showMaximized();
+    return app.exec();
+}
+\end{lstlisting}
+
+Αρχικά δημιουργείται το αντικείμενο της εφαρμογής που δέχεται τα arguments με τα οποία εκτελέστηκε.
+Στην συνέχεια δημιουργείται ένα αντικείμενο τύπου ApplicationExplorer. Το αντικείμενο αυτό αποτελεί
+το βασικό παράθυρο της εφαρμογής το οποίο κληρονομεί την κλάση QWidget και χτίζει τα αντικείμενα της
+γραφικής διεπαφής. Στην συνέχεια προστίθενται ορισμένα flags στο παράθυρο της εφαρμογής. Μετά αποθηκεύονται
+οι διαστάσεις της οθόνης του χρήστη σε global μεταβλητές οι οποίες θα χρησιμεύσουν στην προσαρμογή των
+διαστάσεων των στοχείων της γραφικής διεπαφής ανάλογα με τις διαστάσεις της οθόνης. Μετά ακολουθεί η
+δημιουργία των γραφικών στοιχείων καλώντας την μέθοδο CreateUI. Η εφαμοργή συνεχίζει με την δημιουργία
+ενός ακόμη αντικειμένου. Αυτήν την φορά η κλάση QWidget κληρονομείται από την κλάση VirtualKeyboard
+η οποία δημιουργεί και διαχειρίζεται το παράθυρο του εικονικού πληκτρολογίου. Στην συνέχεια δημιουργείται
+αντίγραφο της θέσης μνήμης του αντικειμένου αυτού σε μια μεταβλητή της κλάσης του αρχικού παραθύρου με
+σκοπό την επικοινωνία μεταξύ των δύο παραθύρων της εφαρμογής κατά την περιήγηση του χρήστη. Τέλος γίνεται
+κλήση για προβολή του βασικού παραθύρου της εφαρμογής με τις μέγιστες διαστάσεις παραθύρου και μετά
+εκτελείται η επανάληψη της Qt6 εφαρμογής. 
+
+
+\section{Η κλάση του προγράμματος}
+
+
+Μια εφαρμογή που αξιοποιεί τo Qt6 περιλαμβάνει αντικείμενα διαφόρων τύπων ώστε να
+μπορέσει να λειτουργήσει. Όπως τα περισσότερα στοιχεία της εφαρμογής, έτσι και το
+παράθυρο που δημιουργείται για να φιλοξενήσει την γραφική διεπαφή της είναι ένα αντικείμενο. 
+Στην προκειμένη περίπτωση κληρονομείται η κλάση QWidget και στην συνέχεια χρησιμοποιείται 
+ως βάση για την υλοποίηση της εφαρμογής. Παρακάτω βλέπουμε τον ορισμό των χαρακτηριστικών
+της κλάσης και 
+
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+
+\end{lstlisting}
+
+
+
+
+
+\subsection{Ο constructor}
+Παρακάτω βλέπουμε την υλοποίηση του constructor της εφαρμογής στον οποίο δημιουργείται 
+το χρονόμετρο με το οποίο εκτελείται η διεργασία περιήγησης του χειριστηρίου βιντεοπαιχνιδιών.
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+class ApplicationExplorer : public QWidget
+{
+    ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app)
+    {
+        // Controller task loop - Perform task constantly
+        timer = new QTimer(this);
+        connect(timer, &QTimer::timeout, this, &ApplicationExplorer::TaskGamepadNavigation);
+        timer->start();
+
+    }
+};
+\end{lstlisting}
+
+
+
+\subsection{Η μέθοδος SetupUI}
+\subsection{Η μέθοδος UpdateListWidget}
+\subsection{Η μέθοδος ShowCustomContextMenu}
+\subsection{Η μέθοδος SetupUI}
+\subsection{Η μέθοδος SetupUI}
+
+
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+\end{lstlisting}

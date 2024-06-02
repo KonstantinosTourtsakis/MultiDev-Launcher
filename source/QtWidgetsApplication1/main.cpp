@@ -141,7 +141,61 @@ QString RemoveFileExtension(const QString& file_name)
 
 
 
+/*
 
+class ApplicationExplorer : public QWidget
+{
+public:
+    ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app)
+    {
+        
+
+    }
+
+    void CreateUI();
+    void OnApplicationLaunch();
+
+
+
+private:
+    bool is_first_launch = true;
+    QStringList applications_list;
+    QStringList favorites_list;
+    QListWidget* list_widget = new QListWidget(this);
+    QListWidget* list_favorites = new QListWidget(this);
+    QListWidget* search_list = new QListWidget(this);
+    QListWidget* list_directories = new QListWidget(this);
+    QVBoxLayout* layout_root = new QVBoxLayout(this);
+    QVBoxLayout* layout_usearch;
+    QLineEdit* search_bar;
+    QTimer* timer;
+
+    void UpdatePopularAppsList();
+    void SetupUI();
+    void TaskHandleDevicesUICommunication();
+    // Searching for the ULauncher-like window
+    void SearchResults(const QString& text);
+    void SaveProfile();
+    void LoadProfile();
+    void SaveAppData();
+    void LoadAppData();
+    void OnApplicationExit();
+    void ShowContextMenu(const QPoint& pos, QListWidget* list);
+    void ExploreDirectoryFiles(const QString& path);
+    void UpdateListWidget(QStringList current_list, QListWidget* list_wid);
+        // Start or restart the timer when text changes - helps avoiding performance issues
+    void SearchApplication(QLineEdit* line, QListWidget* list_wid, QStringList app_list);
+    void ExecuteApplication(QListWidgetItem* item);
+    void DirectoryListUpdated();
+    void SetupIntroScreen();
+    void SortingChanged(const QString& text);
+    void UpdateUIPalette(const QString& text);
+    void ControllerNavigation();
+    void TaskGamepadNavigation();
+};
+
+
+*/
 
 
 
@@ -155,18 +209,15 @@ public:
     VirtualKeyboard* QKeyboard;
     ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app)
     {
-        
-        
         // Controller task loop - Perform task constantly
         timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, &ApplicationExplorer::TaskGamepadNavigation);
         timer->start();
-
     }
 
 
     void CreateUI() 
-    { 
+    {
 
         LoadAppData();
         setLayout(layout_root);
@@ -202,45 +253,55 @@ public:
     }
 
 private:
+    // Reference to QApplication object
+    QApplication& app;
     bool is_first_launch = true;
+    
+    // String lists
     QStringList applications_list;
     QStringList favorites_list;
+    QStringList popular_apps;
+
+    // List widgets
     QListWidget* list_widget = new QListWidget(this);
     QListWidget* list_favorites = new QListWidget(this);
-    QListWidget* search_list = new QListWidget(this);
-    QListWidget* directory_list = new QListWidget(this);
+    QListWidget* list_usearch = new QListWidget(this);
+    QListWidget* list_directories = new QListWidget(this);
+    
+    // Layouts
     QVBoxLayout* layout_root = new QVBoxLayout(this);
-    QVBoxLayout* search_layout;
-    QLineEdit* search_bar;
+    QVBoxLayout* layout_usearch;
+    QGridLayout* layout_all_apps;
+
+    QTabWidget* tabs;
+    
+    // Task timers
     QTimer* timer;
+    QTimer timer_search;
+    QTimer* communication_task_timer;
 
-
+    // Input fields
+    QLineEdit* line_usearch_bar;
     QLineEdit* line_all_search;
     QLineEdit* line_fav_search;
 
-    // Reference to QApplication object
-    QApplication& app; 
+    // Combo Boxes
     QComboBox* cb_theme;
     QComboBox* cb_profile_switch = new QComboBox(this);
+    
+    // Check Boxes
     QCheckBox* chb_file_extension;
     QCheckBox* chb_icon_mode;
     QCheckBox* chb_wrapping;
 
-    QTimer timer_search;
-    QTimer* communication_task_timer;
-
-    QGridLayout* layout_all_apps;
-
-    QTabWidget* tabs;
+    // Buttons
     QPushButton* button_add_tab;
     QPushButton* button_remove_tab;
-    QWidget search_window;
     
-
-
+    // Other
+    QWidget qwid_usearch_window;
     // QMap to store usage frequency of each application
     QMap<QString, int> app_usage_freq; 
-    QStringList popular_apps;
     QCompleter* completer;
 
 
@@ -330,7 +391,7 @@ private:
         QLabel* label_app_theme = new QLabel("Theme");
         QLabel* label_profile = new QLabel("Profile");
 
-        QPushButton* button_add_dir = new QPushButton("Add Directory or Application");
+        QPushButton* button_add_dir = new QPushButton("Add Directory");
         QPushButton* button_remove_dir = new QPushButton("Remove Selected Item");
         QPushButton* button_delete_profile = new QPushButton("Delete Current Profile");
         QPushButton* button_virtual_keyb = new QPushButton("Open Virtual Keyboard");
@@ -430,7 +491,7 @@ The final device supported from this application is the Xbox Gamepad. Much like 
         layout_settings->addWidget(label_app_theme);
         layout_settings->addWidget(cb_theme);
         layout_settings->addWidget(label_directories);
-        layout_settings->addWidget(directory_list);
+        layout_settings->addWidget(list_directories);
         layout_settings->addLayout(layout_dir_buttons);
         layout_settings->addLayout(layout_about);
 
@@ -598,16 +659,16 @@ All data in this profile will be permanently deleted.";
         QObject::connect(button_add_dir, &QPushButton::clicked, [this]() {
 
             QString directory = QFileDialog::getExistingDirectory(nullptr, "Select Directory", QDir::homePath());
-            for (int i = 0; i < directory_list->count(); ++i)
+            for (int i = 0; i < list_directories->count(); ++i)
             {
 
-                if (directory == directory_list->item(i)->text())
+                if (directory == list_directories->item(i)->text())
                 {
                     return;
                 }
             }
             if (!directory.isEmpty())
-                directory_list->addItem(directory);
+                list_directories->addItem(directory);
             DirectoryListUpdated();
             UpdateListWidget(applications_list, list_widget);
             SaveProfile();
@@ -615,7 +676,7 @@ All data in this profile will be permanently deleted.";
 
         // Functionality to remove directories
         QObject::connect(button_remove_dir, &QPushButton::clicked, [this]() {
-            qDeleteAll(directory_list->selectedItems());
+            qDeleteAll(list_directories->selectedItems());
             DirectoryListUpdated();
             UpdateListWidget(applications_list, list_widget);
             ApplicationExplorer::SaveProfile();
@@ -624,36 +685,35 @@ All data in this profile will be permanently deleted.";
         
         
         // ULauncher-like window for application searching through the keyboard
-        search_window.setWindowTitle("Qt6ULauncher");
-        search_layout = new QVBoxLayout();
+        qwid_usearch_window.setWindowTitle("Qt6ULauncher");
+        layout_usearch = new QVBoxLayout();
         //QVBoxLayout* sea_layout = new QVBoxLayout();
-        search_window.setLayout(search_layout);
-        search_window.setStyleSheet("background-color: transparent;");
-        search_window.resize(400, 100);//(PercentToWidth(7.81), PercentToHeight(1.85));
-        //search_window.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-        search_window.setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-        //search_window.setWindowFlags(Qt::Popup);
+        qwid_usearch_window.setLayout(layout_usearch);
+        qwid_usearch_window.setStyleSheet("background-color: transparent;");
+        qwid_usearch_window.resize(400, 100);//(PercentToWidth(7.81), PercentToHeight(1.85));
+        //qwid_usearch_window.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+        qwid_usearch_window.setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+        //qwid_usearch_window.setWindowFlags(Qt::Popup);
         
 
         // Create UI elements
-        search_bar = new QLineEdit(this);
-        search_bar->setFixedHeight(70);//(PercentToHeight(2.32));
-        search_bar->setFont(QFont("Arial", 26));
-        //search_bar->setFocusPolicy()
+        line_usearch_bar = new QLineEdit(this);
+        line_usearch_bar->setFixedHeight(70);//(PercentToHeight(2.32));
+        line_usearch_bar->setFont(QFont("Arial", 26));
+        //line_usearch_bar->setFocusPolicy()
 
-        search_list->setViewMode(QListView::ListMode);
-        search_list->hide();
-        search_list->setFixedHeight(120);//(PercentToHeight(2.32));
-        search_list->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        search_list->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        list_usearch->setViewMode(QListView::ListMode);
+        list_usearch->hide();
+        list_usearch->setFixedHeight(120);//(PercentToHeight(2.32));
+        list_usearch->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        list_usearch->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        list_usearch->setFont(font);
         
-        search_list->setFont(font);
+        layout_usearch->addWidget(line_usearch_bar);
+        layout_usearch->addWidget(list_usearch);
         
-        search_layout->addWidget(search_bar);
-        search_layout->addWidget(search_list);
-        
-        connect(search_bar, &QLineEdit::textChanged, this, &ApplicationExplorer::SearchResults);
-        connect(search_list, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
+        connect(line_usearch_bar, &QLineEdit::textChanged, this, &ApplicationExplorer::SearchResults);
+        connect(list_usearch, &QListWidget::itemActivated, this, &ApplicationExplorer::ExecuteApplication);
         
 
         communication_task_timer = new QTimer(this);
@@ -668,7 +728,7 @@ All data in this profile will be permanently deleted.";
     }
 
     
-    
+
     void TaskHandleDevicesUICommunication()
     {
 
@@ -676,22 +736,22 @@ All data in this profile will be permanently deleted.";
         // Handling keyboard application launcher window hardware - software communication
         if (IsKeyDown(VK_CONTROL) && IsKeyJustDown(VK_SPACE))
         {
-            if (search_window.isVisible())
+            if (qwid_usearch_window.isVisible())
             {
-                search_window.hide();
+                qwid_usearch_window.hide();
             }
             else
             {
                 
 
-                search_window.show();
-                //search_window.raise();
-                //search_window.activateWindow();
-                //search_window.setFocus();
+                qwid_usearch_window.show();
+                //qwid_usearch_window.raise();
+                //qwid_usearch_window.activateWindow();
+                //qwid_usearch_window.setFocus();
                 
                 //search_bar->setEnabled(true);
-                search_bar->setFocus();
-                search_bar->clear();
+                line_usearch_bar->setFocus();
+                line_usearch_bar->clear();
             }
 
             return;
@@ -699,12 +759,12 @@ All data in this profile will be permanently deleted.";
 
 
 
-        if (!search_list->hasFocus() && (IsKeyJustDown(VK_DOWN) || IsKeyJustDown(VK_UP)))
+        if (!list_usearch->hasFocus() && (IsKeyJustDown(VK_DOWN) || IsKeyJustDown(VK_UP)))
         {
             //search_list->setFocusPolicy(Qt::NoFocus);
-            search_list->setCurrentRow(0);
+            list_usearch->setCurrentRow(0);
             
-            search_list->setFocus();
+            list_usearch->setFocus();
         }
 
 
@@ -713,13 +773,13 @@ All data in this profile will be permanently deleted.";
         {
             if (IsKeyJustDown(i))
             {
-                search_bar->setFocus();
+                line_usearch_bar->setFocus();
             }
         }
 
         if (IsKeyJustDown(VK_SPACE) || IsKeyJustDown(VK_BACK) || IsKeyJustDown(VK_LEFT) || IsKeyJustDown(VK_RIGHT))
         {
-            search_bar->setFocus();
+            line_usearch_bar->setFocus();
         }
 
 
@@ -765,18 +825,19 @@ All data in this profile will be permanently deleted.";
     }
 
 
-    
+
+
     // Searching for the ULauncher-like window
     void SearchResults(const QString& text)
     {
-        search_list->clear();
+        list_usearch->clear();
 
         if (text.isEmpty())
         {
-            search_list->hide();
-            search_window.resize(400, 100);
-            search_layout->update();
-            search_list->update();
+            list_usearch->hide();
+            qwid_usearch_window.resize(400, 100);
+            layout_usearch->update();
+            list_usearch->update();
             return;
         }
 
@@ -810,7 +871,7 @@ All data in this profile will be permanently deleted.";
 
                 // Store file path as item data
                 item2->setData(Qt::UserRole, path);
-                search_list->addItem(item2);
+                list_usearch->addItem(item2);
                 
                 ++count;
                 if (count >= max_results)
@@ -821,21 +882,22 @@ All data in this profile will be permanently deleted.";
         }
 
 
-        if (search_list->count() == 0)
+        if (list_usearch->count() == 0)
         {
-            search_list->hide();
+            list_usearch->hide();
         }
         else
         {
-            search_list->show();
+            list_usearch->show();
         }
 
-        search_layout->update();
-        search_list->update();
+        layout_usearch->update();
+        list_usearch->update();
     }
 
 
     
+
     void SaveProfile()
     {
         QSettings settings("ThesisOrganization", "QtWidgetsApp1");
@@ -859,9 +921,9 @@ All data in this profile will be permanently deleted.";
         QStringList directories;
 
         // Iterate through the directory_list and save directory paths to QStringList
-        for (int i = 0; i < directory_list->count(); ++i)
+        for (int i = 0; i < list_directories->count(); ++i)
         {
-            directories << directory_list->item(i)->text();
+            directories << list_directories->item(i)->text();
         }
 
         // Save directories to settings
@@ -871,6 +933,8 @@ All data in this profile will be permanently deleted.";
         settings.endGroup();
     }
 
+
+    
 
     void LoadProfile()
     {
@@ -899,12 +963,12 @@ All data in this profile will be permanently deleted.";
         QStringList directories = settings.value("Directories").toStringList();
 
         // Clear the listWidget before loading directories
-        directory_list->clear();
+        list_directories->clear();
 
         // Add directories from settings to the listWidget
         foreach(const QString & dir, directories)
         {
-            directory_list->addItem(dir);
+            list_directories->addItem(dir);
         }
 
 
@@ -922,6 +986,8 @@ All data in this profile will be permanently deleted.";
         settings.endGroup();
     }
 
+
+    
 
 
     void SaveAppData()
@@ -945,6 +1011,7 @@ All data in this profile will be permanently deleted.";
         settings.endGroup();
     }
 
+    
 
     void LoadAppData()
     {
@@ -977,7 +1044,7 @@ All data in this profile will be permanently deleted.";
     }
 
 
-
+    
     void OnApplicationExit()
     {
         ApplicationExplorer::SaveProfile();
@@ -990,7 +1057,7 @@ All data in this profile will be permanently deleted.";
     void ShowContextMenuForListFavorites(const QPoint& pos){ ShowContextMenu(pos, list_favorites); }
 
 
-
+    
     void ShowContextMenu(const QPoint& pos, QListWidget* list)
     {
         /*
@@ -1026,16 +1093,16 @@ All data in this profile will be permanently deleted.";
                 
                 std::cout << "File selected: " << file_selected.toStdString() << std::endl;
 
-                for (int i = 0; i < directory_list->count(); ++i)
+                for (int i = 0; i < list_directories->count(); ++i)
                 {
 
-                    if (file_selected == directory_list->item(i)->text())
+                    if (file_selected == list_directories->item(i)->text())
                     {
                         return;
                     }
                 }
                 if (!file_selected.isEmpty())
-                    directory_list->addItem(file_selected);
+                    list_directories->addItem(file_selected);
 
                 DirectoryListUpdated();
                 UpdateListWidget(applications_list, list_widget);
@@ -1164,7 +1231,7 @@ All data in this profile will be permanently deleted.";
     
 
 
-
+    
     void ExploreDirectoryFiles(const QString& path)
     {
         QDir dir(path);
@@ -1195,7 +1262,7 @@ All data in this profile will be permanently deleted.";
 
 
 
-
+    
     void UpdateListWidget(QStringList current_list, QListWidget* list_wid)
     {
         list_wid->clear();
@@ -1230,7 +1297,7 @@ All data in this profile will be permanently deleted.";
     }
 
     
-
+    
     // Start or restart the timer when text changes - helps avoiding performance issues
     void SearchApplication(QLineEdit* line, QListWidget* list_wid, QStringList app_list)
     {
@@ -1259,7 +1326,7 @@ All data in this profile will be permanently deleted.";
     }
 
 
-
+    
     void ExecuteApplication(QListWidgetItem* item) 
     {
 
@@ -1268,9 +1335,9 @@ All data in this profile will be permanently deleted.";
         if (item) 
         {
             // Hide the ulauncher-like window if the application was executed through that
-            if (search_window.isVisible())
+            if (qwid_usearch_window.isVisible())
             {
-                search_window.hide();
+                qwid_usearch_window.hide();
             }
 
 
@@ -1316,16 +1383,16 @@ All data in this profile will be permanently deleted.";
     }
 
 
-
+    
     void DirectoryListUpdated()
     {
         applications_list.clear();
 
         // Update directories list
-        for (int i = 0; i < directory_list->count(); ++i)
+        for (int i = 0; i < list_directories->count(); ++i)
         {
 
-            QListWidgetItem* item = directory_list->item(i);
+            QListWidgetItem* item = list_directories->item(i);
             QString path = item->text();
             
             if (item)
@@ -1367,7 +1434,7 @@ All data in this profile will be permanently deleted.";
 
 
 
-
+    
     void SetupIntroScreen()
     {
         /*this->setGeometry(
@@ -1502,7 +1569,7 @@ use the default given below.", this);
 
 
 
-
+    
     void UpdateUIPalette(const QString &text)
     {
 
@@ -1654,7 +1721,7 @@ use the default given below.", this);
 
 
 
-
+    
     void ControllerNavigation()
     {
 
@@ -1693,6 +1760,7 @@ use the default given below.", this);
 
     }
 
+    
 
     void TaskGamepadNavigation()
     {
@@ -1744,7 +1812,7 @@ int main(int argc, char* argv[])
     // Storing screen resolution
     screen_width = GetSystemMetrics(SM_CXSCREEN);
     screen_height = GetSystemMetrics(SM_CYSCREEN);
-    std::cout << "Screen resolution: " << screen_width << "x" << screen_height << std::endl;
+    //std::cout << "Screen resolution: " << screen_width << "x" << screen_height << std::endl;
 
     explorer.CreateUI();
     
@@ -1753,9 +1821,7 @@ int main(int argc, char* argv[])
     //QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
     explorer.QKeyboard = &QKeyboard;
     
-    
-    
-    
+
     explorer.showMaximized();
     return app.exec();
 }

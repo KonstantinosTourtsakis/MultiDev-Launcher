@@ -3,31 +3,36 @@
 \contentsline {chapter}{\numberline {A}Εισαγωγή}{1}{}%
 \contentsline {chapter}{\numberline {B}Ανάπτυξη εφαρμογών σε Qt6}{2}{}%
 \contentsline {section}{\numberline {B.1}Τι είναι το Qt;}{2}{}%
-\contentsline {section}{\numberline {B.2}Ένα βασικό πρόγραμμα σε Qt6}{2}{}%
+\contentsline {section}{\numberline {B.2}Ένα απλό πρόγραμμα σε Qt6}{2}{}%
 \contentsline {section}{\numberline {B.3}Προσθήκη στοιχείων γραφικής διεπαφής σε Qt6}{4}{}%
 \contentsline {subsection}{\numberline {B.3.1}Δημιουργία QPushButton}{4}{}%
 \contentsline {subsection}{\numberline {B.3.2}Δημιουργία γραφικού πλαισίου}{6}{}%
 \contentsline {subsection}{\numberline {B.3.3}Δημιουργία λίστας αντικειμένων}{8}{}%
 \contentsline {subsection}{\numberline {B.3.4}Διάβασμα αρχείων από directory}{9}{}%
 \contentsline {subsection}{\numberline {B.3.5}Δημιουργία input field}{10}{}%
-\contentsline {subsection}{\numberline {B.3.6}Αποθήκευση στοιχείων στον δίσκο}{11}{}%
-\contentsline {subsection}{\numberline {B.3.7}Ανάκτηση εικονιδίων συστήματος αρχείων}{12}{}%
-\contentsline {chapter}{\numberline {C}Η βιβλιοθήκη XInput}{14}{}%
-\contentsline {section}{\numberline {C.1}Τι είναι το XInput;}{14}{}%
-\contentsline {section}{\numberline {C.2}Η κλάση του χειριστηρίου}{14}{}%
-\contentsline {chapter}{\numberline {D}Διεπαφή χρήστη διαχείρισης και εκτέλεσης εφαρμογών μέσω πολυτροπικών \\ περιφερειακών συσκευών}{16}{}%
-\contentsline {section}{\numberline {D.1}Περιγραφή λογισμικού}{16}{}%
-\contentsline {section}{\numberline {D.2}Εκτέλεση εφαρμογών με το ποντίκι}{17}{}%
+\contentsline {section}{\numberline {B.4}Αποθήκευση στοιχείων στον δίσκο}{12}{}%
+\contentsline {section}{\numberline {B.5}Ανάκτηση εικονιδίων συστήματος αρχείων}{12}{}%
+\contentsline {section}{\numberline {B.6}Προτάσεις δεδομένων εισόδου σε input field}{14}{}%
+\contentsline {chapter}{\numberline {C}Η βιβλιοθήκη XInput}{15}{}%
+\contentsline {section}{\numberline {C.1}Τι είναι το XInput;}{15}{}%
+\contentsline {section}{\numberline {C.2}Η κλάση του χειριστηρίου}{15}{}%
+\contentsline {chapter}{\numberline {D}Μια λεπτομερής περιγραφή της εφαρμογής}{17}{}%
+\contentsline {section}{\numberline {D.1}Περιγραφή λογισμικού}{17}{}%
+\contentsline {section}{\numberline {D.2}Εκτέλεση εφαρμογών με το ποντίκι}{18}{}%
 \contentsline {subsection}{\numberline {D.2.1}Καρτέλα ρυθμίσεων}{18}{}%
 \contentsline {subsection}{\numberline {D.2.2}Καρτέλα εφαρμογών}{19}{}%
-\contentsline {subsection}{\numberline {D.2.3}Καρτέλα αγαπημένων εφαρμογών}{19}{}%
+\contentsline {subsection}{\numberline {D.2.3}Καρτέλα αγαπημένων εφαρμογών}{20}{}%
 \contentsline {section}{\numberline {D.3}Εκτέλεση εφαρμογών με το πληκτρολόγιο}{20}{}%
-\contentsline {section}{\numberline {D.4}Εκτέλεση εφαρμογών με το χειριστήριο βιντεοπαιχνιδιών}{20}{}%
-\contentsline {chapter}{\numberline {E}Σχήματα και Πίνακες}{21}{}%
-\contentsline {section}{\numberline {E.1}Σχήματα}{21}{}%
-\contentsline {section}{\numberline {E.2}Πίνακες}{22}{}%
-\contentsline {chapter}{\numberline {F}Τελευταία Μέρη}{27}{}%
-\contentsline {chapter}{Παράρτημα Α'}{29}{}%
-\contentsline {chapter}{Βιβλιογραφία}{30}{}%
-\contentsline {chapter}{Συντμήσεις}{32}{}%
-\contentsline {chapter}{Γλωσσάρι Ξενικών Όρων}{33}{}%
+\contentsline {section}{\numberline {D.4}Εκτέλεση εφαρμογών με το χειριστήριο βιντεοπαιχνιδιών}{21}{}%
+\contentsline {chapter}{\numberline {E}Επεξήγηση του κώδικα της εφαρμογής}{22}{}%
+\contentsline {section}{\numberline {E.1}Ο κώδικας του λογισμικού}{22}{}%
+\contentsline {section}{\numberline {E.2}Η συνάρτηση main}{22}{}%
+\contentsline {section}{\numberline {E.3}Η κλάση του προγράμματος}{23}{}%
+\contentsline {chapter}{\numberline {F}Σχήματα και Πίνακες}{24}{}%
+\contentsline {section}{\numberline {F.1}Σχήματα}{24}{}%
+\contentsline {section}{\numberline {F.2}Πίνακες}{25}{}%
+\contentsline {chapter}{\numberline {G}Τελευταία Μέρη}{30}{}%
+\contentsline {chapter}{Παράρτημα Α'}{32}{}%
+\contentsline {chapter}{Βιβλιογραφία}{33}{}%
+\contentsline {chapter}{Συντμήσεις}{35}{}%
+\contentsline {chapter}{Γλωσσάρι Ξενικών Όρων}{36}{}%
