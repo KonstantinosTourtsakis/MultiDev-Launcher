@@ -139,8 +139,6 @@ QString RemoveFileExtension(const QString& file_name)
 
 
 
-
-
 /*
 
 class ApplicationExplorer : public QWidget
@@ -193,7 +191,6 @@ private:
     void ControllerNavigation();
     void TaskGamepadNavigation();
 };
-
 
 */
 
