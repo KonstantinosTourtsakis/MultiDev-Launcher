@@ -57,7 +57,7 @@ private:
 
 
 
-    QWidget* widgetAt(QGridLayout* layout, int row, int column)
+    QWidget* GetWidgetAt(QGridLayout* layout, int row, int column)
     {
         // Iterate over all items in the layout
         for (int i = 0; i < layout->count(); ++i)

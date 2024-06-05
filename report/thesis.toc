@@ -43,20 +43,22 @@
 \contentsline {subsection}{\numberline {E.3.12}Η μέθοδος UpdatePopularAppsList}{28}{}%
 \contentsline {subsection}{\numberline {E.3.13}Η μέθοδος TaskGamepadNavigation}{29}{}%
 \contentsline {subsection}{\numberline {E.3.14}Η μέθοδος TaskHandleDevicesUICommunication}{29}{}%
-\contentsline {subsection}{\numberline {E.3.15}Η μέθοδος SetupUI}{29}{}%
-\contentsline {subsection}{\numberline {E.3.16}Η μέθοδος ShowCustomContextMenu}{29}{}%
-\contentsline {subsection}{\numberline {E.3.17}Η μέθοδος SetupIntroScreen}{29}{}%
+\contentsline {subsection}{\numberline {E.3.15}Η μέθοδος SetupUI}{30}{}%
+\contentsline {subsection}{\numberline {E.3.16}Η μέθοδος ShowCustomContextMenu}{30}{}%
+\contentsline {subsection}{\numberline {E.3.17}Η μέθοδος SetupIntroScreen}{30}{}%
 \contentsline {subsection}{\numberline {E.3.18}Η μέθοδοι SortingChanged και UpdateUIPalette}{30}{}%
-\contentsline {section}{\numberline {E.4}Η κλάση VirtualKeyboard}{30}{}%
-\contentsline {subsection}{\numberline {E.4.1}Ο constructor της κλάσης}{30}{}%
-\contentsline {subsection}{\numberline {E.4.2}Η μέθοδος widgetAt}{30}{}%
+\contentsline {section}{\numberline {E.4}Η κλάση VirtualKeyboard}{31}{}%
+\contentsline {subsection}{\numberline {E.4.1}Ο constructor της κλάσης}{31}{}%
+\contentsline {subsection}{\numberline {E.4.2}Η μέθοδος widgetAt}{31}{}%
 \contentsline {subsection}{\numberline {E.4.3}Η μέθοδος SendKeyboardInput}{31}{}%
-\contentsline {subsection}{\numberline {E.4.4}Η μέθοδος CreateKeyboardUI}{31}{}%
-\contentsline {chapter}{\numberline {F}Σχήματα και Πίνακες}{32}{}%
-\contentsline {section}{\numberline {F.1}Σχήματα}{32}{}%
-\contentsline {section}{\numberline {F.2}Πίνακες}{33}{}%
-\contentsline {chapter}{\numberline {G}Τελευταία Μέρη}{38}{}%
-\contentsline {chapter}{Παράρτημα Α'}{40}{}%
-\contentsline {chapter}{Βιβλιογραφία}{41}{}%
-\contentsline {chapter}{Συντμήσεις}{43}{}%
-\contentsline {chapter}{Γλωσσάρι Ξενικών Όρων}{44}{}%
+\contentsline {subsection}{\numberline {E.4.4}Η μέθοδος CreateKeyboardUI}{32}{}%
+\contentsline {chapter}{\numberline {F}Πως να εγκαταστήσετε την εφαρμογή}{33}{}%
+\contentsline {section}{\numberline {F.1}Λήψη και εγκατάσταση της εφαρμογής}{33}{}%
+\contentsline {chapter}{\numberline {G}Σχήματα και Πίνακες}{34}{}%
+\contentsline {section}{\numberline {G.1}Σχήματα}{34}{}%
+\contentsline {section}{\numberline {G.2}Πίνακες}{35}{}%
+\contentsline {chapter}{\numberline {H}Τελευταία Μέρη}{40}{}%
+\contentsline {chapter}{Παράρτημα Α'}{42}{}%
+\contentsline {chapter}{Βιβλιογραφία}{43}{}%
+\contentsline {chapter}{Συντμήσεις}{45}{}%
+\contentsline {chapter}{Γλωσσάρι Ξενικών Όρων}{46}{}%

@@ -73,7 +73,7 @@ void VirtualKeyboard::SendKeyboardInput()
             current_row--;
         }
         
-        QWidget* widget = widgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
+        QWidget* widget = GetWidgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
         if (widget)
         {
             widget->setFocus();
@@ -92,7 +92,7 @@ void VirtualKeyboard::SendKeyboardInput()
         {
             current_row++;
         }
-        QWidget* widget = widgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
+        QWidget* widget = GetWidgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
         if (widget)
         {
             widget->setFocus();
@@ -111,7 +111,7 @@ void VirtualKeyboard::SendKeyboardInput()
         {
             current_column--;
         }
-        QWidget* widget = widgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
+        QWidget* widget = GetWidgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
         if (widget)
         {
             widget->setFocus();
@@ -131,7 +131,7 @@ void VirtualKeyboard::SendKeyboardInput()
         {
             current_column++;
         }
-        QWidget* widget = widgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
+        QWidget* widget = GetWidgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
         if (widget)
         {
             widget->setFocus();
