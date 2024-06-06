@@ -224,11 +224,9 @@ public:
         }
         else
         {
-            //LoadProfile();
             SetupUI();
             OnApplicationLaunch();
         }
-        
         
     }
 

@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 εκτελείται η επανάληψη της Qt6 εφαρμογής. 
 
 
-\section{Η κλάση του προγράμματος}
+\section{Η κλάση ApplicationExplorer}
 
 
 Μια εφαρμογή που αξιοποιεί τo Qt6 περιλαμβάνει αντικείμενα διαφόρων τύπων ώστε να
@@ -217,8 +217,12 @@ input field από το οποίο θα προέλθει η είσοδος τη�
 
 \subsection{Η μέθοδος SetupUI}
 Η μέθοδος SetupUI είναι από τις πρώτες μεθόδους που καλούνται από την εφαρμογή και
-είναι υπεύθυνη για την δημιουργία των στοιχείων της γραφικής διεπαφής και την σωστή
-αρχικοποίησή τους.......... 
+είναι υπεύθυνη για την δημιουργία των στοιχείων της γραφικής διεπαφής που τελικά
+βλέπει ο χρήστης. Στην μέθοδο αυτή δημιουργούνται οι καρτέλες και τα πλαίσια στα
+οποία θα προστεθούν στην συνέχεια στοιχεία όπως κουμπιά, λίστες, checkboxes, input
+fields και combo boxes. Στην συνέχεια γίνεται σύνδεση των στοιχείων με τις μεθόδους
+που τους αντιστοιχούν και στο τέλος δημιουργείται επίσης το παράθυρο και η γραφική
+διεπαφή του παραθύρου αναζήτησης εφαρμογών πληκτρολογίου.
 
 
 
@@ -300,10 +304,222 @@ input field από το οποίο θα προέλθει η είσοδος τη�
 Γνωρίζοντας πλέον τα σημαντικά κομμάτια που απαρτίζουν την εφαρμογή, μπορούμε πλεόν να περιγράψουμε
 με ποιο τρόπο συνδυάζονται για την παραγωγή του τελικού αποτελέσματος. Για να μπορέσουμε να καταλάβουμε
 καλύτερα την ροή του προγράμματος θα γίνει περιγραφή με κώδικα όπου θα εξηγείται η σειρά εκτέλεσης
-των εντολών και των μεθόδων αγνοόντας τις λεπτομέρειες και εστιάζοντας στην πλήρη εικόνα.
+των εντολών και των μεθόδων αγνοόντας τις λεπτομέρειες και εστιάζοντας στην πλήρη εικόνα. Ξεκινώντας
+λοιπόν από την συνάρτηση main έχουμε την δημιουργία του αντικειμένου "app" της εφαρμογής. Στην συνέχεια
+δημιουργείται το ApplicationExplorer αντικείμενο "περνόντας" στον constructor του το αντικείμενο της 
+εφαρμογής. Αυτό θα επιτρέψει στην κλάση να διαχειριστεί την εφαρμογή και πρακτικά θα το αξιοποιήσει
+στην αλλαγή της παλέτας της γραφικής διεπαφής για την αλλαγή της θεματολογίας. 
+\begin{lstlisting}[language=C++, style=cppstyle]
+int main(int argc, char* argv[]) 
+{
+    QApplication app(argc, argv);
+    
+    ApplicationExplorer explorer(app);
+    // ....
+    
+
+    return app.exec();
+}
+\end{lstlisting}
+
+Με την κλήση του constructor έχουμε την αρχικοποίηση του χρονικού διαστήματος που ορίζεται για το
+χειριστήριο και συνδέεται με την μέθοδο TaskGamepadNavigation.
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app)
+{
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &ApplicationExplorer::TaskGamepadNavigation);
+    timer->start();
+}
+\end{lstlisting}
+
+Επιστρέφοντας στην main, ορίζονται κάποια χαρακτηριστικά στο παράθυρο της εφαρμογής και στην συνέχεια
+ανακτάται η ανάλυση της οθόνης. Γνωρίζοντας πλέον την ανάλυση της οθόνης, η εφαρμογή είναι σε θέση να
+δημιουργήσει τα στοιχεία της γραφικής διεπαφής των οποίων το μέγεθος είναι σχετικό της ανάλυσης.
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+int main(int argc, char* argv[]) 
+{
+    QApplication app(argc, argv);
+    
+    // ...
+    
+    explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
+    explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
+    explorer.resize(800, 600);
+
+    // Storing screen resolution
+    screen_width = GetSystemMetrics(SM_CXSCREEN);
+    screen_height = GetSystemMetrics(SM_CYSCREEN);
+    //std::cout << "Screen resolution: " << screen_width << "x" << screen_height << std::endl;
+
+    explorer.CreateUI();
+
+    // ...
+
+    
+    return app.exec();
+}
+\end{lstlisting}
+
+Για τον σκοπό αυτό καλείται η μέθοδος CreateUI. Στην μέθοδο αυτή γίνεται αρχικά έλεγχος για την
+πρώτη εκτέλεση του προγράμματος μετά την φόρτωση των δεδομένων της εφαρμογής από τον δίσκο. Αν
+είναι η πρώτη φορά εκτέλεσης του προγράμματος τότε το γραφικό περιβάλλον που δημιουργείται έχει
+στόχο την εισαγωγή και το καλωσόρισμα του χρήστη στην εφαρμογή. Με την ολοκλήρωση των απαραίτητων
+ενεργειών που ζητούνται από το πρόγραμμα, ο χρήστης στην συνέχεια εισέρχεται στην γραφική διεπαφή
+του προγράμματος. Αυτό συμβαίνει αφού κληθεί για δεύτερη φορά η CreateUI από την SetupIntroScreen
+όπου πλέον η εφαρμογή γνωρίζει πως δεν είναι η πρώτη εκτέλεση που συμβαίνει και καλεί την SetupUI.
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+void CreateUI() 
+{
+    LoadAppData();
+    
+    if (is_first_launch)
+    {
+        SetupIntroScreen();
+    }
+    else
+    {
+        SetupUI();
+    }
+}
+\end{lstlisting}
+
+Πίσω στην συνάρτηση main, γίνεται δημιουργία του εικονικού πληκτρολογίου και η κλήση του constructor
+του. Στην συνέχεια ακολουθεί ο ορισμός κάποιων χαρακτηριστικών στο παράθυρο του πληκτρολογίου και 
+μετά γίνεται αποθήκευση της διεύθυνσής του στο αντικείμενο της κλάσης ApplicationExplorer η οποία
+το διαχειρίζεται για την επικοινωνία του με την εφαρμογή.
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+int main(int argc, char* argv[]) 
+{
+    QApplication app(argc, argv);
+    
+    // ...
+    VirtualKeyboard QKeyboard;
+
+    //QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
+    explorer.QKeyboard = &QKeyboard;
+    // ...
+
+    
+    return app.exec();
+}
+\end{lstlisting}
+
+Ρίχνοντας μια ματιά στον constructor της VirtualKeyboard, μπορούμε να δούμε πως το πρόγραμμα ουσιαστικά
+συνεχίζει με την δημιουργία της γραφικής του διεπαφής.
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+VirtualKeyboard()
+{
+    setWindowTitle("Virtual Keyboard");
+    virtual_input = new QLineEdit(this);
+    virtual_input->setReadOnly(true);
+    virtual_input->setPlaceholderText("Your input");
+    CreateKeyboardUI();
+}
+\end{lstlisting}
+
+Όπως φάινεται παρακάτω, για την δημιουργία της γραφικής διεπαφής γίνεται χρήση κουμπιών που δημιουργούνται
+σύμφωνα με τον πίνακα πλήκτρων. Στην συνέχεια προστίθενται μερικά ακόμη κουμπιά και τέλος γίνεται έλεγχος 
+από τον οποίο η εφαρμογή γνωρίζει εάν το πληκτρολόγιο χρησιμοποιείται από το χειριστήριο ή από το ποντίκι,
+όπου στην συνέχεια φροντίζει για την προβολή διαφορετικού μηνύματος προς τις οδηγίες του χρήστη.
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+void CreateKeyboardUI()
+{
+    
+    // ....
+    
+    const QStringList UpperKeyLayout
+    {
+        "!", "@", "#", "$", "%", "^", "&", "*", "(", ")",
+        "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P",
+        "A", "S", "D", "F", "G", "H", "J", "K", "L", "_",
+        "Z", "X", "C", "V", "B", "N", "M", "<", ">", "?",
+    };
+
+    // ....
+    
+    for (const QString& text : KeyLayout)
+    {
+        QPushButton* button = new QPushButton(text);
+        
+        // ....
+
+        layout_keyboard->addWidget(button, row, column);
+
+        // ...
+    }
+    
+    
+    QPushButton* button_back = new QPushButton("Backspace");
+    
+    // ....
+
+    connect(button_back, &QPushButton::clicked, this, [=]()
+        {
+            virtual_input->backspace();
+        });
+    
+    // ....
+    
+    column = 0;
+    row++;
+
+
+    layout_keyboard->addWidget(button_back, row, column);
+    
+    // ....
+
+    if (getting_input)
+    {
+        label_instructions = new QLabel("A: type key   Y: insert space   X: Backspace   Start: send input", this);
+    }
+    else
+    {
+        label_instructions = new QLabel("Click on the keys and then use the copy button to save input to clipboard", this);
+    }
+    
+    // ....
+}
+\end{lstlisting}
+
+Επιστρέφοντας στην main, γίνεται τελικά η προβολή της γραφικής διεπαφής του προγράμματος και στην συνέχεια
+ξεκινάει η βασική επανάληψη της εφαρμογής που την διαχειρίζεται το Qt. Αυτό περιλαμβάνει και όλες τις διαδικασίες
+που εκτελούνται συνεχώς και τις οποίες θα δούμε στην συνέχεια.
+
+\begin{lstlisting}[language=C++, style=cppstyle]
+int main(int argc, char* argv[]) 
+{
+    QApplication app(argc, argv);
+    
+    // ....
+
+    explorer.showMaximized();
+    return app.exec();
+}
+\end{lstlisting}
+
+
+\section{Οι επαναληπτικές διαδικασίες στο παρασκήνιο}
+
+Όπως προαναφέρθηκε, το πρόγραμμα στηρίζεται αρκετά σε διαδικασίες που εκτελούνται στο παρασκήνιο
+οι οποίες διαχειρίζονται εντολές εισόδου του χειριστηρίου και του πληκτρολογίου. Αυτές οι διαδικασίες
+καλούνται συνεχώς από το Qt και είναι απαραίτητες για την σωστή λειτουργία της εφαρμογής. 
+
+
+
+
+
+
 
 
 
 
 \begin{lstlisting}[language=C++, style=cppstyle]
+
 \end{lstlisting}
