@@ -47,7 +47,7 @@
 
 #include "keyboard.h"
 #include "Controller.h"
-#include "CursorMode.h"
+#include "GamepadInputChecks.h"
 #include "GetKeyboardInput.h"
 
 
@@ -208,7 +208,7 @@ public:
     {
         // Controller task loop - Perform task constantly
         timer = new QTimer(this);
-        connect(timer, &QTimer::timeout, this, &ApplicationExplorer::TaskGamepadNavigation);
+        connect(timer, &QTimer::timeout, this, &ApplicationExplorer::TaskGamepadConnection);
         timer->start();
     }
 
@@ -270,6 +270,11 @@ private:
 
     QTabWidget* tabs;
     
+
+    QComboBox* cb_sort_by;
+    QComboBox* cb_sort_by_fav;
+
+
     // Task timers
     QTimer* timer;
     QTimer timer_search;
@@ -332,10 +337,15 @@ private:
        
         
 
-        QComboBox* cb_sort_by = new QComboBox(this);
+        cb_sort_by = new QComboBox(this);
         cb_sort_by->addItem("Ascending");
         cb_sort_by->addItem("Descending");
-        cb_sort_by->addItem("Popularity");
+        
+
+        cb_sort_by_fav = new QComboBox(this);
+        cb_sort_by_fav->addItem("Ascending");
+        cb_sort_by_fav->addItem("Descending");
+        
         
         
 
@@ -353,6 +363,12 @@ private:
 
 
 
+        /*tabs->setStyleSheet(
+            "QTabWidget::tab-bar {"
+            "alignment: center;"
+            "}" 
+            
+        );*/
 
 
         // Add tabs to tab widget
@@ -388,6 +404,7 @@ private:
 
         QPushButton* button_add_dir = new QPushButton("Add Directory");
         QPushButton* button_remove_dir = new QPushButton("Remove Selected Item");
+        QPushButton* button_view_install_folder = new QPushButton("View Installation Directory");
         QPushButton* button_delete_profile = new QPushButton("Delete Current Profile");
         QPushButton* button_virtual_keyb = new QPushButton("Open Virtual Keyboard");
 
@@ -396,7 +413,8 @@ private:
         button_add_dir->setToolTip("Add a directory in which the launcher will be looking for applications to execute.\
 The launcher is looking for executables and local or internet shortcut files.");
         button_remove_dir->setToolTip("Remove the currently selected directory from the application launcher.");
-        
+        button_view_install_folder->setStyleSheet("text-align: left;");
+        button_view_install_folder->setFont(font);
         
 
 
@@ -476,15 +494,16 @@ The final device supported from this application is the Xbox Gamepad. Much like 
 
 
         layout_settings->addWidget(button_virtual_keyb);
-        layout_settings->addWidget(chb_file_extension);
         layout_settings->addWidget(chb_icon_mode);
         layout_settings->addWidget(chb_wrapping);
+        layout_settings->addWidget(chb_file_extension);
         layout_settings->addWidget(label_profile);
         layout_settings->addWidget(cb_profile_switch);
         layout_settings->addWidget(button_delete_profile);
         layout_settings->addWidget(line_add_profile);
         layout_settings->addWidget(label_app_theme);
         layout_settings->addWidget(cb_theme);
+        layout_settings->addWidget(button_view_install_folder);
         layout_settings->addWidget(label_directories);
         layout_settings->addWidget(list_directories);
         layout_settings->addLayout(layout_dir_buttons);
@@ -528,6 +547,7 @@ The final device supported from this application is the Xbox Gamepad. Much like 
         layout_all_apps->addWidget(cb_sort_by);
         layout_all_apps->addWidget(list_widget);
         layout_favorites->addWidget(line_fav_search);
+        layout_favorites->addWidget(cb_sort_by_fav);
         layout_favorites->addWidget(list_favorites);
         
         
@@ -536,7 +556,28 @@ The final device supported from this application is the Xbox Gamepad. Much like 
         LoadProfile();
         connect(cb_theme, &QComboBox::currentTextChanged, this, &ApplicationExplorer::UpdateUIPalette);
         connect(cb_profile_switch, &QComboBox::currentTextChanged, this, &ApplicationExplorer::LoadProfile);
-        connect(cb_sort_by, &QComboBox::currentTextChanged, this, &ApplicationExplorer::SortingChanged);
+        connect(cb_sort_by, &QComboBox::currentTextChanged, this, [this] {
+            if (cb_sort_by->currentText() == "Ascending")
+            {
+                list_widget->sortItems(Qt::AscendingOrder);
+            }
+            else if (cb_sort_by->currentText() == "Descending")
+            {
+                list_widget->sortItems(Qt::DescendingOrder);
+
+            }
+            });
+        connect(cb_sort_by_fav, &QComboBox::currentTextChanged, this, [this] {
+            if (cb_sort_by_fav->currentText() == "Ascending")
+            {
+                list_favorites->sortItems(Qt::AscendingOrder);
+            }
+            else if (cb_sort_by_fav->currentText() == "Descending")
+            {
+                list_favorites->sortItems(Qt::DescendingOrder);
+
+            }
+            });
 
 
         //for (const QString& app : popular_apps) { std::cout << app.toStdString() << std::endl; }
@@ -580,6 +621,12 @@ The final device supported from this application is the Xbox Gamepad. Much like 
             });
         
         connect(button_virtual_keyb, &QPushButton::clicked, this, [this] {QKeyboard->showMaximized(); });
+        connect(button_view_install_folder, &QPushButton::clicked, this, [] {
+            QString exec_path = QCoreApplication::applicationFilePath();
+            QFileInfo file_info(exec_path);
+            QString directory = file_info.absolutePath();
+            QDesktopServices::openUrl(QUrl::fromLocalFile(directory));
+            });
 
 
         //// Delay before keyboard input triggers application search
@@ -1429,17 +1476,9 @@ All data in this profile will be permanently deleted.";
 
 
 
-    
+    /*
     void SetupIntroScreen()
     {
-        /*this->setGeometry(
-            QStyle::alignedRect(
-                Qt::LeftToRight,
-                Qt::AlignCenter,
-                this->size(),
-                app.primaryScreen()->availableGeometry()
-            )
-        );*/
 
         QFont font("Arial", 26);
         QFont font2("Arial", 18);
@@ -1500,65 +1539,81 @@ use the default given below.", this);
         
     }
 
-    
-
-    
+    */
 
 
-    
-    void SortingChanged(const QString& text)
+    void SetupIntroScreen()
     {
-        if (text == "Ascending")
-        {
-            list_widget->sortItems(Qt::AscendingOrder);
-        }
-        else if (text == "Descending")
-        {
-            list_widget->sortItems(Qt::DescendingOrder);
+        QFont font("Arial", 26);
+        QFont font2("Arial", 18);
 
-        }
-        else if (text == "Popularity")
-        {
-            QList<QString> sorted_apps = app_usage_freq.keys();
-            std::sort(sorted_apps.begin(), sorted_apps.end(), [&](const QString& a, const QString& b)
-                {
-                    return app_usage_freq[a] > app_usage_freq[b];
-                });
+        QLabel* title = new QLabel("First time setup", this);
+        title->setAlignment(Qt::AlignCenter);
+        title->setFont(font);
 
-            for (int k = 0; k < sorted_apps.count(); ++k)
+        QLabel* label_username = new QLabel("Welcome to the Application Launcher!\n"
+            "This is the first time setup window.\n"
+            "You can type in your own user name or\n"
+            "use the default given below.", this);
+        label_username->setAlignment(Qt::AlignCenter);
+        label_username->setFont(font2);
+        label_username->setWordWrap(true);
+        label_username->setMargin(10);  // Add margin for better spacing
+
+        QLineEdit* line_username = new QLineEdit(this);
+        line_username->setFixedHeight(PercentToHeight(2.32));
+        line_username->setFixedWidth(PercentToWidth(12.32));
+        line_username->setFont(font2);
+        line_username->setText("Profile_1");
+
+        QPushButton* continueButton = new QPushButton("Continue", this);
+        continueButton->setFixedSize(300, 100);
+        continueButton->setFont(font);
+        continueButton->setStyleSheet("QPushButton {"
+            "background-color: #4CAF50;"
+            "color: white;"
+            "border: none;"
+            "padding: 15px 32px;"
+            "text-align: center;"
+            "text-decoration: none;"
+            //"display: inline-block;"
+            "font-size: 16px;"
+            "margin: 4px 2px;"
+            //"cursor: pointer;"
+            "border-radius: 12px;"
+            "}"
+            "QPushButton:hover {"
+            "background-color: #45a049;"
+            "}");
+        connect(continueButton, &QPushButton::clicked, this, [title, label_username, line_username, continueButton, this]
             {
-                std::cout << sorted_apps[k].toStdString() << std::endl;
-            }
-            return;
-            
-            for (int i = 0; i < sorted_apps.count(); ++i)
-            {
-                for (int j = 0; j < list_widget->count(); ++j)
-                {
-                    QListWidgetItem* item1 = list_widget->takeItem(j);
-                    QString path = item1->data(Qt::UserRole).toString();
-                    QFileInfo file_info(path);
-                    QString file_name = file_info.fileName();
-                    file_name = RemoveFileExtension(file_name);
+                std::cout << "Username: " << line_username->text().toStdString() << std::endl;
+                cb_profile_switch->addItem(line_username->text());
+                cb_profile_switch->setCurrentIndex(0);
+                is_first_launch = false;
+                SaveAppData();
+                layout_root->removeWidget(title);
+                layout_root->removeWidget(label_username);
+                layout_root->removeWidget(line_username);
+                layout_root->removeWidget(continueButton);
 
-                    if (sorted_apps[i] == file_name)
-                    {
-                        //new_list->addItem(item);
+                delete title;
+                delete label_username;
+                delete line_username;
+                delete continueButton;
+                CreateUI();
+            });
 
-                        list_widget->insertItem(i, item1);
+        QVBoxLayout* layout = new QVBoxLayout;
+        layout->addWidget(title);
+        layout->addWidget(label_username);
+        layout->addWidget(line_username, 0, Qt::AlignCenter);
+        layout->addWidget(continueButton, 0, Qt::AlignCenter);
 
-                        //QListWidgetItem* item2 = list_widget->takeItem(i + 1);
-                        //list_widget->insertItem(j, item2);
-                        
-                    }
-                }
-
-            }
-
-            //list_widget = new_list;
-        }
+        QWidget* centralWidget = new QWidget(this);
+        centralWidget->setLayout(layout);
+        layout_root->addWidget(centralWidget);
     }
-
 
 
 
@@ -1750,14 +1805,14 @@ use the default given below.", this);
         {
             // Used in Smooth scrolling/navigating with the arrows/D-Pad --- must be called once every loop
             ResetKeyPressCounter();
-            CursorMode();
+            GamepadInputChecks();
         }
 
     }
 
     
 
-    void TaskGamepadNavigation()
+    void TaskGamepadConnection()
     {
 
         // Perform gamepad initialization (once)

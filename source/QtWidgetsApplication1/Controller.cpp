@@ -283,6 +283,7 @@ SHORT XBOXController::GetRightAnalogY()
 
 bool XBOXController::IsButtonDown(const int button)
 {
+    
     if (this->GetState().Gamepad.wButtons & Button[button].button)
     {
         Button[button].up = false;

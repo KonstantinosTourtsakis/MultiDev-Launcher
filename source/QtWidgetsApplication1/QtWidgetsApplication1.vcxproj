@@ -95,7 +95,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="CursorMode.cpp" />
+    <ClCompile Include="GamepadInputChecks.cpp" />
     <ClCompile Include="GetKeyboardInput.cpp" />
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="main.cpp">
@@ -107,7 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Controller.h" />
-    <ClInclude Include="CursorMode.h" />
+    <ClInclude Include="GamepadInputChecks.h" />
     <ClInclude Include="GetKeyboardInput.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="resource.h" />

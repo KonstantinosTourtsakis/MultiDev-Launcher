@@ -29,7 +29,7 @@
     <ClInclude Include="Controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CursorMode.h">
+    <ClInclude Include="GamepadInputChecks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GetKeyboardInput.h">
@@ -51,7 +51,7 @@
     <ClCompile Include="Controller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CursorMode.cpp">
+    <ClCompile Include="GamepadInputChecks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GetKeyboardInput.cpp">
