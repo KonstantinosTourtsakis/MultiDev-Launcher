@@ -39,6 +39,11 @@
 
 
 #include <QMainWindow>
+#include <QTranslator>
+#include <QLocale>
+#include <QLibraryInfo>
+#include <QStackedWidget>
+
 
 #include <QEvent>
 #include <QCompleter>
@@ -268,6 +273,7 @@ private:
     QVBoxLayout* layout_usearch;
     QGridLayout* layout_all_apps;
 
+    // Widgets
     QTabWidget* tabs;
     
 
@@ -372,7 +378,7 @@ private:
 
 
         // Add tabs to tab widget
-        tabs->addTab(tab_all_apps, "Applications");
+        tabs->addTab(tab_all_apps, tr("Applications"));
         tabs->addTab(tab_favorites, "Favorites");
         tabs->addTab(tab_settings, "Settings");
         
@@ -1476,77 +1482,14 @@ All data in this profile will be permanently deleted.";
 
 
 
-    /*
-    void SetupIntroScreen()
-    {
-
-        QFont font("Arial", 26);
-        QFont font2("Arial", 18);
-
-
-        QLabel* title = new QLabel("First time setup", this);
-        title->setAlignment(Qt::AlignCenter);
-        title->setFont(font);
-
-
-        QLabel* label_username = new QLabel("Welcome to the Application Launcher!\n\
-This is the first time setup window.\n\
-You can type in your own user name or\n\
-use the default given below.", this);
-        label_username->setAlignment(Qt::AlignCenter);
-        label_username->setFont(font2);
-        
-
-        QLineEdit* line_username = new QLineEdit(this);
-        line_username->setFixedHeight(PercentToHeight(2.32));
-        line_username->setFixedWidth(PercentToWidth(12.32));
-        
-        line_username->setFont(font2);
-        //line_username->setAlignment(Qt::AlignCenter);
-        line_username->setText("Profile_1");
-
-        
-        
-
-        QPushButton* continueButton = new QPushButton("Continue", this);
-        continueButton->setFixedSize(300, 100);
-        continueButton->setFont(font);
-        connect(continueButton, &QPushButton::clicked, this, [title, label_username, line_username, continueButton, this] 
-            {
-            std::cout << "Username: " << line_username->text().toStdString() << std::endl;
-            cb_profile_switch->addItem(line_username->text());
-            cb_profile_switch->setCurrentIndex(0);
-            is_first_launch = false;
-            SaveAppData();
-            layout_root->removeWidget(title);
-            layout_root->removeWidget(label_username);
-            layout_root->removeWidget(line_username);
-            layout_root->removeWidget(continueButton);
-
-            delete title;
-            delete label_username;
-            delete line_username;
-            delete continueButton;
-            CreateUI();
-            });
-
-        
-
-        layout_root->addWidget(title);
-        layout_root->addWidget(label_username);
-        layout_root->addWidget(line_username);
-        layout_root->addWidget(continueButton, 0, Qt::AlignCenter);
-        
-    }
-
-    */
 
 
     void SetupIntroScreen()
     {
         QFont font("Arial", 26);
         QFont font2("Arial", 18);
-
+        
+        
         QLabel* title = new QLabel("First time setup", this);
         title->setAlignment(Qt::AlignCenter);
         title->setFont(font);
@@ -1576,10 +1519,8 @@ use the default given below.", this);
             "padding: 15px 32px;"
             "text-align: center;"
             "text-decoration: none;"
-            //"display: inline-block;"
             "font-size: 16px;"
             "margin: 4px 2px;"
-            //"cursor: pointer;"
             "border-radius: 12px;"
             "}"
             "QPushButton:hover {"
@@ -1603,16 +1544,18 @@ use the default given below.", this);
                 delete continueButton;
                 CreateUI();
             });
-
+            
         QVBoxLayout* layout = new QVBoxLayout;
+
         layout->addWidget(title);
         layout->addWidget(label_username);
-        layout->addWidget(line_username, 0, Qt::AlignCenter);
+        layout->addWidget(line_username, 0, Qt::AlignCenter); 
         layout->addWidget(continueButton, 0, Qt::AlignCenter);
 
-        QWidget* centralWidget = new QWidget(this);
-        centralWidget->setLayout(layout);
-        layout_root->addWidget(centralWidget);
+        QWidget* intro_widget = new QWidget(this);
+        intro_widget->setLayout(layout);
+        layout_root->addWidget(intro_widget);
+
     }
 
 
@@ -1853,7 +1796,14 @@ int main(int argc, char* argv[])
     
 
     QApplication app(argc, argv);
-    
+    QTranslator translator;
+    QString locale = QLocale::system().name();
+    //if (translator.load("./Translation_el" + locale, ":/translations"))
+    if (translator.load("./Translation_el"))
+    {
+        app.installTranslator(&translator);
+    }
+
     ApplicationExplorer explorer(app);
     explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
     explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
@@ -1870,6 +1820,7 @@ int main(int argc, char* argv[])
     
     //QKeyboard.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
     explorer.QKeyboard = &QKeyboard;
+    
     
 
     explorer.showMaximized();
