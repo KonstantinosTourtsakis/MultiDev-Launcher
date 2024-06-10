@@ -404,8 +404,9 @@ private:
         
 
         // Create the second tab
-        QLabel* label_directories = new QLabel("Directories:");
+        QLabel* label_directories = new QLabel("Directories and Applications");
         QLabel* label_app_theme = new QLabel("Theme");
+        QLabel* label_lists = new QLabel("Lists");
         QLabel* label_profile = new QLabel("Profile");
 
         QPushButton* button_add_dir = new QPushButton("Add Directory");
@@ -500,19 +501,23 @@ The final device supported from this application is the Xbox Gamepad. Much like 
 
 
         layout_settings->addWidget(button_virtual_keyb);
+        layout_settings->addWidget(label_lists);
         layout_settings->addWidget(chb_icon_mode);
         layout_settings->addWidget(chb_wrapping);
         layout_settings->addWidget(chb_file_extension);
-        layout_settings->addWidget(label_profile);
-        layout_settings->addWidget(cb_profile_switch);
-        layout_settings->addWidget(button_delete_profile);
-        layout_settings->addWidget(line_add_profile);
         layout_settings->addWidget(label_app_theme);
         layout_settings->addWidget(cb_theme);
+
         layout_settings->addWidget(button_view_install_folder);
         layout_settings->addWidget(label_directories);
         layout_settings->addWidget(list_directories);
         layout_settings->addLayout(layout_dir_buttons);
+        layout_settings->addWidget(label_profile);
+        layout_settings->addWidget(cb_profile_switch);
+        layout_settings->addWidget(line_add_profile);
+        layout_settings->addWidget(button_delete_profile);
+        
+
         layout_settings->addLayout(layout_about);
 
         
@@ -955,6 +960,7 @@ All data in this profile will be permanently deleted.";
         settings.setValue("Theme", cb_theme->currentIndex());
         settings.setValue("icon_mode", chb_icon_mode->isChecked());
         settings.setValue("wrapping", chb_wrapping->isChecked());
+        settings.setValue("file_extension", chb_file_extension->isChecked());
         
         // Convert the QMap to a QVariantMap
         QVariantMap map;
@@ -976,6 +982,9 @@ All data in this profile will be permanently deleted.";
 
         // Save directories to settings
         settings.setValue("Directories", directories);
+        settings.setValue("Favorites", favorites_list);
+
+
 
 
         settings.endGroup();
@@ -1009,6 +1018,10 @@ All data in this profile will be permanently deleted.";
 
 
         QStringList directories = settings.value("Directories").toStringList();
+        favorites_list = settings.value("Favorites").toStringList();
+
+        UpdateListWidget(favorites_list, list_favorites);
+
 
         // Clear the listWidget before loading directories
         list_directories->clear();
@@ -1022,6 +1035,7 @@ All data in this profile will be permanently deleted.";
 
         chb_icon_mode->setChecked(settings.value("icon_mode", true).toBool());
         chb_wrapping->setChecked(settings.value("wrapping", true).toBool());
+        chb_file_extension->setChecked(settings.value("file_extension", true).toBool());
         list_widget->setViewMode(chb_icon_mode->isChecked() ? QListWidget::IconMode : QListWidget::ListMode);
         list_favorites->setViewMode(chb_icon_mode->isChecked() ? QListWidget::IconMode : QListWidget::ListMode);
         list_widget->setWrapping(chb_wrapping->isChecked());
@@ -1125,9 +1139,10 @@ All data in this profile will be permanently deleted.";
             return;
         
         QMenu context_menu(tr("Context Menu"), this);
+        
 
-        QAction* action_edit = new QAction(tr("Add Application"), this);
-        connect(action_edit, &QAction::triggered, this, [this, item]() {
+        QAction* action_manually = new QAction(tr("Add Application Manually"), this);
+        connect(action_manually, &QAction::triggered, this, [this, item]() {
             
             QFileDialog dialog;
             dialog.setWindowTitle("Select application file");
@@ -1139,8 +1154,7 @@ All data in this profile will be permanently deleted.";
             {
                 QString file_selected = dialog.selectedFiles().first();
                 
-                std::cout << "File selected: " << file_selected.toStdString() << std::endl;
-
+                
                 for (int i = 0; i < list_directories->count(); ++i)
                 {
 
@@ -1169,9 +1183,9 @@ All data in this profile will be permanently deleted.";
         for (int i = 0; i < list_favorites->count(); ++i)
         {
 
-            QListWidgetItem* currentItem = list_favorites->item(i);
+            QListWidgetItem* current_item = list_favorites->item(i);
 
-            if (currentItem->text() == item->text())
+            if (current_item->text() == item->text())
             {
 
                 found = true;
@@ -1182,7 +1196,7 @@ All data in this profile will be permanently deleted.";
         QAction* action_add_favorite;
         if (found)
         {
-            action_add_favorite = new QAction(tr("Remove from favorites"), this);
+            action_add_favorite = new QAction(tr("Remove From Favorites"), this);
 
             connect(action_add_favorite, &QAction::triggered, this, [this, item]()
                 {
@@ -1242,7 +1256,7 @@ All data in this profile will be permanently deleted.";
         }
         else
         {
-            action_add_favorite = new QAction(tr("Add to favorites"), this);
+            action_add_favorite = new QAction(tr("Add To Favorites"), this);
 
             connect(action_add_favorite, &QAction::triggered, this, [this, item]()
                 {
@@ -1264,9 +1278,7 @@ All data in this profile will be permanently deleted.";
         }
 
 
-
-
-        context_menu.addAction(action_edit);
+        context_menu.addAction(action_manually);
         context_menu.addAction(action_add_favorite);
 
 
