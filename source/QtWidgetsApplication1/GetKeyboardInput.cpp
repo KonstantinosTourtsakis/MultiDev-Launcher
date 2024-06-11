@@ -50,11 +50,9 @@ void VirtualKeyboard::SendKeyboardInput()
 
     if (input_init)
     {
-        
-
         SetWindowPos(qt_keyboard_window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
         ShowWindow(qt_keyboard_window, SW_MAXIMIZE);
-
+        CreateKeyboardUI();
         input_init = false;
     }
 
@@ -73,11 +71,11 @@ void VirtualKeyboard::SendKeyboardInput()
             current_row--;
         }
         
-        QWidget* widget = GetWidgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
+        /*QWidget* widget = GetWidgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
         if (widget)
         {
             widget->setFocus();
-        }
+        }*/
         
         CreateKeyboardUI();
     }
@@ -92,11 +90,7 @@ void VirtualKeyboard::SendKeyboardInput()
         {
             current_row++;
         }
-        QWidget* widget = GetWidgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
-        if (widget)
-        {
-            widget->setFocus();
-        }
+        
         
         CreateKeyboardUI();
     }
@@ -111,12 +105,8 @@ void VirtualKeyboard::SendKeyboardInput()
         {
             current_column--;
         }
-        QWidget* widget = GetWidgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
-        if (widget)
-        {
-            widget->setFocus();
-        }
-
+        
+        
         CreateKeyboardUI();
         
     }
@@ -131,11 +121,7 @@ void VirtualKeyboard::SendKeyboardInput()
         {
             current_column++;
         }
-        QWidget* widget = GetWidgetAt(VirtualKeyboard::layout_keyboard, current_row, current_column);
-        if (widget)
-        {
-            widget->setFocus();
-        }
+        
         
         CreateKeyboardUI();
     }
@@ -154,6 +140,7 @@ void VirtualKeyboard::SendKeyboardInput()
     // Space character
     if (user->IsButtonJustDown(GAMEPAD_Y)) 
     {
+        Beep(200, 200);
         virtual_input->insert(" ");
     }
 

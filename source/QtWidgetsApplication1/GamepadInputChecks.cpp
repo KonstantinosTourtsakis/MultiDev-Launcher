@@ -214,7 +214,19 @@ void GamepadInputChecks()
 	}
 
 
+	/*
+	HWND qt_window = FindWindowA(NULL, "P2019140 - Konstantinos Tourtsakis");
+	if (qt_window != NULL)
+	{
+		
+		HWND foreground = GetForegroundWindow();
 
+		if (foreground == qt_window) 
+		{
+			// Window is focused
+			return;
+		}
+	}*/
 
 	
 	if (getting_input)

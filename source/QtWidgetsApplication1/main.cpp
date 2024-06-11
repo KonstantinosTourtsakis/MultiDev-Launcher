@@ -209,7 +209,7 @@ class ApplicationExplorer : public QWidget
     
 public:
     VirtualKeyboard* QKeyboard;
-    ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app)
+    ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app), layout_root(new QVBoxLayout(this))
     {
         // Controller task loop - Perform task constantly
         timer = new QTimer(this);
@@ -271,7 +271,7 @@ private:
     // Layouts
     QVBoxLayout* layout_root = new QVBoxLayout(this);
     QVBoxLayout* layout_usearch;
-    QGridLayout* layout_all_apps;
+    QVBoxLayout* layout_all_apps;
 
     // Widgets
     QTabWidget* tabs;
@@ -357,7 +357,7 @@ private:
 
         // Layouts
         //QVBoxLayout* layout_all_apps = new QVBoxLayout(tab_all_apps);
-        layout_all_apps = new QGridLayout(tab_all_apps);
+        layout_all_apps = new QVBoxLayout(tab_all_apps);
         QGridLayout* layout_favorites = new QGridLayout(tab_favorites);
         //QGridLayout* layout_popular = new QGridLayout(tab_popular);
         QVBoxLayout* layout_settings = new QVBoxLayout(tab_settings);
@@ -740,10 +740,9 @@ All data in this profile will be permanently deleted.";
         // ULauncher-like window for application searching through the keyboard
         qwid_usearch_window.setWindowTitle("Qt6ULauncher");
         layout_usearch = new QVBoxLayout();
-        //QVBoxLayout* sea_layout = new QVBoxLayout();
         qwid_usearch_window.setLayout(layout_usearch);
-        //qwid_usearch_window.setStyleSheet("background-color: transparent;");
-        qwid_usearch_window.resize(400, 100);//(PercentToWidth(7.81), PercentToHeight(1.85));
+        
+        qwid_usearch_window.resize(PercentToWidth(10.41), PercentToHeight(4.62));//(PercentToWidth(7.81), PercentToHeight(1.85));
         //qwid_usearch_window.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
         qwid_usearch_window.setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
         //qwid_usearch_window.setWindowFlags(Qt::Popup);
@@ -751,13 +750,13 @@ All data in this profile will be permanently deleted.";
 
         // Create UI elements
         line_usearch_bar = new QLineEdit(this);
-        line_usearch_bar->setFixedHeight(70);//(PercentToHeight(2.32));
+        line_usearch_bar->setFixedHeight(PercentToHeight(3.24));
         line_usearch_bar->setFont(QFont("Arial", 26));
         //line_usearch_bar->setFocusPolicy()
 
         list_usearch->setViewMode(QListView::ListMode);
         list_usearch->hide();
-        list_usearch->setFixedHeight(120);//(PercentToHeight(2.32));
+        list_usearch->setFixedHeight(PercentToHeight(5.55));
         list_usearch->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         list_usearch->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         list_usearch->setFont(font);
@@ -814,10 +813,10 @@ All data in this profile will be permanently deleted.";
 
         if (!list_usearch->hasFocus() && (IsKeyJustDown(VK_DOWN) || IsKeyJustDown(VK_UP)))
         {
-            //search_list->setFocusPolicy(Qt::NoFocus);
+            //list_usearch->setFocusPolicy(Qt::NoFocus);
             list_usearch->setCurrentRow(0);
-            
             list_usearch->setFocus();
+
         }
 
 
@@ -841,15 +840,31 @@ All data in this profile will be permanently deleted.";
 
 
         // Focus on the search input field
-        if (user->IsButtonJustDown(GAMEPAD_DPAD_UP) && list_widget->currentRow() <= 12)
+        if (user->IsButtonJustDown(GAMEPAD_DPAD_UP) )
         {
-            line_all_search->setFocus();
+            if (tabs->currentIndex() == 0 && list_widget->currentRow() <= 12)
+            {
+                line_all_search->setFocus();
+            }
+            else if (tabs->currentIndex() == 1 && list_favorites->currentRow() <= 12)
+            {
+                line_fav_search->setFocus();
+            }
+            
         }
 
         // Focus on the applications list
-        if (user->IsButtonJustDown(GAMEPAD_DPAD_DOWN) && line_all_search->hasFocus())
+        if (user->IsButtonJustDown(GAMEPAD_DPAD_DOWN))
         {
-            list_widget->setFocus();
+            if (tabs->currentIndex() == 0  && line_all_search->hasFocus())
+            {
+                list_widget->setFocus();
+            }
+            else if (tabs->currentIndex() == 1  && line_fav_search->hasFocus())
+            {
+                list_favorites->setFocus();
+            }
+            
         }
 
 
@@ -888,11 +903,14 @@ All data in this profile will be permanently deleted.";
         if (text.isEmpty())
         {
             list_usearch->hide();
-            qwid_usearch_window.resize(400, 100);
-            layout_usearch->update();
-            list_usearch->update();
+            //layout_usearch->removeWidget(list_usearch);
+            qwid_usearch_window.resize(PercentToWidth(10.41), PercentToHeight(4.62));
+            //layout_usearch->update();
+            //list_usearch->update();
             return;
         }
+
+        
 
         int max_results = 10;
         int count = 0;
@@ -1110,7 +1128,7 @@ All data in this profile will be permanently deleted.";
     void OnApplicationExit()
     {
         ApplicationExplorer::SaveProfile();
-        Beep(200, 200);
+        
     }
 
 
@@ -1498,33 +1516,47 @@ All data in this profile will be permanently deleted.";
 
     void SetupIntroScreen()
     {
+        
+        QWidget* intro_widget = new QWidget(this);
+        QVBoxLayout* layout = new QVBoxLayout(intro_widget);
+        intro_widget->setLayout(layout);
+        layout_root->addWidget(intro_widget);
+
+
         QFont font("Arial", 26);
         QFont font2("Arial", 18);
         
         
-        QLabel* title = new QLabel("First time setup", this);
+        QLabel* title = new QLabel("Set up user profile name", this);
         title->setAlignment(Qt::AlignCenter);
         title->setFont(font);
+        layout->addWidget(title);
 
         QLabel* label_username = new QLabel("Welcome to the Application Launcher!\n"
-            "This is the first time setup window.\n"
+            "This is the first time setup screen.\n"
             "You can type in your own user name or\n"
             "use the default given below.", this);
         label_username->setAlignment(Qt::AlignCenter);
         label_username->setFont(font2);
         label_username->setWordWrap(true);
         label_username->setMargin(10);  // Add margin for better spacing
+        layout->addWidget(label_username);
 
         QLineEdit* line_username = new QLineEdit(this);
         line_username->setFixedHeight(PercentToHeight(2.32));
         line_username->setFixedWidth(PercentToWidth(12.32));
         line_username->setFont(font2);
         line_username->setText("Profile_1");
+        layout->addWidget(line_username, 0, Qt::AlignCenter);
 
-        QPushButton* continueButton = new QPushButton("Continue", this);
-        continueButton->setFixedSize(300, 100);
-        continueButton->setFont(font);
-        continueButton->setStyleSheet("QPushButton {"
+        QPushButton* add_dir = new QPushButton("", this);
+        add_dir->setStyleSheet("background-color: #1e1e1e; border: none;");
+
+
+
+        QPushButton* button_continue = new QPushButton("Continue", this);
+        button_continue->setFixedSize(PercentToWidth(7.81), PercentToHeight(4.62));
+        button_continue->setStyleSheet("QPushButton {"
             "background-color: #4CAF50;"
             "color: white;"
             "border: none;"
@@ -1538,35 +1570,27 @@ All data in this profile will be permanently deleted.";
             "QPushButton:hover {"
             "background-color: #45a049;"
             "}");
-        connect(continueButton, &QPushButton::clicked, this, [title, label_username, line_username, continueButton, this]
+
+        layout->addWidget(button_continue, 0, Qt::AlignCenter);
+        
+
+
+        connect(button_continue, &QPushButton::clicked, this, [intro_widget, title, label_username, line_username, button_continue, this]
             {
-                std::cout << "Username: " << line_username->text().toStdString() << std::endl;
                 cb_profile_switch->addItem(line_username->text());
                 cb_profile_switch->setCurrentIndex(0);
                 is_first_launch = false;
                 SaveAppData();
-                layout_root->removeWidget(title);
-                layout_root->removeWidget(label_username);
-                layout_root->removeWidget(line_username);
-                layout_root->removeWidget(continueButton);
+                layout_root->removeWidget(intro_widget);
 
                 delete title;
                 delete label_username;
                 delete line_username;
-                delete continueButton;
+                delete button_continue;
                 CreateUI();
             });
             
-        QVBoxLayout* layout = new QVBoxLayout;
-
-        layout->addWidget(title);
-        layout->addWidget(label_username);
-        layout->addWidget(line_username, 0, Qt::AlignCenter); 
-        layout->addWidget(continueButton, 0, Qt::AlignCenter);
-
-        QWidget* intro_widget = new QWidget(this);
-        intro_widget->setLayout(layout);
-        layout_root->addWidget(intro_widget);
+        
 
     }
 
@@ -1804,18 +1828,10 @@ All data in this profile will be permanently deleted.";
 
 int main(int argc, char* argv[]) 
 {
-    AllocateConsole("Debug console for Qt6");
-    
+    //AllocateConsole("Debug console for Qt6");
+
 
     QApplication app(argc, argv);
-    QTranslator translator;
-    QString locale = QLocale::system().name();
-    //if (translator.load("./Translation_el" + locale, ":/translations"))
-    if (translator.load("./Translation_el"))
-    {
-        app.installTranslator(&translator);
-    }
-
     ApplicationExplorer explorer(app);
     explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
     explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);

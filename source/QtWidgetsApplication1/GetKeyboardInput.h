@@ -57,29 +57,6 @@ private:
 
 
 
-    QWidget* GetWidgetAt(QGridLayout* layout, int row, int column)
-    {
-        // Iterate over all items in the layout
-        for (int i = 0; i < layout->count(); ++i)
-        {
-            QLayoutItem* item = layout->itemAt(i);
-
-            if (item->widget())
-            {
-                int r, c, rs, cs;
-                layout->getItemPosition(i, &r, &c, &rs, &cs);
-                if (r == row && c == column)
-                {
-                    return item->widget();
-                }
-            }
-        }
-
-        return nullptr; // No widget at the specified position
-    }
-
-
-
 
     void CreateKeyboardUI()
     {
@@ -159,106 +136,117 @@ private:
 
         }
         
-        // Creating the last row of buttons
-        QPushButton* button_copy = new QPushButton("Copy Input");
-        QPushButton* button_caps = new QPushButton("Caps Lock");
-        QPushButton* button_space = new QPushButton("Space");
-        QPushButton* button_back = new QPushButton("Backspace");
-        QPushButton* button_clear = new QPushButton("Clear");
-        QPushButton* button_left = new QPushButton("<");
-        QPushButton* button_right = new QPushButton(">");
-
-
-        button_copy->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
-        button_copy->setFont(font);
-
-        button_caps->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
-        button_caps->setFont(font);
-
-        button_space->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
-        button_space->setFont(font);
-
-        button_back->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
-        button_back->setFont(font);
-
-        button_clear->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
-        button_clear->setFont(font);
-
-        button_left->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
-        button_left->setFont(font);
-
-        button_right->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
-        button_right->setFont(font);
         
-        
-        connect(button_copy, &QPushButton::clicked, this, [=]()
-            {
-                QClipboard* clipboard = QGuiApplication::clipboard();
-                clipboard->setText(virtual_input->text());
-            });
-
-        connect(button_caps, &QPushButton::clicked, this, [=]()
-            {
-                caps_lock = !caps_lock;
-                CreateKeyboardUI();
-            });
-        
-        connect(button_space, &QPushButton::clicked, this, [=]()
-            {
-                virtual_input->insert(" ");
-            });
-
-        connect(button_back, &QPushButton::clicked, this, [=]()
-            {
-                virtual_input->backspace();
-            });
-        
-        connect(button_clear, &QPushButton::clicked, this, [=]()
-            {
-                virtual_input->clear();
-            });
-
-        connect(button_left, &QPushButton::clicked, this, [=]()
-            {
-                virtual_input->cursorBackward(true, 1);
-            });
-        
-        connect(button_right, &QPushButton::clicked, this, [=]()
-            {
-                virtual_input->cursorForward(true, 1);
-            });
-        
-        column = 0;
-        row++;
 
 
-        layout_keyboard->addWidget(button_copy, row, column);
-        column++;
-        layout_keyboard->addWidget(button_caps, row, column);
-        column++;
-        layout_keyboard->addWidget(button_space, row, column);
-        column++;
-        layout_keyboard->addWidget(button_back, row, column);
-        column++;
-        layout_keyboard->addWidget(button_clear, row, column);
-        column++;
-        layout_keyboard->addWidget(button_left, row, column);
-        column++;
-        layout_keyboard->addWidget(button_right, row, column);
+        
 
         if (getting_input)
         {
-            label_instructions = new QLabel("A: type key   Y: insert space   X: Backspace   Start: send input", this);
+            label_instructions = new QLabel("A: type key   Y: insert space   X: Backspace   Start: send input   Left Stick: Caps lock", this);
+            //setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
         }
         else
-        {
+        {   
             label_instructions = new QLabel("Click on the keys and then use the copy button to save input to clipboard", this);
+
+
+            // Creating the last row of buttons
+            QPushButton* button_copy = new QPushButton("Copy Input");
+            QPushButton* button_caps = new QPushButton("Caps Lock");
+            QPushButton* button_space = new QPushButton("Space");
+            QPushButton* button_back = new QPushButton("Backspace");
+            QPushButton* button_clear = new QPushButton("Clear");
+            QPushButton* button_left = new QPushButton("<");
+            QPushButton* button_right = new QPushButton(">");
+
+
+            button_copy->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
+            button_copy->setFont(QFont("Arial", 12));
+
+            button_caps->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
+            button_caps->setFont(QFont("Arial", 12));
+
+            button_space->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
+            button_space->setFont(font);
+
+            button_back->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
+            button_back->setFont(QFont("Arial", 12));
+
+            button_clear->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
+            button_clear->setFont(font);
+
+            button_left->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
+            button_left->setFont(font);
+
+            button_right->setFixedSize(PercentToWidth(2.60), PercentToHeight(3.24));
+            button_right->setFont(font);
+
+
+            connect(button_copy, &QPushButton::clicked, this, [=]()
+                {
+                    Beep(200, 200);
+                    QClipboard* clipboard = QGuiApplication::clipboard();
+                    clipboard->setText(virtual_input->text());
+                });
+
+            connect(button_caps, &QPushButton::clicked, this, [=]()
+                {
+                    caps_lock = !caps_lock;
+                    CreateKeyboardUI();
+                });
+
+            connect(button_space, &QPushButton::clicked, this, [=]()
+                {
+                    Beep(200, 200);
+                    virtual_input->insert(" ");
+                });
+
+            connect(button_back, &QPushButton::clicked, this, [=]()
+                {
+                    virtual_input->backspace();
+                });
+
+            connect(button_clear, &QPushButton::clicked, this, [=]()
+                {
+                    virtual_input->clear();
+                });
+
+            connect(button_left, &QPushButton::clicked, this, [=]()
+                {
+                    virtual_input->cursorBackward(true, 1);
+                });
+
+            connect(button_right, &QPushButton::clicked, this, [=]()
+                {
+                    virtual_input->cursorForward(true, 1);
+                });
+
+            column = 0;
+            row++;
+
+
+
+            column++;
+            layout_keyboard->addWidget(button_caps, row, column);
+            column++;
+            layout_keyboard->addWidget(button_space, row, column);
+            column++;
+            layout_keyboard->addWidget(button_back, row, column);
+            column++;
+            layout_keyboard->addWidget(button_clear, row, column);
+            column++;
+            layout_keyboard->addWidget(button_left, row, column);
+            column++;
+            layout_keyboard->addWidget(button_right, row, column);
+            column++;
+            layout_keyboard->addWidget(button_copy, row, column);
         }
         
         label_instructions->setFont(font);
         main_layout->addWidget(label_instructions, 0, Qt::AlignCenter);
 
-        setFixedSize(1280, 720);
+        setFixedSize(PercentToWidth(33.33), PercentToHeight(33.33));
 
         
     }
