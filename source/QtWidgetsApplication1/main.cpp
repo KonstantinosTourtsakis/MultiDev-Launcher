@@ -742,7 +742,7 @@ All data in this profile will be permanently deleted.";
         layout_usearch = new QVBoxLayout();
         //QVBoxLayout* sea_layout = new QVBoxLayout();
         qwid_usearch_window.setLayout(layout_usearch);
-        qwid_usearch_window.setStyleSheet("background-color: transparent;");
+        //qwid_usearch_window.setStyleSheet("background-color: transparent;");
         qwid_usearch_window.resize(400, 100);//(PercentToWidth(7.81), PercentToHeight(1.85));
         //qwid_usearch_window.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
         qwid_usearch_window.setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);

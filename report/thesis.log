@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.3.15)  8 JUN 2024 18:43
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.3.15)  11 JUN 2024 12:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -327,6 +327,9 @@ LaTeX Warning: Label `example' multiply defined.
 
 LaTeX Warning: Label `example' multiply defined.
 
+
+LaTeX Warning: Label `example' multiply defined.
+
 )
 \openout1 = `thesis.aux'.
 
@@ -460,9 +463,38 @@ Underfull \hbox (badness 10000) in paragraph at lines 123--126
 
 [1
 
-] (./perilipsi.tex) [2
+] (./perilipsi.tex)
+Overfull \hbox (19.15205pt too wide) in paragraph at lines 8--140
+\TU/Arial(0)/m/it/10.95 περιήγησης πάνω σε αυτό που αντιμετωπίζει προβλήματα όπ
+ως εστίαση σε λάθος αντικείμενα
+ []
 
-] (./thesis.toc [3
+
+Overfull \hbox (15.64287pt too wide) in paragraph at lines 8--140
+\TU/Arial(0)/m/it/10.95 του εικονικού πληκτρολογίου και μια κλάση για τον έλεγχ
+ο εντολών εισόδου από το χειριστήριο
+ []
+
+
+Overfull \hbox (4.65543pt too wide) in paragraph at lines 8--140
+\TU/Arial(0)/m/it/10.95 πλήκτρων και χρησιμεύουν στην αντιστοίχηση των πιέσεων 
+των κουμπιών του χειριστηρίου
+ []
+
+
+Overfull \hbox (22.89677pt too wide) in paragraph at lines 8--140
+\TU/Arial(0)/m/it/10.95 σε συντομεύσεις που υπάρχουν στο σύστημα. Τέλος, η εφαρ
+μογή αυτή μπορεί να εγκατασταθεί
+ []
+
+[2
+
+]
+
+LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
+(Font)              using `TU/Arial(0)/m/it' instead on input line 142.
+
+[3] (./thesis.toc [4
 
 
 
@@ -475,7 +507,7 @@ LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 LaTeX Font Warning: Font shape `TU/CourierNew(0)/m/it' undefined
 (Font)              using `TU/CourierNew(0)/m/n' instead on input line 50.
 
-[4])
+[5])
 \tf@toc=\write4
 \openout4 = `thesis.toc'.
 
@@ -484,18 +516,18 @@ LaTeX Font Warning: Font shape `TU/CourierNew(0)/m/it' undefined
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 152.
 
-[5] (./thesis.lof)
+[6] (./thesis.lof)
 \tf@lof=\write5
 \openout5 = `thesis.lof'.
 
- [6
+ [7
 
 
 ] (./thesis.lot)
 \tf@lot=\write6
 \openout6 = `thesis.lot'.
 
- [7
+ [8
 
 
 ]
@@ -507,9 +539,9 @@ Overfull \hbox (2.19296pt too wide) in paragraph at lines 5--25
  []
 
 
-Overfull \hbox (16.37737pt too wide) in paragraph at lines 5--25
+Overfull \hbox (27.48776pt too wide) in paragraph at lines 5--25
 \TU/Arial(0)/m/it/10.95 εισόδου του χρήστη. Επομένως, απώτερος σκοπός είναι η α
-ξιοποίηση των νέων περιφειακών
+ξιοποίηση των νέων περιφερειακών
  []
 
 
@@ -555,9 +587,9 @@ Overfull \hbox (34.8303pt too wide) in paragraph at lines 8--16
  []
 
 
-Overfull \hbox (9.5375pt too wide) in paragraph at lines 18--24
-\TU/Arial(0)/m/it/10.95 στοιχεία της γραφικής διεπαφής για τις λειτουργίες του 
-προγράμματος. Παρακάτω βλέπουμε
+Overfull \hbox (9.20065pt too wide) in paragraph at lines 18--24
+\TU/Arial(0)/m/it/10.95 υπόλοιπα στοιχεία της γραφικής διεπαφής για τις λειτουρ
+γίες του προγράμματος. Παρακάτω
  []
 
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
@@ -616,7 +648,7 @@ Overfull \hbox (5.97069pt too wide) in paragraph at lines 103--107
 
 
 Overfull \hbox (3.1924pt too wide) in paragraph at lines 109--120
-\TU/Arial(0)/m/it/10.95 πρόκειται να τοποθετηθούν όριζόντια (horizontal). Τέλος
+\TU/Arial(0)/m/it/10.95 πρόκειται να τοποθετηθούν οριζόντια (horizontal). Τέλος
 , ένα QGridLayout χρησιμοποιείται
  []
 
@@ -630,7 +662,7 @@ File: ./images/QVBoxLayout.png Graphic file (type bmp)
 
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 147.
+(Font)              using `TU/Arial(0)/m/it' instead on input line 149.
 
 [7]
 File: ./images/QListWidget.png Graphic file (type bmp)
@@ -638,20 +670,15 @@ File: ./images/QListWidget.png Graphic file (type bmp)
 
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 175.
+(Font)              using `TU/Arial(0)/m/it' instead on input line 177.
 
 [8]
-Overfull \hbox (26.48592pt too wide) in paragraph at lines 176--181
-\TU/Arial(0)/m/it/10.95 Το διάβασμα αρχείων από ένα directory γίνεται μέσω της 
-QDir κλάσης στην οποία αρχικοποιείται
- []
-
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 198.
 
 [9]
-Overfull \hbox (43.01344pt too wide) in paragraph at lines 198--200
+Overfull \hbox (43.01344pt too wide) in paragraph at lines 200--202
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
@@ -659,20 +686,14 @@ Overfull \hbox (43.01344pt too wide) in paragraph at lines 198--200
 File: ./images/QDir_file_reading.png Graphic file (type bmp)
 <./images/QDir_file_reading.png>
 
-Overfull \hbox (20.8202pt too wide) in paragraph at lines 212--217
+Overfull \hbox (20.8202pt too wide) in paragraph at lines 214--219
 \TU/Arial(0)/m/it/10.95 επιτρέπει στον χρήστη να πληκτρολογήσει δεδομένα εισόδο
 υ για την εκτέλεση μιας λειτουργίας
  []
 
 
-Overfull \hbox (26.32158pt too wide) in paragraph at lines 212--217
-\TU/Arial(0)/m/it/10.95 Όπως και τα QPushButton, τα αντικείμενα αυτά αρχικοποιο
-ύνται και στην συνέχεια προστίθενται
- []
-
-
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 223.
+(Font)              using `TU/Arial(0)/m/it' instead on input line 224.
 
 [10]
 File: ./images/QLineEdit.png Graphic file (type bmp)
@@ -680,67 +701,79 @@ File: ./images/QLineEdit.png Graphic file (type bmp)
 
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 250.
+(Font)              using `TU/Arial(0)/m/it' instead on input line 252.
 
 [11]
-Overfull \hbox (6.5268pt too wide) in paragraph at lines 271--277
+Overfull \hbox (6.5268pt too wide) in paragraph at lines 273--279
 \TU/Arial(0)/m/it/10.95 την διευκόλυνση του χρήστη κατά την περιήγησή του μιας 
 και είναι πολύ πιο αποτελεσματική
  []
 
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 279.
+(Font)              using `TU/Arial(0)/m/it' instead on input line 281.
 
 [12]
-Overfull \hbox (345.41652pt too wide) in paragraph at lines 285--286
+Overfull \hbox (345.41652pt too wide) in paragraph at lines 287--288
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][] 
  []
 
 
-Overfull \hbox (556.01866pt too wide) in paragraph at lines 287--288
+Overfull \hbox (556.01866pt too wide) in paragraph at lines 289--290
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ] 
  []
 
 
-Overfull \hbox (10.08305pt too wide) in paragraph at lines 301--310
+Overfull \hbox (10.08305pt too wide) in paragraph at lines 303--312
 \TU/Arial(0)/m/it/10.95 δημιουργείται ένα struct τύπου SHFILEINFO πάνω στο οποί
 ο θα αποθηκευτούν τα δεδομένα
  []
 
 
-Overfull \hbox (31.48386pt too wide) in paragraph at lines 301--310
-\TU/Arial(0)/m/it/10.95 δημιουργείται ένα QPixmap με το εικονίδιο του αρχειόυ. 
+Overfull \hbox (31.48386pt too wide) in paragraph at lines 303--312
+\TU/Arial(0)/m/it/10.95 δημιουργείται ένα QPixmap με το εικονίδιο του αρχείου. 
 Στην συνέχεια το pixmap χρησιμοποιείται
  []
 
 
+Overfull \hbox (22.06958pt too wide) in paragraph at lines 303--312
+\TU/Arial(0)/m/it/10.95 για την δημιουργία του [11][12]QIcon εικονιδίου το οποί
+ο και θα επιστραφεί από την συνάρτηση.
+ []
+
+
+Overfull \hbox (11.4956pt too wide) in paragraph at lines 316--323
+\TU/Arial(0)/m/it/10.95 [13]QCompleter που ουσιαστικά συμπληρώνει αυτό που έχει
+ γράψει ο χρήστης με προτάσεις
+ []
+
+
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 321.
+(Font)              using `TU/Arial(0)/m/it' instead on input line 323.
 
 [13]
-Overfull \hbox (20.65982pt too wide) in paragraph at lines 337--347
+Overfull \hbox (20.65982pt too wide) in paragraph at lines 339--349
 \TU/Arial(0)/m/it/10.95 αντικείμενα που επιτρέπουν την προσθήκη κώδικα που εκτε
 λείται σε τακτά χρονικά διαστήματα
  []
 
 
-Overfull \hbox (2.40149pt too wide) in paragraph at lines 337--347
+Overfull \hbox (2.40149pt too wide) in paragraph at lines 339--349
 \TU/Arial(0)/m/it/10.95 που ορίζονται από τον προγραμματιστή. Αυτό όπως είναι κ
 ατανοητό μπορεί να αξιοποιηθεί
  []
 
 
-Overfull \hbox (13.24182pt too wide) in paragraph at lines 337--347
-\TU/Arial(0)/m/it/10.95 ορίζοντας ένα μηδενικό χρονικό διάστημα, δημιουργόντας 
+Overfull \hbox (15.7013pt too wide) in paragraph at lines 339--349
+\TU/Arial(0)/m/it/10.95 ορίζοντας ένα μηδενικό χρονικό διάστημα, δημιουργώντας 
 κατά κάποιο τρόπο μια επανάληψη
  []
 
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 350.
+(Font)              using `TU/Arial(0)/m/it' instead on input line 352.
 
 [14])
 
@@ -750,9 +783,15 @@ LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 [15]
 Chapter C.
 (./xinput.tex
-Overfull \hbox (49.76712pt too wide) in paragraph at lines 6--13
-\TU/Arial(0)/m/it/10.95 Το XInput είναι μια βιβλιοθήκη διαχείρισης εντολών εισό
-δου για συσκευές χειρισμού βιντεοπαιχνιδιών
+Overfull \hbox (2.54881pt too wide) in paragraph at lines 6--13
+\TU/Arial(0)/m/it/10.95 Το [15][16]XInput είναι μια βιβλιοθήκη διαχείρισης εντο
+λών εισόδου για συσκευές χειρισμού
+ []
+
+
+Overfull \hbox (21.70836pt too wide) in paragraph at lines 6--13
+\TU/Arial(0)/m/it/10.95 χειριστήρια Xbox οποιασδήποτε γενιάς. Με το XInput έχου
+με την δυνατότητα να διαχειριστούμε
  []
 
 [16
@@ -765,37 +804,37 @@ LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 [17]
 Chapter D.
 (./application.tex
-Overfull \hbox (22.22995pt too wide) in paragraph at lines 10--22
+Overfull \hbox (22.22995pt too wide) in paragraph at lines 13--25
 \TU/Arial(0)/m/it/10.95 Το λογισμικό αυτό αποτελείται από 3 μέρη τα οποία ουσια
 στικά αποτελούν και τις περιφερειακές
  []
 
 
-Overfull \hbox (33.02493pt too wide) in paragraph at lines 10--22
+Overfull \hbox (33.02493pt too wide) in paragraph at lines 13--25
 \TU/Arial(0)/m/it/10.95 θα χρειαστεί να γίνει η αρχικοποίηση της εφαρμογής κατά
  την πρώτη εκτέλεση του προγράμματος
  []
 
 
-Overfull \hbox (0.84206pt too wide) in paragraph at lines 10--22
+Overfull \hbox (0.84206pt too wide) in paragraph at lines 13--25
 \TU/Arial(0)/m/it/10.95 από τον χρήστη. Το πρόγραμμα θα καθοδηγήσει τον χρήστη 
 θέτοντας μέσω των γραφικών
  []
 
 
-Overfull \hbox (14.07686pt too wide) in paragraph at lines 10--22
+Overfull \hbox (14.07686pt too wide) in paragraph at lines 13--25
 \TU/Arial(0)/m/it/10.95 στοιχείων κάποιες απαραίτητες για την εκτέλεση τις εφαρ
 μογής παραμέτρους. Οι παράμετροι
  []
 
 
-Overfull \hbox (8.24863pt too wide) in paragraph at lines 26--40
+Overfull \hbox (8.24863pt too wide) in paragraph at lines 29--43
 \TU/Arial(0)/m/it/10.95 χρήστη λειτουργικότητα της εφαρμογής. Πιο συγκεκριμένα,
  η γραφική διεπαφή έχει χωριστεί
  []
 
 
-Overfull \hbox (26.72652pt too wide) in paragraph at lines 26--40
+Overfull \hbox (26.72652pt too wide) in paragraph at lines 29--43
 \TU/Arial(0)/m/it/10.95 προστίθενται στο κεντρικό QTabWidget που αποτελεί κομμά
 τι τoυ βασικού γραφικού στρώματος
  []
@@ -803,109 +842,127 @@ Overfull \hbox (26.72652pt too wide) in paragraph at lines 26--40
 [18
 
 ]
-Overfull \hbox (19.93983pt too wide) in paragraph at lines 49--51
+Overfull \hbox (19.93983pt too wide) in paragraph at lines 52--54
 []\TU/Arial(0)/m/it/10.95 Ας αναλύσουμε τώρα την κάθε καρτέλα ξεχωριστά ξεκινών
 τας από την καρτέλα των ρυθμίσεων
  []
 
 
-Overfull \hbox (5.77821pt too wide) in paragraph at lines 56--80
+Overfull \hbox (5.77821pt too wide) in paragraph at lines 59--83
 \TU/Arial(0)/m/it/10.95 ποντικιού (το εικονικό πληκτρολόγιο είναι επίσης προσβά
 σιμο από το χειριστήριο κονσολών
  []
 
 
-Overfull \hbox (4.75522pt too wide) in paragraph at lines 56--80
+Overfull \hbox (4.75522pt too wide) in paragraph at lines 59--83
 \TU/Arial(0)/m/it/10.95 υπάρχουν ρυθμίσεις που αφορούν τις λίστες με τις εφαρμο
 γές του χρήστη που εμφανίζονται
  []
 
 
-Overfull \hbox (1.65652pt too wide) in paragraph at lines 56--80
-\TU/Arial(0)/m/it/10.95 εμφανίζεται στην λίστα. Στην συνέχεια υπάρχουν checkbox
-es που επηρρεάζουν τον τρόπο
- []
-
-
-Overfull \hbox (5.50336pt too wide) in paragraph at lines 56--80
+Overfull \hbox (5.50336pt too wide) in paragraph at lines 59--83
 \TU/Arial(0)/m/it/10.95 την θεματολογία που επιθυμεί ανάλογα με τις προτιμήσεις
  χρωμάτων που έχει. Η εφαρμογή
  []
 
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 80.
+(Font)              using `TU/Arial(0)/m/it' instead on input line 83.
 
 [19]
-Overfull \hbox (28.04536pt too wide) in paragraph at lines 85--100
+File: ./images/tab_settings.png Graphic file (type bmp)
+<./images/tab_settings.png>
+
+
+LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
+(Font)              using `TU/Arial(0)/m/it' instead on input line 86.
+
+[20]
+Overfull \hbox (28.04536pt too wide) in paragraph at lines 88--103
 \TU/Arial(0)/m/it/10.95 της στις ανάγκες του χρήστη μέσω της καρτέλας ρυθμίσεων
  μπορούμε πλέον να προχωρήσουμε
  []
 
 
-LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 100.
+Overfull \hbox (1.41418pt too wide) in paragraph at lines 88--103
+\TU/Arial(0)/m/it/10.95 σε αύξουσα ή σε φθίνουσα σειρά. Στην συνέχεια προβάλλον
+ται οι εφαρμογές σε ξεχωριστό
+ []
 
-[20]
-Overfull \hbox (18.00865pt too wide) in paragraph at lines 105--109
+
+LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
+(Font)              using `TU/Arial(0)/m/it' instead on input line 103.
+
+[21]
+File: ./images/tab_applications.png Graphic file (type bmp)
+<./images/tab_applications.png>
+
+Overfull \hbox (18.00865pt too wide) in paragraph at lines 108--112
 \TU/Arial(0)/m/it/10.95 Η καρτέλα Favorites δεν έχει κάποια ουσιαστική διαφορά 
 από την βασική καρτέλα εφαρμογών.
  []
 
 
-Overfull \hbox (18.44273pt too wide) in paragraph at lines 105--109
-\TU/Arial(0)/m/it/10.95 διαφορετική και στο context menu που πλεόν εμφανίζει μό
+Overfull \hbox (18.44273pt too wide) in paragraph at lines 108--112
+\TU/Arial(0)/m/it/10.95 διαφορετική και στο context menu που πλέον εμφανίζει μό
 νο επιλογή για αφαίρεση εφαρμογής
  []
 
+File: ./images/tab_favorites.png Graphic file (type bmp)
+<./images/tab_favorites.png>
 
-Overfull \hbox (16.32011pt too wide) in paragraph at lines 113--123
+LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
+(Font)              using `TU/Arial(0)/m/it' instead on input line 115.
+
+[22]
+Overfull \hbox (16.32011pt too wide) in paragraph at lines 117--127
 \TU/Arial(0)/m/it/10.95 την δυνατότητα να πληκτρολογήσει για να αναζητήσει μέσα
  από την λίστα των προγραμμάτων
  []
 
 
-Overfull \hbox (2.05649pt too wide) in paragraph at lines 113--123
+Overfull \hbox (2.05649pt too wide) in paragraph at lines 117--127
 \TU/Arial(0)/m/it/10.95 εφαρμογή και το πρόγραμμα κρύβει το παράθυρο εκτέλεσης 
 εφαρμογών. Η επανεμφάνιση
  []
 
 
-Overfull \hbox (18.86688pt too wide) in paragraph at lines 113--123
+Overfull \hbox (18.86688pt too wide) in paragraph at lines 117--127
 \TU/Arial(0)/m/it/10.95 του παραθύρου γίνεται μέσω ενός shortcut που έχει ανατε
 θεί και γίνεται μέσω του συνδυασμού
  []
 
+File: ./images/window_keyboard_search.png Graphic file (type bmp)
+<./images/window_keyboard_search.png>
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 123.
+(Font)              using `TU/Arial(0)/m/it' instead on input line 131.
 
-[21]
-Overfull \hbox (15.07607pt too wide) in paragraph at lines 126--136
+[23])
+Overfull \hbox (15.07607pt too wide) in paragraph at lines 133--187
 \TU/Arial(0)/m/it/10.95 Ένα χειριστήριο βιντεοπαιχνιδιών είναι σχεδιασμένο για 
 τις ανάγκες μιας εμπορικής κονσόλας
  []
 
 
-Overfull \hbox (32.78427pt too wide) in paragraph at lines 126--136
+Overfull \hbox (32.78427pt too wide) in paragraph at lines 133--187
 \TU/Arial(0)/m/it/10.95 βιντεοπαιχνιδιών και συνήθως είναι χρήσιμο στην περιήγη
 ση συστημάτων που είναι σχεδιασμένα
  []
 
 
-Overfull \hbox (7.30916pt too wide) in paragraph at lines 126--136
-\TU/Arial(0)/m/it/10.95 Επομένως οι εντολές που στέλονται από το χειριστήριο με
-ταφράζονται ως ένας συνδυασμός
+Overfull \hbox (12.9499pt too wide) in paragraph at lines 133--187
+\TU/Arial(0)/m/it/10.95 Επομένως οι εντολές που στέλνονται από το χειριστήριο μ
+εταφράζονται ως ένας συνδυασμός
  []
 
-)
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 189.
 
-[22]
+[24]
 Chapter E.
-(./application_source.tex [23
+(./application_source.tex [25
 
 ]
 Overfull \hbox (10.61311pt too wide) in paragraph at lines 32--33
@@ -940,7 +997,7 @@ Overfull \hbox (1.5799pt too wide) in paragraph at lines 52--65
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 65.
 
-[24]
+[26]
 Overfull \hbox (9.48407pt too wide) in paragraph at lines 70--76
 \TU/Arial(0)/m/it/10.95 αντικείμενο. Στην προκειμένη περίπτωση κληρονομείται η 
 κλάση QWidget και στην συνέχεια
@@ -972,7 +1029,7 @@ Overfull \hbox (70.01372pt too wide) in paragraph at lines 97--98
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 101.
 
-[25]
+[27]
 Overfull \hbox (2.44366pt too wide) in paragraph at lines 122--127
 \TU/Arial(0)/m/it/10.95 διαφορά με την LoadAppData είναι πως στην περίπτωση αυτ
 ή γίνεται φόρτωση δεδομένων
@@ -988,7 +1045,7 @@ a. Σκοπός της είναι η αποθήκευση
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 137.
 
-[26]
+[28]
 Overfull \hbox (124.01427pt too wide) in paragraph at lines 139--140
 [][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
@@ -1003,10 +1060,10 @@ Overfull \hbox (0.54517pt too wide) in paragraph at lines 143--149
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 164.
 
-[27]
-Overfull \hbox (0.76721pt too wide) in paragraph at lines 176--181
-\TU/Arial(0)/m/it/10.95 που προβάλονται στο πρόγραμμα. Αν το αντικείμενο είναι 
-έγκυρο τότε η μέθοδος φροντίζει
+[29]
+Overfull \hbox (6.2422pt too wide) in paragraph at lines 176--181
+\TU/Arial(0)/m/it/10.95 που προβάλλονται στο πρόγραμμα. Αν το αντικείμενο είναι
+ έγκυρο τότε η μέθοδος φροντίζει
  []
 
 
@@ -1016,16 +1073,16 @@ Overfull \hbox (7.21532pt too wide) in paragraph at lines 184--189
  []
 
 
-Overfull \hbox (17.49518pt too wide) in paragraph at lines 192--203
-\TU/Arial(0)/m/it/10.95 βιντεοπαιχνιών. Μιας και το Qt μας επιτρέπει να δημιουρ
-γήσουμε διαδικασίες που εκτελούνται
+Overfull \hbox (4.48314pt too wide) in paragraph at lines 192--203
+\TU/Arial(0)/m/it/10.95 με τον ορισμό ενός μηδενικού χρονικού ορίου. Επομένως η
+ μέθοδος αυτή καλείται συνεχώς
  []
 
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 203.
 
-[28]
+[30]
 Overfull \hbox (0.15588pt too wide) in paragraph at lines 208--216
 \TU/Arial(0)/m/it/10.95 παρασκήνιο για εντολές εισόδου από το πληκτρολόγιο και 
 το χειριστήριο. Το πληκτρολόγιο
@@ -1041,9 +1098,9 @@ Overfull \hbox (8.66187pt too wide) in paragraph at lines 208--216
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 226.
 
-[29]
-Overfull \hbox (5.88403pt too wide) in paragraph at lines 247--251
-\TU/Arial(0)/m/it/10.95 τιμή του σε μία δομή επιλογής if...else if. Άνάλογα με 
+[31]
+Overfull \hbox (5.87868pt too wide) in paragraph at lines 247--251
+\TU/Arial(0)/m/it/10.95 τιμή του σε μία δομή επιλογής if...else if. Ανάλογα με 
 την τιμή αυτή εφαρμόζεται η κατάλληλη
  []
 
@@ -1051,7 +1108,7 @@ Overfull \hbox (5.88403pt too wide) in paragraph at lines 247--251
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 251.
 
-[30]
+[32]
 Overfull \hbox (31.53215pt too wide) in paragraph at lines 260--264
 \TU/Arial(0)/m/it/10.95 Η κλάση VirtualKeyboard δημιουργεί το αντικείμενο του ε
 ικονικού πληκτρολογίου και διαχειρίζεται
@@ -1067,7 +1124,7 @@ Overfull \hbox (0.75845pt too wide) in paragraph at lines 280--289
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 289.
 
-[31]
+[33]
 Overfull \hbox (2.21793pt too wide) in paragraph at lines 302--310
 \TU/Arial(0)/m/it/10.95 αποτελέσματος. Για να μπορέσουμε να καταλάβουμε καλύτερ
 α την ροή του προγράμματος
@@ -1083,7 +1140,7 @@ Overfull \hbox (21.37808pt too wide) in paragraph at lines 302--310
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 310.
 
-[32]
+[34]
 Overfull \hbox (75.41377pt too wide) in paragraph at lines 327--328
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
@@ -1108,7 +1165,7 @@ Overfull \hbox (10.61311pt too wide) in paragraph at lines 347--348
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 348.
 
-[33]
+[35]
 Overfull \hbox (80.81383pt too wide) in paragraph at lines 353--355
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
@@ -1131,7 +1188,7 @@ Overfull \hbox (7.88446pt too wide) in paragraph at lines 364--371
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 383.
 
-[34]
+[36]
 Overfull \hbox (21.19981pt too wide) in paragraph at lines 388--392
 \TU/Arial(0)/m/it/10.95 παράθυρο του πληκτρολογίου και μετά γίνεται αποθήκευση 
 της διεύθυνσής του στο αντικείμενο
@@ -1147,9 +1204,9 @@ Overfull \hbox (26.81328pt too wide) in paragraph at lines 401--402
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 424.
 
-[35]
+[37]
 Overfull \hbox (17.4675pt too wide) in paragraph at lines 424--428
-[]\TU/Arial(0)/m/it/10.95 Όπως φάινεται παρακάτω, για την δημιουργία της γραφικ
+[]\TU/Arial(0)/m/it/10.95 Όπως φαίνεται παρακάτω, για την δημιουργία της γραφικ
 ής διεπαφής γίνεται χρήση κουμπιών
  []
 
@@ -1157,7 +1214,7 @@ Overfull \hbox (17.4675pt too wide) in paragraph at lines 424--428
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 461.
 
-[36]
+[38]
 Overfull \hbox (188.81493pt too wide) in paragraph at lines 478--479
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
 ][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
@@ -1182,7 +1239,7 @@ Overfull \hbox (23.11894pt too wide) in paragraph at lines 489--492
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 498.
 
-[37]
+[39]
 Overfull \hbox (32.93578pt too wide) in paragraph at lines 508--511
 \TU/Arial(0)/m/it/10.95 στο παρασκήνιο οι οποίες διαχειρίζονται εντολές εισόδου
  του χειριστηρίου και του πληκτρολογίου.
@@ -1198,7 +1255,7 @@ Overfull \hbox (4.72806pt too wide) in paragraph at lines 513--518
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 530.
 
-[38]
+[40]
 Overfull \hbox (23.54701pt too wide) in paragraph at lines 561--564
 \TU/Arial(0)/m/it/10.95 υπεύθυνη για ελέγχους εντολών εισόδου που αφορούν την ε
 πικοινωνία μεταξύ του χειριστηρίου
@@ -1214,7 +1271,7 @@ Overfull \hbox (37.61339pt too wide) in paragraph at lines 571--572
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 572.
 
-[39]
+[41]
 Overfull \hbox (10.61311pt too wide) in paragraph at lines 590--591
 [][][][][][][][][][][][][][][][][][][][][] 
  []
@@ -1224,7 +1281,7 @@ Overfull \hbox (10.61311pt too wide) in paragraph at lines 590--591
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 (Font)              using `TU/Arial(0)/m/it' instead on input line 193.
 
-[40]
+[42]
 Chapter F.
 (./deploy.tex)
 Overfull \hbox (5.26315pt too wide) in paragraph at lines 10--195
@@ -1243,170 +1300,161 @@ Underfull \hbox (badness 10000) in paragraph at lines 10--195
 
  []
 
-[41
+[43
 
 ]
 Chapter G.
-(./sximata.tex
-File: ./pdffigs/intro_data_flow.pdf Graphic file (type pdf)
-<use ./pdffigs/intro_data_flow.pdf>
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-File: ./pdffigs/intro_data_flow2.pdf Graphic file (type pdf)
-<use ./pdffigs/intro_data_flow2.pdf>
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-Overfull \hbox (4.29604pt too wide) in paragraph at lines 41--48
-\TU/Arial(0)/m/it/10.95 όπως είναι η περίπτωση του Σχήματος G.3[]. Προφανώς μπο
-ρεί να γίνει ξεχωριστή αναφορά
+(./telos.tex
+Overfull \hbox (12.88474pt too wide) in paragraph at lines 2--15
+\TU/Arial(0)/m/it/10.95 μπορεί να είναι χρήσιμο στην δική μας χρήση του Η/Υ. Η 
+υλοποίηση αυτού του προγράμματος
  []
 
 
-Overfull \hbox (7.65909pt too wide) in paragraph at lines 41--48
-\TU/Arial(0)/m/it/10.95 στα δύο υπο-σχήματα G.1[].α και G.1[].β με τον αυτό τρό
-πο. Το κείμενο για τα δύο υποσχήματα
+Overfull \hbox (41.85046pt too wide) in paragraph at lines 2--15
+\TU/Arial(0)/m/it/10.95 αλλά παρουσιάζει τα μειονεκτήματα των σύγχρονων γραφικώ
+ν περιβαλλόντων που χρησιμοποιούν
  []
 
-[42
+
+Overfull \hbox (16.73003pt too wide) in paragraph at lines 2--15
+\TU/Arial(0)/m/it/10.95 και η περιήγηση στο σύστημα αλλά και το ίδιο το πρόγραμ
+μα είναι ένα σημαντικός παράγοντας
+ []
+
+
+Overfull \hbox (8.84366pt too wide) in paragraph at lines 2--15
+\TU/Arial(0)/m/it/10.95 που υπάρχουν για την πρόσβαση σε λογισμικό με τις επιπρ
+όσθετες περιφερειακές συσκευές
+ []
+
+
+Overfull \hbox (5.8852pt too wide) in paragraph at lines 2--15
+\TU/Arial(0)/m/it/10.95 θέτουν τον χρήστη σε ένα περιβάλλον που περιορίζει τις 
+δυνατότητές του λόγω της έλλειψης
+ []
+
+
+Overfull \hbox (3.75897pt too wide) in paragraph at lines 2--15
+\TU/Arial(0)/m/it/10.95 σημαντικών desktop εφαρμογών ή της υπολογιστικής ισχύς 
+που απαιτείται για την εκτέλεσή
+ []
+
+
+Overfull \hbox (29.65353pt too wide) in paragraph at lines 2--15
+\TU/Arial(0)/m/it/10.95 τους. Όσον αφορά τις τεχνολογίες που χρησιμοποιήθηκαν γ
+ια την υλοποίηση του προγράμματος
+ []
+
+
+Overfull \hbox (6.71568pt too wide) in paragraph at lines 16--22
+[]\TU/Arial(0)/m/it/10.95 Το Qt είναι ένα εξαιρετικό εργαλείο για την δημιουργί
+α εφαρμογών γραφικής διεπαφής.
+ []
+
+
+Overfull \hbox (2.86247pt too wide) in paragraph at lines 16--22
+\TU/Arial(0)/m/it/10.95 Προσφέρει μια μεγάλη ποικιλία γραφικών στοιχείων που μπ
+ορούν να τροποποιηθούν
+ []
+
+[44
 
 ]
-File: ./pdffigs/intro_data_flow3_a.pdf Graphic file (type pdf)
-<use ./pdffigs/intro_data_flow3_a.pdf>
-File: ./pdffigs/intro_data_flow3_b.pdf Graphic file (type pdf)
-<use ./pdffigs/intro_data_flow3_b.pdf>
-
-Overfull \hbox (24.00002pt too wide) in paragraph at lines 52--52
- [] 
+Overfull \hbox (12.5756pt too wide) in paragraph at lines 25--28
+\TU/Arial(0)/m/it/10.95 λειτουργίες της βασίζονται πάνω σε αυτό και ως το δημοφ
+ιλέστερο λειτουργικό σύστημα
  []
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-File: ./pdffigs/intro_data_flow4_a.pdf Graphic file (type pdf)
-<use ./pdffigs/intro_data_flow4_a.pdf>
-File: ./pdffigs/intro_data_flow4_b.pdf Graphic file (type pdf)
-<use ./pdffigs/intro_data_flow4_b.pdf>
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-File: ./pdffigs/intro_data_flow5_a.pdf Graphic file (type pdf)
-<use ./pdffigs/intro_data_flow5_a.pdf>
-File: ./pdffigs/intro_data_flow5_b.pdf Graphic file (type pdf)
-<use ./pdffigs/intro_data_flow5_b.pdf>
-File: ./pdffigs/intro_data_flow5_c.pdf Graphic file (type pdf)
-<use ./pdffigs/intro_data_flow5_c.pdf>
-File: ./pdffigs/intro_data_flow5_d.pdf Graphic file (type pdf)
-<use ./pdffigs/intro_data_flow5_d.pdf>
-
-Overfull \hbox (24.00002pt too wide) in paragraph at lines 77--77
- [] 
+Overfull \hbox (24.06204pt too wide) in paragraph at lines 25--28
+\TU/Arial(0)/m/it/10.95 προσωπικού υπολογιστή αποτελεί ένα καλό παράδειγμα πάνω
+ στο οποίο παρουσιάστηκε
  []
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-
-LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 108.
-
-[43])
-
-LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 201.
-
-[44]
-
-LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 201.
-
-[45]
-
-LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 201.
-
-[46]
-
-LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 201.
-
-[47]
-Chapter H.
-(./telos.tex
-Overfull \hbox (4.01738pt too wide) in paragraph at lines 17--20
+Overfull \hbox (4.01738pt too wide) in paragraph at lines 47--50
 \TU/Arial(0)/m/it/10.95 αριθμός από κεφάλαια τα οποία είναι χρήσιμα για τον ανα
 γνώστη και ουσιαστικά αποτελούν
  []
 
 
-Overfull \hbox (7.14694pt too wide) in paragraph at lines 27--34
+Overfull \hbox (7.14694pt too wide) in paragraph at lines 57--64
 []\TU/Arial(0)/m/it/10.95 Είναι οπωσδήποτε το κεφάλαιο της βιβλιογραφίας το οπο
 ίο αριθμεί της βιβλιογραφικές
  []
 
 
-Overfull \hbox (6.70679pt too wide) in paragraph at lines 27--34
+Overfull \hbox (6.70679pt too wide) in paragraph at lines 57--64
 \TU/Arial(0)/m/it/10.95 σημείο αυτό γινόταν η πρώτη αναφορά τότε εν μέσω του κε
 ιμένου θα παρεμβάλλονταν
  []
 
-[48
 
-]
-Overfull \hbox (40.13774pt too wide) in paragraph at lines 34--46
+Overfull \hbox (40.13774pt too wide) in paragraph at lines 64--76
 []\TU/Arial(0)/m/it/10.95 Το κεφάλαιο των συντμήσεων είναι ιδιαίτερα σημαντικό 
 καθώς η Επιστήμη της Πληροφορικής
  []
 
 
-Overfull \hbox (15.50739pt too wide) in paragraph at lines 34--46
+Overfull \hbox (15.50739pt too wide) in paragraph at lines 64--76
 \TU/Arial(0)/m/it/10.95 έχουμε διαφορετικά μέρη για τις ελληνικές και τις ξενικ
 ές συντμήσεις αλλά με αλφαβητική
  []
 
-)
 
 LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
-(Font)              using `TU/Arial(0)/m/it' instead on input line 207.
+(Font)              using `TU/Arial(0)/m/it' instead on input line 76.
 
-[49] [50
+[45])
 
-] (./biblio.tex
-Underfull \hbox (badness 3029) in paragraph at lines 24--25
-[]\TU/Arial(0)/m/it/10.95 The Qt Company Ltd, QIcon class, Qt6 Documentation, h
-ttps://doc.qt.io/qt-
- []
+LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
+(Font)              using `TU/Arial(0)/m/it' instead on input line 215.
 
-[51
+[46] (./biblio.tex [47
 
 ]
-Underfull \hbox (badness 3029) in paragraph at lines 75--76
+Underfull \hbox (badness 3029) in paragraph at lines 71--72
 []\TU/Arial(0)/m/it/10.95 The Qt Company Ltd, QIcon class, Qt6 Documentation, h
 ttps://doc.qt.io/qt-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 82--83
+Underfull \hbox (badness 10000) in paragraph at lines 77--78
 \TU/Arial(0)/m/it/10.95 https://stackoverflow.com/questions/12459145/extracting
 -icon-using-winapi-in-qt-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 89--90
+Underfull \hbox (badness 1418) in paragraph at lines 89--90
+[]\TU/Arial(0)/m/it/10.95 The Qt Company Ltd, QTimer Class, Qt6 Documentation, 
+https://doc.qt.io/qt-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 97--98
 \TU/Arial(0)/m/it/10.95 Documentation, https://learn.microsoft.com/en-us/window
 s/win32/xinput/getting-
  []
 
-)
-Underfull \hbox (badness 2088) in paragraph at lines 96--218
+
+Underfull \hbox (badness 2088) in paragraph at lines 104--105
 []\TU/Arial(0)/m/it/10.95 Minalien, Xbox 360 Controller Input in C++ with XInpu
 t, Code Project arti-
  []
 
-[52] (./abbrev.tex
+
+Underfull \hbox (badness 6775) in paragraph at lines 111--112
+[]\TU/Arial(0)/m/it/10.95 Microsoft, SendInput function (winuser.h), Windows Wi
+n32 Documentation,
+ []
+
+)
+
+LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
+(Font)              using `TU/Arial(0)/m/it' instead on input line 222.
+
+[48] (./abbrev.tex
 Overfull \hbox (7.54724pt too wide) in paragraph at lines 7--8
 [] 
  []
@@ -1416,17 +1464,47 @@ Underfull \hbox (badness 10000) in paragraph at lines 7--8
 
  []
 
-)
-Overfull \hbox (7.54724pt too wide) in paragraph at lines 12--225
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 15--16
 [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 12--225
+Underfull \hbox (badness 10000) in paragraph at lines 15--16
 
  []
 
-[53
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 20--21
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--21
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 27--28
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--28
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 33--34
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 33--34
+
+ []
+
+) [49
 
 ] (./glossari.tex
 Overfull \hbox (7.54724pt too wide) in paragraph at lines 6--7
@@ -1449,48 +1527,268 @@ Underfull \hbox (badness 10000) in paragraph at lines 12--13
  []
 
 
-Overfull \hbox (7.54724pt too wide) in paragraph at lines 19--20
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 17--18
 [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 19--20
+Underfull \hbox (badness 10000) in paragraph at lines 17--18
 
  []
 
 
-Overfull \hbox (7.54724pt too wide) in paragraph at lines 24--25
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 23--24
 [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 24--25
+Underfull \hbox (badness 10000) in paragraph at lines 23--24
 
  []
 
 
-Overfull \hbox (7.54724pt too wide) in paragraph at lines 29--30
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 28--29
 [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 29--30
+Underfull \hbox (badness 10000) in paragraph at lines 28--29
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 33--34
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 33--34
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 38--39
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--39
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 42--43
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 42--43
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 46--47
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 46--47
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 50--51
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 50--51
+
+ []
+
+[50
+
+]
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 56--57
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 56--57
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 61--62
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 61--62
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 67--68
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 67--68
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 73--74
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 73--74
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 78--79
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 78--79
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 82--83
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 82--83
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 88--89
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 88--89
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 93--94
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--94
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 99--100
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 99--100
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 104--105
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 104--105
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 109--110
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 109--110
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 115--116
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 115--116
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 120--121
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 120--121
+
+ []
+
+[51]
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 126--127
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 126--127
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 131--132
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 131--132
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 136--137
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 136--137
+
+ []
+
+
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 140--141
+[] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 140--141
 
  []
 
 )
-Overfull \hbox (7.54724pt too wide) in paragraph at lines 33--231
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 147--231
 [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 33--231
+Underfull \hbox (badness 10000) in paragraph at lines 147--231
 
  []
 
-[54
-
-]
+[52]
 No file thesis.ind.
 (./thesis.aux)
 
@@ -1501,12 +1799,12 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 8118 strings out of 478190
- 179456 string characters out of 5854827
- 749182 words of memory out of 5000000
- 28557 multiletter control sequences out of 15000+600000
- 475660 words of font info for 78 fonts, out of 8000000 for 9000
+ 8049 strings out of 478190
+ 177181 string characters out of 5854827
+ 749108 words of memory out of 5000000
+ 28498 multiletter control sequences out of 15000+600000
+ 475652 words of font info for 77 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 73i,12n,85p,247b,1611s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 73i,8n,85p,247b,1611s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on thesis.pdf (63 pages).
+Output written on thesis.pdf (62 pages).

@@ -21,48 +21,44 @@
 \contentsline {section}{\numberline {D.1}Περιγραφή λογισμικού}{18}{}%
 \contentsline {section}{\numberline {D.2}Εκτέλεση εφαρμογών με το ποντίκι}{19}{}%
 \contentsline {subsection}{\numberline {D.2.1}Καρτέλα ρυθμίσεων}{19}{}%
-\contentsline {subsection}{\numberline {D.2.2}Καρτέλα εφαρμογών}{20}{}%
-\contentsline {subsection}{\numberline {D.2.3}Καρτέλα αγαπημένων εφαρμογών}{21}{}%
-\contentsline {section}{\numberline {D.3}Εκτέλεση εφαρμογών με το πληκτρολόγιο}{21}{}%
-\contentsline {section}{\numberline {D.4}Εκτέλεση εφαρμογών με το χειριστήριο βιντεοπαιχνιδιών}{22}{}%
-\contentsline {chapter}{\numberline {E}Επεξήγηση του κώδικα της εφαρμογής}{23}{}%
-\contentsline {section}{\numberline {E.1}Ο κώδικας του λογισμικού}{23}{}%
-\contentsline {section}{\numberline {E.2}Η συνάρτηση main}{23}{}%
-\contentsline {section}{\numberline {E.3}Η κλάση ApplicationExplorer}{25}{}%
-\contentsline {subsection}{\numberline {E.3.1}Ο constructor}{25}{}%
-\contentsline {subsection}{\numberline {E.3.2}Η μέθοδος LoadAppData}{26}{}%
-\contentsline {subsection}{\numberline {E.3.3}Η μέθοδος SaveAppData}{26}{}%
-\contentsline {subsection}{\numberline {E.3.4}Η μέθοδος LoadProfile}{26}{}%
-\contentsline {subsection}{\numberline {E.3.5}Η μέθοδος SaveProfile}{26}{}%
-\contentsline {subsection}{\numberline {E.3.6}Η μέθοδος OnApplicationExit}{27}{}%
-\contentsline {subsection}{\numberline {E.3.7}Η μέθοδος DirectoryListUpdated}{27}{}%
-\contentsline {subsection}{\numberline {E.3.8}Η μέθοδος ExploreDirectoryFiles}{27}{}%
-\contentsline {subsection}{\numberline {E.3.9}Η μέθοδος UpdateListWidget}{27}{}%
-\contentsline {subsection}{\numberline {E.3.10}Η μέθοδος SearchApplication}{28}{}%
-\contentsline {subsection}{\numberline {E.3.11}Η μέθοδος ExecuteApplication}{28}{}%
-\contentsline {subsection}{\numberline {E.3.12}Η μέθοδος UpdatePopularAppsList}{28}{}%
-\contentsline {subsection}{\numberline {E.3.13}Η μέθοδος TaskGamepadConnection}{29}{}%
-\contentsline {subsection}{\numberline {E.3.14}Η μέθοδος TaskHandleDevicesUICommunication}{29}{}%
-\contentsline {subsection}{\numberline {E.3.15}Η μέθοδος SetupUI}{30}{}%
-\contentsline {subsection}{\numberline {E.3.16}Η μέθοδος ShowCustomContextMenu}{30}{}%
-\contentsline {subsection}{\numberline {E.3.17}Η μέθοδος SetupIntroScreen}{30}{}%
-\contentsline {subsection}{\numberline {E.3.18}Η μέθοδος UpdateUIPalette}{31}{}%
-\contentsline {section}{\numberline {E.4}Η κλάση VirtualKeyboard}{31}{}%
-\contentsline {subsection}{\numberline {E.4.1}Ο constructor της κλάσης}{31}{}%
-\contentsline {subsection}{\numberline {E.4.2}Η μέθοδος GetWidgetAt}{31}{}%
-\contentsline {subsection}{\numberline {E.4.3}Η μέθοδος SendKeyboardInput}{32}{}%
-\contentsline {subsection}{\numberline {E.4.4}Η μέθοδος CreateKeyboardUI}{32}{}%
-\contentsline {section}{\numberline {E.5}Η ροή του προγράμματος}{32}{}%
-\contentsline {section}{\numberline {E.6}Οι επαναληπτικές διαδικασίες στο παρασκήνιο}{38}{}%
-\contentsline {subsection}{\numberline {E.6.1}Η συνάρτηση GamepadInputChecks}{38}{}%
-\contentsline {subsection}{\numberline {E.6.2}Η μέθοδος TaskHandleDevicesUICommunication}{39}{}%
-\contentsline {chapter}{\numberline {F}Πως να εγκαταστήσετε την εφαρμογή}{41}{}%
-\contentsline {section}{\numberline {F.1}Λήψη και εγκατάσταση της εφαρμογής}{41}{}%
-\contentsline {chapter}{\numberline {G}Σχήματα και Πίνακες}{42}{}%
-\contentsline {section}{\numberline {G.1}Σχήματα}{42}{}%
-\contentsline {section}{\numberline {G.2}Πίνακες}{43}{}%
-\contentsline {chapter}{\numberline {H}Τελευταία Μέρη}{48}{}%
-\contentsline {chapter}{Παράρτημα Α'}{50}{}%
-\contentsline {chapter}{Βιβλιογραφία}{51}{}%
-\contentsline {chapter}{Συντμήσεις}{53}{}%
-\contentsline {chapter}{Γλωσσάρι Ξενικών Όρων}{54}{}%
+\contentsline {subsection}{\numberline {D.2.2}Καρτέλα εφαρμογών}{21}{}%
+\contentsline {subsection}{\numberline {D.2.3}Καρτέλα αγαπημένων εφαρμογών}{22}{}%
+\contentsline {section}{\numberline {D.3}Εκτέλεση εφαρμογών με το πληκτρολόγιο}{23}{}%
+\contentsline {section}{\numberline {D.4}Εκτέλεση εφαρμογών με το χειριστήριο βιντεοπαιχνιδιών}{24}{}%
+\contentsline {chapter}{\numberline {E}Επεξήγηση του κώδικα της εφαρμογής}{25}{}%
+\contentsline {section}{\numberline {E.1}Ο κώδικας του λογισμικού}{25}{}%
+\contentsline {section}{\numberline {E.2}Η συνάρτηση main}{25}{}%
+\contentsline {section}{\numberline {E.3}Η κλάση ApplicationExplorer}{27}{}%
+\contentsline {subsection}{\numberline {E.3.1}Ο constructor}{27}{}%
+\contentsline {subsection}{\numberline {E.3.2}Η μέθοδος LoadAppData}{28}{}%
+\contentsline {subsection}{\numberline {E.3.3}Η μέθοδος SaveAppData}{28}{}%
+\contentsline {subsection}{\numberline {E.3.4}Η μέθοδος LoadProfile}{28}{}%
+\contentsline {subsection}{\numberline {E.3.5}Η μέθοδος SaveProfile}{28}{}%
+\contentsline {subsection}{\numberline {E.3.6}Η μέθοδος OnApplicationExit}{29}{}%
+\contentsline {subsection}{\numberline {E.3.7}Η μέθοδος DirectoryListUpdated}{29}{}%
+\contentsline {subsection}{\numberline {E.3.8}Η μέθοδος ExploreDirectoryFiles}{29}{}%
+\contentsline {subsection}{\numberline {E.3.9}Η μέθοδος UpdateListWidget}{29}{}%
+\contentsline {subsection}{\numberline {E.3.10}Η μέθοδος SearchApplication}{30}{}%
+\contentsline {subsection}{\numberline {E.3.11}Η μέθοδος ExecuteApplication}{30}{}%
+\contentsline {subsection}{\numberline {E.3.12}Η μέθοδος UpdatePopularAppsList}{30}{}%
+\contentsline {subsection}{\numberline {E.3.13}Η μέθοδος TaskGamepadConnection}{31}{}%
+\contentsline {subsection}{\numberline {E.3.14}Η μέθοδος TaskHandleDevicesUICommunication}{31}{}%
+\contentsline {subsection}{\numberline {E.3.15}Η μέθοδος SetupUI}{32}{}%
+\contentsline {subsection}{\numberline {E.3.16}Η μέθοδος ShowCustomContextMenu}{32}{}%
+\contentsline {subsection}{\numberline {E.3.17}Η μέθοδος SetupIntroScreen}{32}{}%
+\contentsline {subsection}{\numberline {E.3.18}Η μέθοδος UpdateUIPalette}{33}{}%
+\contentsline {section}{\numberline {E.4}Η κλάση VirtualKeyboard}{33}{}%
+\contentsline {subsection}{\numberline {E.4.1}Ο constructor της κλάσης}{33}{}%
+\contentsline {subsection}{\numberline {E.4.2}Η μέθοδος GetWidgetAt}{33}{}%
+\contentsline {subsection}{\numberline {E.4.3}Η μέθοδος SendKeyboardInput}{34}{}%
+\contentsline {subsection}{\numberline {E.4.4}Η μέθοδος CreateKeyboardUI}{34}{}%
+\contentsline {section}{\numberline {E.5}Η ροή του προγράμματος}{34}{}%
+\contentsline {section}{\numberline {E.6}Οι επαναληπτικές διαδικασίες στο παρασκήνιο}{40}{}%
+\contentsline {subsection}{\numberline {E.6.1}Η συνάρτηση GamepadInputChecks}{40}{}%
+\contentsline {subsection}{\numberline {E.6.2}Η μέθοδος TaskHandleDevicesUICommunication}{41}{}%
+\contentsline {chapter}{\numberline {F}Πως να εγκαταστήσετε την εφαρμογή}{43}{}%
+\contentsline {section}{\numberline {F.1}Λήψη και εγκατάσταση της εφαρμογής}{43}{}%
+\contentsline {chapter}{\numberline {G}Τελευταία Μέρη}{44}{}%
+\contentsline {chapter}{Βιβλιογραφία}{47}{}%
+\contentsline {chapter}{Συντμήσεις}{49}{}%
+\contentsline {chapter}{Γλωσσάρι Ξενικών Όρων}{50}{}%
