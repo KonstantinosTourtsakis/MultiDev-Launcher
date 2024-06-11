@@ -1,53 +1,23 @@
-//#include "QtWidgetsApplication1.h"
 #include <QtWidgets/QApplication>
-
-#include <iostream>
-#include <vector>
-#include <qlabel.h>
-#include <QDebug>
-#include <QFile>
-#include <QTextStream>
-
 #include <QApplication>
 #include <QWidget>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <QDirIterator>
 #include <QListWidget>
-
 #include <QFileInfo>
 #include <QIcon>
-#include <QImage>
-#include <QFileIconProvider>
 #include <QDesktopServices>
-
 #include <QCoreApplication>
 #include <QProcess>
-#include <QStyledItemDelegate>
-#include <QPainter>
 #include <QLineEdit>
 #include <QTimer>
-#include <QGridLayout>
-#include <QMenu>
 #include <QtWidgets>
-#include <QInputMethod>
-
-
-#include <QGuiApplication>
-
-#include <QByteArray>
-
-
 #include <QMainWindow>
-#include <QTranslator>
-#include <QLocale>
-#include <QLibraryInfo>
-#include <QStackedWidget>
-
-
-#include <QEvent>
 #include <QCompleter>
-#include <QFileDialog>
+
+
+#include <iostream>
+#include <vector>
 
 
 #include "keyboard.h"
@@ -738,7 +708,7 @@ All data in this profile will be permanently deleted.";
         
         
         // ULauncher-like window for application searching through the keyboard
-        qwid_usearch_window.setWindowTitle("Qt6ULauncher");
+        qwid_usearch_window.setWindowTitle("KeybLauncher");
         layout_usearch = new QVBoxLayout();
         qwid_usearch_window.setLayout(layout_usearch);
         
@@ -1833,7 +1803,7 @@ int main(int argc, char* argv[])
 
     QApplication app(argc, argv);
     ApplicationExplorer explorer(app);
-    explorer.setWindowTitle("P2019140 - Konstantinos Tourtsakis");
+    explorer.setWindowTitle("MultiDev Launcher");
     explorer.setWindowFlags(Qt::WindowCloseButtonHint | Qt::FramelessWindowHint);
     explorer.resize(800, 600);
     
