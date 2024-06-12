@@ -9,6 +9,8 @@ source/QtWidgetsApplication1/CursorMode.h
 source/QtWidgetsApplication1/keyboard.cpp
 source/QtWidgetsApplication1/keyboard.h
 
+source/installer/MultiDev_Launcher_x64_installer.exe
+
 
 report/report.log
 report/report.aux
