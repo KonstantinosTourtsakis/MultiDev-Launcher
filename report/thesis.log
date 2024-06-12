@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.3.15)  12 JUN 2024 16:25
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.3.15)  12 JUN 2024 21:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1293,16 +1293,27 @@ LaTeX Font Warning: Font shape `TU/Arial(0)/m/sl' undefined
 
 [43]
 Chapter F.
-(./deploy.tex)
-Overfull \hbox (5.26315pt too wide) in paragraph at lines 10--195
+(./deploy.tex
+Overfull \hbox (5.26315pt too wide) in paragraph at lines 10--19
 \TU/Arial(0)/m/it/10.95 Για την εγκατάσταση του προγράμματος αυτού αρχικά πρέπε
 ι να γίνει λήψη του εκτελέσιμου
  []
 
 
-Overfull \hbox (9.92682pt too wide) in paragraph at lines 10--195
-\TU/Arial(0)/m/it/10.95 και προσθέτει ένα εκτελέσιμο απεγκατάστασης. Η εφαρμογή
- είναι διαθέσιμη στο αποθετήριο
+Overfull \hbox (5.56926pt too wide) in paragraph at lines 10--19
+\TU/Arial(0)/m/it/10.95 και προσθέτει ένα εκτελέσιμο απεγκατάστασης. Ο installe
+r δημιουργήθηκε με το InnoSetup.
+ []
+
+)
+Overfull \hbox (1.68611pt too wide) in paragraph at lines 20--195
+[]\TU/Arial(0)/m/it/10.95 https://github.com/KonstantinosTourtsakis/MultiDev-La
+uncher-Thesis/releases/tag/v1.0.0
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 20--195
+
  []
 
 [44

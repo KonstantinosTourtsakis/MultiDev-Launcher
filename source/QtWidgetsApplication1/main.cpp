@@ -97,6 +97,7 @@ QIcon GetFileIcon(const QString& file_path)
 
 
 
+
 QString RemoveFileExtension(const QString& file_name) 
 {
     int last_dot = file_name.lastIndexOf('.');
@@ -111,63 +112,6 @@ QString RemoveFileExtension(const QString& file_name)
     return file_name;
 }
 
-
-
-
-/*
-
-class ApplicationExplorer : public QWidget
-{
-public:
-    ApplicationExplorer(QApplication& app, QWidget* parent = nullptr) : QWidget(parent), app(app)
-    {
-        
-
-    }
-
-    void CreateUI();
-    void OnApplicationLaunch();
-
-
-
-private:
-    bool is_first_launch = true;
-    QStringList applications_list;
-    QStringList favorites_list;
-    QListWidget* list_widget = new QListWidget(this);
-    QListWidget* list_favorites = new QListWidget(this);
-    QListWidget* search_list = new QListWidget(this);
-    QListWidget* list_directories = new QListWidget(this);
-    QVBoxLayout* layout_root = new QVBoxLayout(this);
-    QVBoxLayout* layout_usearch;
-    QLineEdit* search_bar;
-    QTimer* timer;
-
-    void UpdatePopularAppsList();
-    void SetupUI();
-    void TaskHandleDevicesUICommunication();
-    // Searching for the ULauncher-like window
-    void SearchResults(const QString& text);
-    void SaveProfile();
-    void LoadProfile();
-    void SaveAppData();
-    void LoadAppData();
-    void OnApplicationExit();
-    void ShowContextMenu(const QPoint& pos, QListWidget* list);
-    void ExploreDirectoryFiles(const QString& path);
-    void UpdateListWidget(QStringList current_list, QListWidget* list_wid);
-        // Start or restart the timer when text changes - helps avoiding performance issues
-    void SearchApplication(QLineEdit* line, QListWidget* list_wid, QStringList app_list);
-    void ExecuteApplication(QListWidgetItem* item);
-    void DirectoryListUpdated();
-    void SetupIntroScreen();
-    void SortingChanged(const QString& text);
-    void UpdateUIPalette(const QString& text);
-    void ControllerNavigation();
-    void TaskGamepadNavigation();
-};
-
-*/
 
 
 
@@ -1502,8 +1446,11 @@ All data in this profile will be permanently deleted.";
         title->setFont(font);
         layout->addWidget(title);
 
-        QLabel* label_username = new QLabel("Welcome to the Application Launcher!\n"
-            "This is the first time setup screen.\n"
+        QLabel* label_username = new QLabel("Welcome to MultiDev-Launcher!\n"
+            "This is the first time setup window.\n"
+            "Before you do anything, make sure to set\n"
+            "your user name below. Then click continue\n"
+            "to enter to the main application window.\n"
             "You can type in your own user name or\n"
             "use the default given below.", this);
         label_username->setAlignment(Qt::AlignCenter);
