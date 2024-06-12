@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.3.15)  12 JUN 2024 21:30
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.3.15)  12 JUN 2024 21:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1305,18 +1305,7 @@ Overfull \hbox (5.56926pt too wide) in paragraph at lines 10--19
 r δημιουργήθηκε με το InnoSetup.
  []
 
-)
-Overfull \hbox (1.68611pt too wide) in paragraph at lines 20--195
-[]\TU/Arial(0)/m/it/10.95 https://github.com/KonstantinosTourtsakis/MultiDev-La
-uncher-Thesis/releases/tag/v1.0.0
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 20--195
-
- []
-
-[44
+) [44
 
 ]
 Chapter G.
