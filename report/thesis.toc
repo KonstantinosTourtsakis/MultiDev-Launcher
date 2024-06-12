@@ -26,19 +26,19 @@
 \contentsline {section}{\numberline {D.3}Εκτέλεση εφαρμογών με το πληκτρολόγιο}{23}{}%
 \contentsline {section}{\numberline {D.4}Εκτέλεση εφαρμογών με το χειριστήριο βιντεοπαιχνιδιών}{24}{}%
 \contentsline {section}{\numberline {D.5}Το εικονικό πληκτρολόγιο}{25}{}%
-\contentsline {chapter}{\numberline {E}Επεξήγηση του κώδικα της εφαρμογής}{26}{}%
+\contentsline {chapter}{\numberline {E}Ανάλυση του κώδικα της εφαρμογής}{26}{}%
 \contentsline {section}{\numberline {E.1}Ο κώδικας του λογισμικού}{26}{}%
 \contentsline {section}{\numberline {E.2}Η συνάρτηση main}{26}{}%
 \contentsline {section}{\numberline {E.3}Η κλάση ApplicationExplorer}{28}{}%
-\contentsline {subsection}{\numberline {E.3.1}Ο constructor}{28}{}%
+\contentsline {subsection}{\numberline {E.3.1}Ο constructor της ApplicationExplorer}{28}{}%
 \contentsline {subsection}{\numberline {E.3.2}Η μέθοδος LoadAppData}{29}{}%
 \contentsline {subsection}{\numberline {E.3.3}Η μέθοδος SaveAppData}{29}{}%
 \contentsline {subsection}{\numberline {E.3.4}Η μέθοδος LoadProfile}{29}{}%
-\contentsline {subsection}{\numberline {E.3.5}Η μέθοδος SaveProfile}{29}{}%
+\contentsline {subsection}{\numberline {E.3.5}Η μέθοδος SaveProfile}{30}{}%
 \contentsline {subsection}{\numberline {E.3.6}Η μέθοδος OnApplicationExit}{30}{}%
 \contentsline {subsection}{\numberline {E.3.7}Η μέθοδος DirectoryListUpdated}{30}{}%
 \contentsline {subsection}{\numberline {E.3.8}Η μέθοδος ExploreDirectoryFiles}{30}{}%
-\contentsline {subsection}{\numberline {E.3.9}Η μέθοδος UpdateListWidget}{30}{}%
+\contentsline {subsection}{\numberline {E.3.9}Η μέθοδος UpdateListWidget}{31}{}%
 \contentsline {subsection}{\numberline {E.3.10}Η μέθοδος SearchApplication}{31}{}%
 \contentsline {subsection}{\numberline {E.3.11}Η μέθοδος ExecuteApplication}{31}{}%
 \contentsline {subsection}{\numberline {E.3.12}Η μέθοδος UpdatePopularAppsList}{31}{}%
@@ -62,3 +62,4 @@
 \contentsline {chapter}{Βιβλιογραφία}{47}{}%
 \contentsline {chapter}{Συντμήσεις}{49}{}%
 \contentsline {chapter}{Γλωσσάρι Ξενικών Όρων}{50}{}%
+\contentsline {chapter}{Ευρετήριο}{53}{}%
