@@ -1,14 +1,17 @@
 \documentclass[a4paper,11pt,oneside,openany]{ioniothesis}
 
-
-
 \usepackage[dvips]{graphicx}
 \usepackage{makeidx}
-\usepackage[greek, english]{babel}
-%\usepackage[iso-8859-7]{inputenc}
+%\usepackage[greek, english]{babel} % Ensure greek is the first language
+\usepackage{polyglossia}
 \usepackage{fontspec}
 \setmainfont{Arial}
+
+\newfontfamily\greekfont{Arial}
 \setmonofont{Courier New}
+\newfontfamily\greekfontsf{Arial}
+\newfontfamily\greekfonttt{Arial}
+
 \usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{color}
@@ -16,34 +19,31 @@
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{enumitem}
+\usepackage{datetime2}
+\usepackage{float}
 
-\selectlanguage{greek}
+\DTMlangsetup[greek]{ord=raise,monthyearsep={\space}}
+\renewcommand{\today}{\DTMGreekdate{\today}}
 
+% Select Greek as the main language
+\setmainlanguage{greek}
 
 \def\tl{\textlatin}
 \def\tg{\textgreek}
 
-
- 
 \parindent=0pt
+
+\captionsetup[figure]{font=small}
 
 \makeindex
 \evensidemargin=0 cm
 \oddsidemargin=1 cm
 \textwidth=15 cm
 
-
-
-
-
-
-
 % Define custom colors
 \definecolor{codebg}{RGB}{240,240,240}
 \definecolor{termfg}{RGB}{0,255,255}
 \definecolor{termcodebg}{RGB}{40,42,54}
-
-
 
 % Define code listing style for C++
 \lstdefinestyle{cppstyle}{
@@ -55,34 +55,18 @@
     morecomment=[l][\color{magenta}]{\#}
 }
 
-
-
-
-
-
 \newtheorem{theo}{Θεώρημα}[chapter]
 \newtheorem{define}{Ορισμός}[chapter]
 \newtheorem{collary}{Πόρισμα}[chapter]
 \newtheorem{algorithm}{Αλγόριθμος}[chapter]
 \newtheorem{example}{Παράδειγμα}[chapter]
 
-
-
-
-%The following line is for one and half spacing
-%\linespread{1.3}
-%The following line is for double spacing
-%\linespread{1.6}
-
+% The following line is for one and half spacing
 \linespread{1.5}
 
 \usepackage{drop}
 
-
 \begin{document}
-
-
-
 
 \author{\textbf{Κωνσταντίνος Τουρτσάκης, Π2019140} \\ \textbf{Επιβλέπων:}  -- Μιχαήλ Στεφανιδάκης --}
 \title{
@@ -103,14 +87,10 @@
 }}}
 \bigskip \\ \bigskip}
 }
+
 \maketitle
 
-
-
-
-
 \chapter*{}
-
 
 \begin{center}
 \Large{\textbf{Επιβλέπων}}
@@ -124,54 +104,32 @@
 \prof{Δημήτριος Ρίγγας}{ΕΔΙΠ}{Ιόνιο Πανεπιστήμιο Τμήμα Πληροφορικής}
 \prof{Θεόδωρος Ανδρόνικος}{Αναπληρωτής Καθηγητής}{Ιόνιο Πανεπιστήμιο Τμήμα Πληροφορικής}
 
-
-
-
-
-
-
-  
 \pagenumbering{roman}
 
-
-%Περίληψη
+% Περίληψη
 \chapter*{Περίληψη} \pagestyle{headings}
 \input{perilipsi}
 
-
 \cleardoublepage
-
-%Πρόλογος και Ευχαριστίες
-%\chapter*{Πρόλογος και Ευχαριστίες} \pagestyle{headings}
-%\input{prologos}
-
 
 \cleardoublepage
 
 \tableofcontents
-\cleardoublepage
 
-
-
-
-\listoffigures
-\cleardoublepage
-\listoftables
+%\cleardoublepage
+%\listoffigures
+%\cleardoublepage
+%\listoftables
 
 \setlength{\parskip}{5pt}
-
-
 
 \pagestyle{headings}
 \cleardoublepage
 
-
 \newpage
 \pagenumbering{arabic}
 
-
 \cleardoublepage
-
 
 \chapter{Εισαγωγή} \label{chapter:intro}
 \input{intro}
@@ -182,34 +140,17 @@
 \chapter{Η βιβλιοθήκη XInput} \label{chapter:xinput}
 \input{xinput}
 
-\chapter{Μια λεπτομερής περιγραφή της εφαρμογής} \label{chapter:app}
+\chapter{Η αρχιτεκτονική της εφαρμογής} \label{chapter:app}
 \input{application}
-
 
 \chapter{Ανάλυση του κώδικα της εφαρμογής} \label{chapter:source}
 \input{application_source}
 
-
-\chapter{Πως να εγκαταστήσετε την εφαρμογή} \label{chapter:installation}
+\chapter{Οδηγίες εγκατάστασης της εφαρμογής} \label{chapter:installation}
 \input{deploy}
 
-
-%\chapter{Σχήματα και Πίνακες} \label{chapter:sximata}
-%\input{sximata}
-
-
-\chapter{Συμπεράσματα} \label{chapter:telos}
+\chapter{Συμπεράσματα και Μελλοντικές επεκτάσεις} \label{chapter:telos}
 \input{telos}
-
-
-
-%CHAPTER
-%\chapter*{Παράρτημα Α'} \pagestyle{empty}
-%\addcontentsline{toc}{chapter}{Παράρτημα Α'}
-%Ενδεικτικό παράδειγμα παραρτήματος.
-%Έπεται το κεφάλαιο της βιβλιογραφίας.
-
-
 
 %Bibliography
 \begin{thebibliography}{99} \addcontentsline{toc}{chapter}{Βιβλιογραφία}
@@ -217,28 +158,20 @@
 \input{biblio}
 \end{thebibliography}
 
-
-%CHAPTER
+% CHAPTER
 \chapter*{Συντμήσεις} \pagestyle{empty}
 \addcontentsline{toc}{chapter}{Συντμήσεις}
 \input{abbrev}
 
-
-%CHAPTER
+% CHAPTER
 \chapter*{Γλωσσάρι Ξενικών Όρων} \pagestyle{empty}
 \addcontentsline{toc}{chapter}{Γλωσσάρι Ξενικών Όρων}
 \input{glossari}
-
-
-
-
 
 \newpage
 \chapter*{Ευρετήριο} \pagestyle{empty}
 \addcontentsline{toc}{chapter}{Ευρετήριο}
 \input{finder}
 \printindex
-
-
 
 \end{document}
