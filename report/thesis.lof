@@ -1,8 +1,19 @@
 \selectlanguage *{greek}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {\Greeknumeral {2}.1}{\ignorespaces Παράδειγμα Qt6 εφαρμογής}}{4}{}%
+\contentsline {figure}{\numberline {\Greeknumeral {2}.2}{\ignorespaces Παράθυρο Qt6 με κουμπί Hello World}}{6}{}%
+\contentsline {figure}{\numberline {\Greeknumeral {2}.3}{\ignorespaces Παράθυρο με κουμπί Hello World που προστέθηκε σε πλαίσιο}}{7}{}%
+\contentsline {figure}{\numberline {\Greeknumeral {2}.4}{\ignorespaces Παράθυρο Qt6 που προβάλει μια λίστα στοιχείων}}{9}{}%
+\contentsline {figure}{\numberline {\Greeknumeral {2}.5}{\ignorespaces Προβολή αρχείων σε λίστα}}{10}{}%
+\contentsline {figure}{\numberline {\Greeknumeral {2}.6}{\ignorespaces Input field σε παράθυρο Qt6}}{11}{}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {\Greeknumeral {4}.7}{\ignorespaces Στιγμιότυπο της καρτέλας ρυθμίσεων}}{19}{}%
+\contentsline {figure}{\numberline {\Greeknumeral {4}.8}{\ignorespaces Στιγμιότυπο της καρτέλας εφαρμογών}}{21}{}%
+\contentsline {figure}{\numberline {\Greeknumeral {4}.9}{\ignorespaces Στιγμιότυπο της καρτέλας αγαπημένων εφαρμογών}}{22}{}%
+\contentsline {figure}{\numberline {\Greeknumeral {4}.10}{\ignorespaces Στιγμιότυπο του παραθύρου αναζήτησης προγραμμάτων}}{23}{}%
+\contentsline {figure}{\numberline {\Greeknumeral {4}.11}{\ignorespaces Στιγμιότυπο του εικονικού πληκτρολογίου}}{24}{}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

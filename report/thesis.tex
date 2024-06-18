@@ -5,12 +5,13 @@
 %\usepackage[greek, english]{babel} % Ensure greek is the first language
 \usepackage{polyglossia}
 \usepackage{fontspec}
-\setmainfont{Arial}
 
-\newfontfamily\greekfont{Arial}
+
+\newfontfamily\greekfont{Calibri}
+\newfontfamily\greekfontsf{Calibri}
+\newfontfamily\greekfonttt{Calibri}
+\setmainfont{Calibri}
 \setmonofont{Courier New}
-\newfontfamily\greekfontsf{Arial}
-\newfontfamily\greekfonttt{Arial}
 
 \usepackage{amssymb}
 \usepackage{amsfonts}
@@ -33,7 +34,6 @@
 
 \parindent=0pt
 
-\captionsetup[figure]{font=small}
 
 \makeindex
 \evensidemargin=0 cm
@@ -101,8 +101,8 @@
 \Large{\textbf{Τριμελής Επιτροπή}}
 \end{center}
 \prof{Μιχαήλ Στεφανιδάκης}{Αναπληρωτής Καθηγητής}{Ιόνιο Πανεπιστήμιο Τμήμα Πληροφορικής}
+\prof{Θεόδωρος Ανδρόνικος}{Καθηγητής}{Ιόνιο Πανεπιστήμιο Τμήμα Πληροφορικής}
 \prof{Δημήτριος Ρίγγας}{ΕΔΙΠ}{Ιόνιο Πανεπιστήμιο Τμήμα Πληροφορικής}
-\prof{Θεόδωρος Ανδρόνικος}{Αναπληρωτής Καθηγητής}{Ιόνιο Πανεπιστήμιο Τμήμα Πληροφορικής}
 
 \pagenumbering{roman}
 
@@ -110,14 +110,18 @@
 \chapter*{Περίληψη} \pagestyle{headings}
 \input{perilipsi}
 
+% Περίληψη στα Αγγλικά
+\chapter*{Summary} \pagestyle{headings}
+\input{summary}
+
 \cleardoublepage
 
 \cleardoublepage
 
 \tableofcontents
 
-%\cleardoublepage
-%\listoffigures
+\cleardoublepage
+\listoffigures
 %\cleardoublepage
 %\listoftables
 
