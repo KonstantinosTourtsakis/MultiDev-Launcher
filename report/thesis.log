@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.3.15)  18 JUN 2024 15:46
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2022/dev/Debian) (preloaded format=xelatex 2024.3.15)  19 JUN 2024 13:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -342,7 +342,7 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 Package datetime2 Warning: Region `greek' has ignored 
 (datetime2)                the following settings:
 (datetime2)                ord=raise,monthyearsep={ }
- on input line 27.
+ on input line 26.
 
 (/usr/share/texlive/texmf-dist/tex/latex/polyglossia/gloss-greek.ldf
 File: gloss-greek.ldf polyglossia: module for greek
@@ -415,108 +415,112 @@ Writing index file thesis.idx
 \c@collary=\count290
 \c@algorithm=\count291
 \c@example=\count292
-(./drop.sty) (./thesis.aux)
+(./drop.sty) (./thesis.aux
+LaTeX Info: Redefining \rmfamily on input line 2.
+LaTeX Info: Redefining \sffamily on input line 2.
+LaTeX Info: Redefining \ttfamily on input line 2.
+)
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 70.
-LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 7
-0.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 69.
+LaTeX Font Info:    ... okay on input line 69.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 69.
+LaTeX Font Info:    ... okay on input line 69.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 69.
+LaTeX Font Info:    ... okay on input line 69.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 69.
+LaTeX Font Info:    ... okay on input line 69.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 69.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 6
+9.
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    ... okay on input line 69.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 69.
+LaTeX Font Info:    ... okay on input line 69.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 69.
+LaTeX Font Info:    ... okay on input line 69.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 69.
+LaTeX Font Info:    ... okay on input line 69.
 
 Package fontspec Info: Adjusting the maths setup (use [no-math] to avoid
 (fontspec)             this).
 
 \symlegacymaths=\mathgroup6
 LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
-(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 70.
-LaTeX Font Info:    Redeclaring math accent \acute on input line 70.
-LaTeX Font Info:    Redeclaring math accent \grave on input line 70.
-LaTeX Font Info:    Redeclaring math accent \ddot on input line 70.
-LaTeX Font Info:    Redeclaring math accent \tilde on input line 70.
-LaTeX Font Info:    Redeclaring math accent \bar on input line 70.
-LaTeX Font Info:    Redeclaring math accent \breve on input line 70.
-LaTeX Font Info:    Redeclaring math accent \check on input line 70.
-LaTeX Font Info:    Redeclaring math accent \hat on input line 70.
-LaTeX Font Info:    Redeclaring math accent \dot on input line 70.
-LaTeX Font Info:    Redeclaring math accent \mathring on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \colon on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Delta on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Theta on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Xi on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Pi on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Phi on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Psi on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \Omega on input line 70.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 70.
-LaTeX Font Info:    Redeclaring symbol font `operators' on input line 70.
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 69.
+LaTeX Font Info:    Redeclaring math accent \acute on input line 69.
+LaTeX Font Info:    Redeclaring math accent \grave on input line 69.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 69.
+LaTeX Font Info:    Redeclaring math accent \tilde on input line 69.
+LaTeX Font Info:    Redeclaring math accent \bar on input line 69.
+LaTeX Font Info:    Redeclaring math accent \breve on input line 69.
+LaTeX Font Info:    Redeclaring math accent \check on input line 69.
+LaTeX Font Info:    Redeclaring math accent \hat on input line 69.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 69.
+LaTeX Font Info:    Redeclaring math accent \mathring on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \colon on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 69.
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 69.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 69.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 70.
+(Font)              `operators' in the math version `normal' on input line 69.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> TU/Calibri(1)/m/n on input line 70.
+(Font)                  OT1/cmr/m/n --> TU/Calibri(1)/m/n on input line 69.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 70.
+(Font)              `operators' in the math version `bold' on input line 69.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmr/bx/n --> TU/Calibri(1)/m/n on input line 70.
+(Font)                  OT1/cmr/bx/n --> TU/Calibri(1)/m/n on input line 69.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  TU/Calibri(1)/m/n --> TU/Calibri(1)/m/n on input line 7
-0.
+(Font)                  TU/Calibri(1)/m/n --> TU/Calibri(1)/m/n on input line 6
+9.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> TU/Calibri(1)/m/it on input line 70.
+(Font)                  OT1/cmr/m/it --> TU/Calibri(1)/m/it on input line 69.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> TU/Calibri(1)/b/n on input line 70.
+(Font)                  OT1/cmr/bx/n --> TU/Calibri(1)/b/n on input line 69.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 70.
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 69.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> TU/CourierNew(0)/m/n on input line 70.
+(Font)                  OT1/cmtt/m/n --> TU/CourierNew(0)/m/n on input line 69.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  TU/Calibri(1)/m/n --> TU/Calibri(1)/b/n on input line 7
-0.
+(Font)                  TU/Calibri(1)/m/n --> TU/Calibri(1)/b/n on input line 6
+9.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmr/bx/it --> TU/Calibri(1)/b/it on input line 70.
+(Font)                  OT1/cmr/bx/it --> TU/Calibri(1)/b/it on input line 69.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 70.
+(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 69.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> TU/CourierNew(0)/b/n on input line 70.
+(Font)                  OT1/cmtt/m/n --> TU/CourierNew(0)/b/n on input line 69.
 
 \c@lstlisting=\count293
-LaTeX Info: Redefining \rmfamily on input line 70.
-LaTeX Info: Redefining \sffamily on input line 70.
-LaTeX Info: Redefining \ttfamily on input line 70.
-LaTeX Info: Redefining \rmfamily on input line 70.
-LaTeX Info: Redefining \sffamily on input line 70.
-LaTeX Info: Redefining \ttfamily on input line 70.
+LaTeX Info: Redefining \rmfamily on input line 69.
+LaTeX Info: Redefining \sffamily on input line 69.
+LaTeX Info: Redefining \ttfamily on input line 69.
+LaTeX Info: Redefining \rmfamily on input line 69.
+LaTeX Info: Redefining \sffamily on input line 69.
+LaTeX Info: Redefining \ttfamily on input line 69.
 File: ./pdffigs/ionio_logo.pdf Graphic file (type pdf)
 <use ./pdffigs/ionio_logo.pdf>
-LaTeX Font Info:    Trying to load font information for U+msa on input line 92.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 91.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 92.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 91.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -525,55 +529,55 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 99--100
+Underfull \hbox (badness 10000) in paragraph at lines 98--99
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 104--107
+Underfull \hbox (badness 10000) in paragraph at lines 103--106
 
  []
 
 [1
 
 ] (./perilipsi.tex
-Overfull \hbox (11.97853pt too wide) in paragraph at lines 8--39
+Overfull \hbox (11.97853pt too wide) in paragraph at lines 6--37
 \TU/Calibri(0)/m/n/10.95 εστιάσει η εφαρμογή. Το Qt είναι μια cross-platform βι
 βλιοθήκη για ανάπτυξη εφαρμογών γραφικής
  []
 
 
-Overfull \hbox (5.42172pt too wide) in paragraph at lines 8--39
+Overfull \hbox (5.42172pt too wide) in paragraph at lines 6--37
 \TU/Calibri(0)/m/n/10.95 κυρίως από το ποντίκι και το χειριστήριο. Το παράθυρο 
 αυτό έχει 3 καρτέλες. Μία με τις εφαρμογές
  []
 
 
-Overfull \hbox (1.10338pt too wide) in paragraph at lines 8--39
+Overfull \hbox (1.10338pt too wide) in paragraph at lines 6--37
 \TU/Calibri(0)/m/n/10.95 του χρήστη, μία με τις αγαπημένες εφαρμογές του χρήστη
  και μία με τις ρυθμίσεις της εφαρμογής
  []
 
 
-Overfull \hbox (13.00688pt too wide) in paragraph at lines 8--39
+Overfull \hbox (13.00688pt too wide) in paragraph at lines 6--37
 \TU/Calibri(0)/m/n/10.95 εφαρμογών μέσω του πληκτρολογίου. Αυτό το παράθυρο διε
 υκολύνει την εκτέλεση των εφαρμογών
  []
 
 
-Overfull \hbox (36.7871pt too wide) in paragraph at lines 8--39
+Overfull \hbox (36.7871pt too wide) in paragraph at lines 6--37
 \TU/Calibri(0)/m/n/10.95 μέσω της συσκευής αυτής προσθέτοντας λειτουργικότητα π
 εριήγησης και αντιμετωπίζοντας προβλήματα
  []
 
 
-Overfull \hbox (27.02406pt too wide) in paragraph at lines 8--39
+Overfull \hbox (27.02406pt too wide) in paragraph at lines 6--37
 \TU/Calibri(0)/m/n/10.95 εισόδου από το χειριστήριο βιντεοπαιχνιδιών. Επιπλέον 
 υπάρχουν συναρτήσεις που "προσομοιώνουν"
  []
 
 
-Overfull \hbox (20.82372pt too wide) in paragraph at lines 8--39
+Overfull \hbox (20.82372pt too wide) in paragraph at lines 6--37
 \TU/Calibri(0)/m/n/10.95 πατήματα πλήκτρων και χρησιμεύουν στην αντιστοίχηση τω
 ν πιέσεων των κουμπιών του χειριστηρίου
  []
@@ -584,7 +588,7 @@ Overfull \hbox (20.82372pt too wide) in paragraph at lines 8--39
 LaTeX Font Info:    Font shape `TU/Calibri(0)/m/sl' in size <10.95> not availab
 le
 (Font)              Font shape `TU/Calibri(0)/m/it' tried instead on input line
- 115.
+ 114.
  [3] (./summary.tex) [4
 
 ] [5] (./thesis.toc
@@ -1409,25 +1413,25 @@ Overfull \hbox (10.61311pt too wide) in paragraph at lines 582--583
 ) [41]
 Κεφάλαιο \Greeknumeral {6}.
 (./deploy.tex)
-Overfull \hbox (2.03549pt too wide) in paragraph at lines 10--156
+Overfull \hbox (2.03549pt too wide) in paragraph at lines 10--155
 \TU/Calibri(0)/m/n/10.95 τα Αγγλικά και τα Ελληνικά. Στη συνέχεια γίνεται επιλο
 γή του directory στο οποίο θα εγκατασταθεί
  []
 
 
-Overfull \hbox (25.02443pt too wide) in paragraph at lines 10--156
+Overfull \hbox (25.02443pt too wide) in paragraph at lines 10--155
 \TU/Calibri(0)/m/n/10.95 ολοκλήρωση αυτών των ρυθμίσεων, φτάνει το τελικό στάδι
 ο εγκατάστασης όπου ο installer αντιγράφει
  []
 
 
-Overfull \hbox (15.25958pt too wide) in paragraph at lines 10--156
+Overfull \hbox (15.25958pt too wide) in paragraph at lines 10--155
 \TU/Calibri(0)/m/n/10.95 με το εργαλείο δημιουργίας εφαρμογών εγκατάστασης Inno
 Setup: https://jrsoftware.org/isinfo.php.
  []
 
 
-Overfull \hbox (78.79689pt too wide) in paragraph at lines 10--156
+Overfull \hbox (78.79689pt too wide) in paragraph at lines 10--155
 \TU/Calibri(0)/m/n/10.95 Η εφαρμογή είναι διαθέσιμη στο αποθετήριο της πτυχιακή
 ς: https://github.com/KonstantinosTourtsakis/MultiDev-
  []
@@ -1499,7 +1503,7 @@ Overfull \hbox (0.57408pt too wide) in paragraph at lines 27--29
  []
 
 )
-Overfull \hbox (10.43332pt too wide) in paragraph at lines 32--159
+Overfull \hbox (10.43332pt too wide) in paragraph at lines 32--158
 \TU/Calibri(0)/m/n/10.95 στις μέρες μας μια τέτοιου είδους λειτουργικότητα βασι
 κής περιήγησης θα ήταν εξαιρετικά χρήσιμη
  []
@@ -2280,12 +2284,12 @@ l.153 {συσκευή πολυμεσικών εφαρμογών τηλεόρασ
                                                 
 ? 
 )
-Overfull \hbox (7.54724pt too wide) in paragraph at lines 153--175
+Overfull \hbox (7.54724pt too wide) in paragraph at lines 153--174
 [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 153--175
+Underfull \hbox (badness 10000) in paragraph at lines 153--174
 
  []
 
@@ -2331,15 +2335,11 @@ braces):
 LaTeX Info: Redefining \rmfamily on input line 2.
 LaTeX Info: Redefining \sffamily on input line 2.
 LaTeX Info: Redefining \ttfamily on input line 2.
-)
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+) ) 
 Here is how much of TeX's memory you used:
  10863 strings out of 478190
  245844 string characters out of 5854827
- 805473 words of memory out of 5000000
+ 805644 words of memory out of 5000000
  31250 multiletter control sequences out of 15000+600000
  477986 words of font info for 104 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
